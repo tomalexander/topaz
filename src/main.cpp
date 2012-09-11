@@ -36,6 +36,7 @@
 #include "sphere_primitive.h"
 #include "rigidbody.h"
 #include <fstream>
+#include "overlay.h"
 
 using std::unordered_map;
 
@@ -68,6 +69,10 @@ int main(int argc, char** argv)
     panda_model->write_to_gnu_plot(f);
     f.close();
 
+    topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
+    o.scale(0.25);
+    o.translateXY(0.5, 0.5);
+    
     panda_unit = new topaz::unit(panda_model);
     panda_unit->set_scale(0.005);
     

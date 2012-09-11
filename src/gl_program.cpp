@@ -34,6 +34,7 @@ namespace topaz
         uses_color = false;
         uses_texture = false;
         uses_joints = false;
+        is_2d = false;
     }
 
     gl_program::~gl_program()
@@ -106,10 +107,14 @@ namespace topaz
             }
         }
 
-        ret << "uniform mat4 ModelMatrix;\nuniform mat4 ViewMatrix;\nuniform mat4 ProjectionMatrix;\n";
+        ret << "uniform mat4 ModelMatrix;\n";
         uniforms.push_back("ModelMatrix");
-        uniforms.push_back("ViewMatrix");
-        uniforms.push_back("ProjectionMatrix");
+        if (!is_2d)
+        {
+            ret << "uniform mat4 ViewMatrix;\nuniform mat4 ProjectionMatrix;\n";
+            uniforms.push_back("ViewMatrix");
+            uniforms.push_back("ProjectionMatrix");
+        }
 
         if (uses_joints)
         {
@@ -121,7 +126,10 @@ namespace topaz
             ret << "out vec4 v_Color;\n";
         if (uses_texture)
             ret << "out vec2 v_tex;\n";
-        ret << "void main( void )\n{\n    mat4 mvp_mat = ProjectionMatrix * ViewMatrix * ModelMatrix;\n";
+        ret << "void main( void )\n{\n    mat4 mvp_mat = ";
+        if (!is_2d)
+            ret << "ProjectionMatrix * ViewMatrix * ";
+        ret << "ModelMatrix;\n";
 
         if (uses_joints)
         {

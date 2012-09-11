@@ -329,7 +329,7 @@ namespace topaz
         return ret;
     }
 
-    void model::write_to_gnu_plot(ostream & out)
+    void model::write_to_gnu_plot(std::ostream & out)
     {
         for (GLuint i = 0; i < num_indicies; i += 3)
         {
