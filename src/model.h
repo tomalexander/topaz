@@ -93,6 +93,7 @@ namespace topaz
         void set_num_joints_per_vertex(int _num_joints_per_vertex);
         int get_num_joints() {return num_joints;}
         tuple<unsigned int, char*> arrange_vertex_memory();
+        void write_to_gnu_plot(ostream & out);
 
       private:
         int num_joints;

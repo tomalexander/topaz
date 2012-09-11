@@ -328,6 +328,18 @@ namespace topaz
 
         return ret;
     }
+
+    void model::write_to_gnu_plot(ostream & out)
+    {
+        for (GLuint i = 0; i < num_indicies; i += 3)
+        {
+            for (GLuint index : {indicies[i], indicies[i+1], indicies[i+2], indicies[i]})
+            {
+                out << verticies[index].x << " " << verticies[index].y << " " << verticies[index].z << "\n";
+            }
+            out << "\n";
+        }
+    }
 }
 
 

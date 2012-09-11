@@ -35,6 +35,7 @@
 #include "animation.h"
 #include "sphere_primitive.h"
 #include "rigidbody.h"
+#include <fstream>
 
 using std::unordered_map;
 
@@ -62,6 +63,10 @@ int main(int argc, char** argv)
     
     topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
     panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
+
+    std::ofstream f("panda.data");
+    panda_model->write_to_gnu_plot(f);
+    f.close();
 
     panda_unit = new topaz::unit(panda_model);
     panda_unit->set_scale(0.005);
