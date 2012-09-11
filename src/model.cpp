@@ -171,7 +171,7 @@ namespace topaz
 
     }
 
-    tuple<unsigned int, char*> model::arrange_vertex_memory()
+    tuple<unsigned int, char*> model::arrange_vertex_memory() const
     {
         unsigned int size_per_vertex = 3*sizeof(float); /*position*/
         if (has_normals)
