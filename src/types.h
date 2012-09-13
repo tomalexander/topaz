@@ -39,6 +39,7 @@ typedef uint_fast64_t fu64;
 //intptr_t
 //intmax_t
 
+#if 0
 #if defined __GNUG__ && !(defined __clang__)
 #define GCC
 #warning Using GCC, swizzles will be slow, you should try clang!
@@ -46,6 +47,9 @@ typedef uint_fast64_t fu64;
 #if defined __clang__
 #define CLANG
     #endif
+#else
+#define GCC
+#endif
 
 typedef float v16sf __attribute__ ((vector_size (sizeof(float)*16)));
 typedef float v4sf __attribute__ ((vector_size (sizeof(float)*4)));
