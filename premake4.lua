@@ -77,7 +77,7 @@ function link_opengl()
    configuration({})
 end
 
-project("wold")
+project("topaz_test")
 kind("WindowedApp")
 language("C++")
 buildoptions({"-std=c++0x"})
