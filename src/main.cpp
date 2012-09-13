@@ -164,11 +164,11 @@ void handle_keyboard(int time_elapsed)
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        camera.slide(topaz::point(0.0f, 0.0f, -10.0f*seconds));
+        camera.slide(topaz::point(0.0f, 0.0f, 10.0f*seconds));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        camera.slide(topaz::point(0.0f, 0.0f, 10.0f*seconds));
+        camera.slide(topaz::point(0.0f, 0.0f, -10.0f*seconds));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
     {
