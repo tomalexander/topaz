@@ -79,8 +79,8 @@ namespace topaz
     model* load_from_egg(const string & model_name);
     void lua_init(const string & script_name = "main.lua");
 
-    void add_event_handler(const function< bool(const sf::Event&)> & func);
-    void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func);
+    void add_event_handler(const function< bool(const sf::Event&)> & func, u8 priority = 128);
+    void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func, u8 priority = 128);
     void add_begin_update_function(const function< void(int)> & func);
     void add_begin_update_function(unsigned long owner, const function< void(int)> & func);
     void add_pre_draw_function(const function< void(int)> & func);

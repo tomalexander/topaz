@@ -49,7 +49,7 @@ namespace topaz
     unordered_map<string, GLuint> textures;
     void init_glew();
 
-    unordered_map<u64, function< bool(const sf::Event&)> > event_handlers;
+    list<pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > > event_handlers;
     unordered_map<u64, function< void(int)> > begin_update_functions;
     unordered_map<u64, function< void(int)> > pre_draw_functions;
     unordered_map<u64, function< void(int)> > post_draw_functions;
@@ -215,8 +215,9 @@ namespace topaz
             //Process Events
             sf::Event event;
             while (window->pollEvent(event))
-                for (pair<unsigned long, function< bool(sf::Event&)> > cur : event_handlers)
-                    if (cur.second(event))
+                for (pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > & cur : event_handlers)
+                    for (pair<u64, function< bool(sf::Event&)> > child : cur.second)
+                    if (child.second(event))
                         break;
 
             for (pair<unsigned long, function< void(int)> > cur : pre_draw_functions)
@@ -258,14 +259,32 @@ namespace topaz
         //     std::cerr << "Lua Error: " << OOLUA::get_last_error(lua_context) << std::endl;
     }
 
-    void add_event_handler(const function< bool(const sf::Event&)> & func)
+    void add_event_handler(const function< bool(const sf::Event&)> & func, u8 priority)
     {
-        add_event_handler(-1, func);
+        add_event_handler(-1, func, priority);
     }
 
-    void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func)
+    void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func, u8 priority)
     {
-        event_handlers.insert(make_pair(owner, func));
+        for (auto it = event_handlers.begin(); it != event_handlers.end(); ++it)
+        {
+            if (it->first == priority)
+            {
+                //Not first of its priority
+                it->second.insert(make_pair(owner, func));
+                return;
+            } else if (it->first > priority) {
+                //First of its priority
+                unordered_map<u64, function< bool(const sf::Event&)> > new_map;
+                new_map.insert(make_pair(owner, func));
+                event_handlers.insert(it, make_pair(priority, new_map));
+                return;
+            }
+        }
+        //Worst priority or empty list
+        unordered_map<u64, function< bool(const sf::Event&)> > new_map;
+        new_map.insert(make_pair(owner, func));
+        event_handlers.push_back(make_pair(priority, new_map));
     }
 
     void add_begin_update_function(const function< void(int)> & func)
@@ -320,7 +339,8 @@ namespace topaz
 
     void remove_handles(unsigned long owner)
     {
-        event_handlers.erase(owner);
+        for (pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > & cur : event_handlers)
+            cur.second.erase(owner);
         begin_update_functions.erase(owner);
         pre_draw_functions.erase(owner);
         post_draw_functions.erase(owner);
