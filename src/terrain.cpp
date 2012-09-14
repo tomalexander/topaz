@@ -21,3 +21,33 @@
  *    distribution.
  */
 #include "terrain.h"
+
+namespace topaz
+{
+    terrain::terrain(u64 width, u64 height, float* data) :
+        light_source(nullptr),
+        light_program(nullptr),
+        model_ptr(nullptr)
+    {
+        transform = new sqt();
+        add_draw_function(id, std::bind(&topaz::terrain::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    }
+
+    terrain::~terrain()
+    {
+        delete transform;
+        delete model_ptr;
+    }
+
+    void terrain::draw(const matrix & V, const matrix & P, camera* C)
+    {
+        gl_program* program = light_program;
+        if (light_program == NULL)
+            program = model_ptr->model_program;
+        model_ptr->prep_for_draw(transform->to_matrix(), V, P, C, program, light_source);
+        
+        model_ptr->draw();
+    }
+
+    
+}

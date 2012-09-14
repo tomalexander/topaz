@@ -20,4 +20,24 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
+#pragma once
 #include "topaz.h"
+#include "model.h"
+#include "sqt.h"
+
+namespace topaz
+{
+    class terrain : gameobject
+    {
+      public:
+        terrain(u64 width, u64 height, float* data);
+        ~terrain();
+
+        void draw(const matrix & V, const matrix & P, camera* C);
+      private:
+        model* model_ptr;
+        light* light_source;
+        gl_program* light_program;
+        sqt* transform;
+    };
+}

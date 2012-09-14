@@ -39,5 +39,7 @@
 
 #define PRINT_ID_ALLOCATION 0
 #define DRAW_COLLISION_SOLIDS 1
+// Set LIMIT_FRAMES to -1 for unlimited fps
+#define LIMIT_FRAMES 60
 
 #endif

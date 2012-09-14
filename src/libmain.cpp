@@ -156,7 +156,9 @@ namespace topaz
         window = new sf::Window(sf::VideoMode(width, height, 32), title);
         window->setActive();
         window->display();
-//        window->setFramerateLimit(60);
+#if LIMIT_FRAMES > -1
+        window->setFramerateLimit(LIMIT_FRAMES);
+#endif
         CHECK_GL_ERROR("Init Window");
         init_glew();
         CHECK_GL_ERROR("Init Glew");
