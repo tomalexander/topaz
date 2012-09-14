@@ -45,7 +45,7 @@ bool handle_keypress(const sf::Event & event);
 bool handle_resize(const sf::Event & event);
 void handle_keyboard(int milliseconds);
 void handle_mouse_move();
-void print_num_objects(int milliseconds);
+void print_fps(int milliseconds);
 
 topaz::matrix P;
 topaz::lookat_camera camera;
@@ -55,7 +55,6 @@ topaz::unit* panda_unit;
 topaz::unit* other_panda_unit;
 topaz::unit* pipe_unit;
 int time_elapsed;
-int num_objects = 2;
 
 int main(int argc, char** argv)
 {
@@ -79,7 +78,7 @@ int main(int argc, char** argv)
     topaz::add_event_handler(&handle_keypress);
     topaz::add_event_handler(&handle_resize);
     topaz::add_pre_draw_function(&handle_keyboard);
-    topaz::add_pre_draw_function(&print_num_objects);
+    topaz::add_pre_draw_function(&print_fps);
 
     game_loop(camera, P);
   
@@ -87,44 +86,13 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void create_ball()
-{
-    topaz::unit* new_unit = new topaz::unit(panda_model);
-    new_unit->set_scale(0.005);
-    new_unit->add_location(topaz::vec(camera.get_position().x(), camera.get_position().y(), camera.get_position().z()));
-    new_unit->set_rigidbody("SPHERE");
-    topaz::vec direction = camera.get_target() - camera.get_position();
-    direction.normalize();
-    direction *= 30+rand()%10;
-    new_unit->rigid_body->velocity = direction;
-    new_unit->rigid_body->mass = 10.0f;
-    num_objects += 1;
-}
-
-void create_tower()
-{
-    for (fu8 x = 0; x < 10; ++x)
-    {
-        topaz::unit* new_unit = new topaz::unit(panda_model);
-        new_unit->set_scale(0.005);
-        topaz::vec direction = camera.get_target() - camera.get_position();
-        direction.normalize();
-        direction *= 20;
-        new_unit->add_location(topaz::vec(camera.get_position().x()+direction.x() + rand()%10, camera.get_position().y()+direction.y() + x*3, camera.get_position().z()+direction.z()));
-        new_unit->set_rigidbody("BOX");
-        new_unit->rigid_body->velocity = topaz::vec(rand()%20 - 10, rand()%20 - 10, rand()%20 - 10);
-    }
-    num_objects += 10;
-}
-
-void print_num_objects(int milliseconds)
+void print_fps(int milliseconds)
 {
     static fs32 time_till_print = 1000;
     time_till_print -= milliseconds;
     if (time_till_print <= 0)
     {
         time_till_print += 1000;
-        std::cout << "Num Objects: " << num_objects << "\n";
     }
 }
 
@@ -138,13 +106,6 @@ bool handle_keypress(const sf::Event & event)
         topaz::cleanup();
         return true;
         break;
-      case sf::Keyboard::Return:
-        create_ball();
-        return true;
-        break;
-      case sf::Keyboard::T:
-        create_tower();
-        return true;
       default:
         return false;
         break;

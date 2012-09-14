@@ -27,9 +27,12 @@ namespace topaz
     terrain::terrain(u64 width, u64 height, float* data) :
         light_source(nullptr),
         light_program(nullptr),
-        model_ptr(nullptr)
+        model_ptr(nullptr),
+        width(width),
+        height(height)
     {
         transform = new sqt();
+        fill_verticies(data);
         add_draw_function(id, std::bind(&topaz::terrain::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
 
@@ -49,5 +52,43 @@ namespace topaz
         model_ptr->draw();
     }
 
-    
+    void terrain::fill_verticies(float* data)
+    {
+        if (model_ptr != nullptr)
+            delete model_ptr;
+        model_ptr = new model();
+
+        //Create verticies
+        model_ptr->set_num_verticies(width*height);
+        for (u64 x = 0; x < width; ++x)
+        {
+            for (u64 y = 0; y < height; ++x)
+            {
+                model_ptr->verticies[x*height+y].x = ((float)x) / ((float)width);
+                model_ptr->verticies[x*height+y].z = ((float)y) / ((float)height);
+                model_ptr->verticies[x*height+y].y = data[x*height+y];
+
+                model_ptr->verticies[x*height+y].u = 0;
+                model_ptr->verticies[x*height+y].v = 0;
+            }
+        }
+
+        //Create indicies
+        model_ptr->set_num_indicies(6 * (width-1) * (height-1));
+        for (u64 x = 0; x < width-1; ++x)
+        {
+            for (u64 y = 0; y < height-1; ++x)
+            {
+                model_ptr->indicies[6*(x*(height-1)+y) + 0] = x*height+y;
+                model_ptr->indicies[6*(x*(height-1)+y) + 1] = x*height+y+1;
+                model_ptr->indicies[6*(x*(height-1)+y) + 2] = (x+1)*height+y;
+                model_ptr->indicies[6*(x*(height-1)+y) + 3] = (x+1)*height+y;
+                model_ptr->indicies[6*(x*(height-1)+y) + 4] = (x+1)*height+y+1;
+                model_ptr->indicies[6*(x*(height-1)+y) + 5] = x*height+y+1;
+            }
+        }
+
+        //Move to GPU
+        model_ptr->move_to_gpu();
+    }
 }

@@ -35,9 +35,13 @@ namespace topaz
 
         void draw(const matrix & V, const matrix & P, camera* C);
       private:
+        void fill_verticies(float* data);
+        
         model* model_ptr;
         light* light_source;
         gl_program* light_program;
         sqt* transform;
+        u64 width;
+        u64 height;
     };
 }
