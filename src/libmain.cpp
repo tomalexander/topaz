@@ -259,11 +259,24 @@ namespace topaz
         //     std::cerr << "Lua Error: " << OOLUA::get_last_error(lua_context) << std::endl;
     }
 
+    /** 
+     * Add en event handler with no owner
+     *
+     * @param func The function to receive events
+     * @param priority The priority, 0 gets first access at events, 255 gets last access
+     */
     void add_event_handler(const function< bool(const sf::Event&)> & func, u8 priority)
     {
         add_event_handler(-1, func, priority);
     }
 
+    /** 
+     * Add en event handler with an owner
+     *
+     * @param owner The owner to the function
+     * @param func The function to receive events
+     * @param priority The priority, 0 gets first access at events, 255 gets last access
+     */
     void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func, u8 priority)
     {
         for (auto it = event_handlers.begin(); it != event_handlers.end(); ++it)
