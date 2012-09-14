@@ -24,12 +24,13 @@
 
 namespace topaz
 {
-    terrain::terrain(u64 width, u64 height, float* data) :
+    terrain::terrain(u64 width, u64 height, float* data, float height_multiplier) :
         light_source(nullptr),
         light_program(nullptr),
         model_ptr(nullptr),
         width(width),
-        height(height)
+        height(height),
+        height_multiplier(height_multiplier)
     {
         transform = new sqt();
         fill_verticies(data);
@@ -66,7 +67,7 @@ namespace topaz
             {
                 model_ptr->verticies[x*height+y].x = ((float)x) / ((float)(width-1));
                 model_ptr->verticies[x*height+y].z = ((float)y) / ((float)(height-1));
-                model_ptr->verticies[x*height+y].y = data[x*height+y];
+                model_ptr->verticies[x*height+y].y = data[x*height+y] * height_multiplier;
 
                 model_ptr->verticies[x*height+y].u = 0;
                 model_ptr->verticies[x*height+y].v = 0;

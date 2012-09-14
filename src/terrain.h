@@ -30,7 +30,7 @@ namespace topaz
     class terrain : gameobject
     {
       public:
-        terrain(u64 width, u64 height, float* data);
+        terrain(u64 width, u64 height, float* data, float height_multiplier = 1.0f);
         ~terrain();
 
         void draw(const matrix & V, const matrix & P, camera* C);
@@ -46,5 +46,6 @@ namespace topaz
         sqt* transform;
         u64 width;
         u64 height;
+        float height_multiplier;
     };
 }
