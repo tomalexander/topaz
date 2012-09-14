@@ -103,23 +103,38 @@ namespace topaz
      * @param x2 An x-coordinate corresponding to the float grid coordinates
      * @param y2 A y-coordinate corresponding to the float grid coordinates
      * @param texture The texture to paint on the terrain
+     * @param u1 A texture x-coordinate
+     * @param v1 A texture y-coordinate
+     * @param u2 A texture x-coordinate
+     * @param v2 A texture y-coordinate
      */
-    void terrain::paint(u64 x1, u64 y1, u64 x2, u64 y2, GLuint texture)
+    void terrain::paint(u64 x1, u64 y1, u64 x2, u64 y2, GLuint texture, float u1, float v1, float u2, float v2)
     {
         u64 min_x = (x1 < x2 ? x1 : x2);
         u64 min_y = (y1 < y2 ? y1 : y2);
         u64 max_x = (x1 > x2 ? x1 : x2);
         u64 max_y = (y1 > y2 ? y1 : y2);
+        
+        float min_u = (u1 < u2 ? u1 : u2);
+        float min_v = (v1 < v2 ? v1 : v2);
+        float max_u = (u1 > u2 ? u1 : u2);
+        float max_v = (v1 > v2 ? v1 : v2);
+        
         for (u64 x = min_x; x < max_x; ++x)
         {
             for (u64 y = min_y; y < max_y; ++y)
             {
                 float x_percent = ((float)(x-min_x)) / ((float)(max_x-min_x));
                 float y_percent = ((float)(y-min_y)) / ((float)(max_y-min_y));
-                model_ptr->verticies[x*height+y].u = x_percent;
-                model_ptr->verticies[x*height+y].v = y_percent;
+                model_ptr->verticies[x*height+y].u = x_percent*(max_u-min_u) + min_u;
+                model_ptr->verticies[x*height+y].v = y_percent*(max_v-min_v) + min_v;
             }
         }
         model_ptr->texture = texture;
+    }
+
+    void terrain::set_scale(float new_scale)
+    {
+        transform->scale(new_scale);
     }
 }
