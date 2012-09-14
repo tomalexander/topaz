@@ -33,9 +33,11 @@
 #include "gl_program.h"
 #include <oolua/oolua.h>
 #include "lua_demo.h"
+#include <unordered_map>
 
 using std::unordered_map;
 using std::stringstream;
+using std::unordered_map;
 
 namespace topaz
 {
@@ -47,12 +49,12 @@ namespace topaz
     unordered_map<string, GLuint> textures;
     void init_glew();
 
-    list<pair<unsigned long, function< bool(const sf::Event&)> > > event_handlers;
-    list<pair<unsigned long, function< void(int)> > > begin_update_functions;
-    list<pair<unsigned long, function< void(int)> > > pre_draw_functions;
-    list<pair<unsigned long, function< void(int)> > > post_draw_functions;
-    list<pair<unsigned long, function< void(matrix&, matrix&, camera*)> > > draw_functions;
-    list<pair<unsigned long, function< void()> > > cleanup_functions;
+    unordered_map<u64, function< bool(const sf::Event&)> > event_handlers;
+    unordered_map<u64, function< void(int)> > begin_update_functions;
+    unordered_map<u64, function< void(int)> > pre_draw_functions;
+    unordered_map<u64, function< void(int)> > post_draw_functions;
+    unordered_map<u64, function< void(matrix&, matrix&, camera*)> > draw_functions;
+    unordered_map<u64, function< void()> > cleanup_functions;
     vector<gameobject*> grim_reaper_list;
 
     model* sphere_model = NULL;
@@ -66,13 +68,6 @@ namespace topaz
 
         PHYSFS_setSaneConfig("topaz","topaz","tpz",0,0);
 
-        string up_one_dir(get_up_one_dir(PHYSFS_getBaseDir()));
-        PHYSFS_mount(up_one_dir.c_str(), "", 1);
-        string sep(PHYSFS_getDirSeparator());
-        string share_dir = up_one_dir + "share" + sep + "topaz" + sep;
-        if (path_exists(share_dir.c_str()))
-            PHYSFS_mount(share_dir.c_str(), "", 1);
-
         //Create the window
         create_window(width, height, title);
 
@@ -80,49 +75,6 @@ namespace topaz
         lua_init();
 
         sphere_model = load_from_egg("sphere");
-
-        //Load Shaders
-        // vector<string> uberlight_shader_uniforms;
-        // uberlight_shader_uniforms.push_back("LightColor");
-        // uberlight_shader_uniforms.push_back("LightWeights");
-        // uberlight_shader_uniforms.push_back("SurfaceWeights");
-        // uberlight_shader_uniforms.push_back("SurfaceRoughness");
-        // uberlight_shader_uniforms.push_back("AmbientClamping");
-        // uberlight_shader_uniforms.push_back("BarnShaping");
-        // uberlight_shader_uniforms.push_back("SeWidth");
-        // uberlight_shader_uniforms.push_back("SeHeight");
-        // uberlight_shader_uniforms.push_back("SeWidthEdge");
-        // uberlight_shader_uniforms.push_back("SeHeightEdge");
-        // uberlight_shader_uniforms.push_back("SeRoundness");
-        // uberlight_shader_uniforms.push_back("DsNear");
-        // uberlight_shader_uniforms.push_back("DsFar");
-        // uberlight_shader_uniforms.push_back("DsNearEdge");
-        // uberlight_shader_uniforms.push_back("DsFarEdge");
-        // uberlight_shader_uniforms.push_back("WCLightPos");
-        // uberlight_shader_uniforms.push_back("ViewPosition");
-        // uberlight_shader_uniforms.push_back("WCtoLC");
-        // uberlight_shader_uniforms.push_back("WCtoLCit");
-        // uberlight_shader_uniforms.push_back("MCtoWC");
-        // uberlight_shader_uniforms.push_back("MCtoWCit");
-        // uberlight_shader_uniforms.push_back("s_tex");
-        // uberlight_shader_uniforms.push_back("ModelMatrix");
-        // uberlight_shader_uniforms.push_back("ViewMatrix");
-        // uberlight_shader_uniforms.push_back("ProjectionMatrix");
-        // create_program("uberlight", "uberlight.fs", "uberlight.vs", uberlight_shader_uniforms);
-        // vector<string> nolight_shader_uniforms;
-        // nolight_shader_uniforms.push_back("s_tex");
-        // nolight_shader_uniforms.push_back("ModelMatrix");
-        // nolight_shader_uniforms.push_back("ViewMatrix");
-        // nolight_shader_uniforms.push_back("ProjectionMatrix");
-        // create_program("nolight", "nolight.fs", "nolight.vs", nolight_shader_uniforms);
-        // nolight_shader_uniforms.push_back("joints");
-        // for (int x = 0; x < 50; ++x)
-        // {
-        //     stringstream tmp;
-        //     tmp << "joints[" << x << "]";
-        //     nolight_shader_uniforms.push_back(tmp.str());
-        // }
-        // create_program("color", "color.fs", "color.vs", nolight_shader_uniforms);
     }
 
     void close_window() { if (window != NULL) {window->close(); window = NULL;} }
@@ -313,7 +265,7 @@ namespace topaz
 
     void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func)
     {
-        event_handlers.push_back(make_pair(owner, func));
+        event_handlers.insert(make_pair(owner, func));
     }
 
     void add_begin_update_function(const function< void(int)> & func)
@@ -323,7 +275,7 @@ namespace topaz
 
     void add_begin_update_function(unsigned long owner, const function< void(int)> & func)
     {
-        begin_update_functions.push_back(make_pair(owner, func));
+        begin_update_functions.insert(make_pair(owner, func));
     }
 
     void add_pre_draw_function(const function< void(int)> & func)
@@ -333,7 +285,7 @@ namespace topaz
 
     void add_pre_draw_function(unsigned long owner, const function< void(int)> & func)
     {
-        pre_draw_functions.push_back(make_pair(owner, func));
+        pre_draw_functions.insert(make_pair(owner, func));
     }
 
     void add_post_draw_function(const function< void(int)> & func)
@@ -343,7 +295,7 @@ namespace topaz
 
     void add_post_draw_function(unsigned long owner, const function< void(int)> & func)
     {
-        post_draw_functions.push_back(make_pair(owner, func));
+        post_draw_functions.insert(make_pair(owner, func));
     }
 
     void add_draw_function(const function< void(matrix&, matrix&, camera*)> & func)
@@ -353,7 +305,7 @@ namespace topaz
 
     void add_draw_function(unsigned long owner, const function< void(matrix&, matrix&, camera*)> & func)
     {
-        draw_functions.push_back(make_pair(owner, func));
+        draw_functions.insert(make_pair(owner, func));
     }
 
     void add_cleanup_function(const function< void()> & func)
@@ -363,17 +315,17 @@ namespace topaz
 
     void add_cleanup_function(unsigned long owner, const function< void()> & func)
     {
-        cleanup_functions.push_back(make_pair(owner, func));
+        cleanup_functions.insert(make_pair(owner, func));
     }
 
     void remove_handles(unsigned long owner)
     {
-        event_handlers.remove_if([owner](const pair<unsigned long, function< bool(const sf::Event&)> > & func) { return func.first == owner; });
-        begin_update_functions.remove_if([owner](const pair<unsigned long, function< void(int)> > & func) { return func.first == owner; });
-        pre_draw_functions.remove_if([owner](const pair<unsigned long, function< void(int)> > & func) { return func.first == owner; });
-        post_draw_functions.remove_if([owner](const pair<unsigned long, function< void(int)> > & func) { return func.first == owner; });
-        draw_functions.remove_if([owner](const pair<unsigned long, function< void(matrix&, matrix&, camera*)> > & func) { return func.first == owner; });
-        cleanup_functions.remove_if([owner](const pair<unsigned long, function< void()> > & func) { return func.first == owner; });
+        event_handlers.erase(owner);
+        begin_update_functions.erase(owner);
+        pre_draw_functions.erase(owner);
+        post_draw_functions.erase(owner);
+        draw_functions.erase(owner);
+        cleanup_functions.erase(owner);
     }
 
     void add_to_grim_reaper(gameobject* ob)
