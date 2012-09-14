@@ -350,15 +350,45 @@ namespace topaz
         cleanup_functions.insert(make_pair(owner, func));
     }
 
-    void remove_handles(unsigned long owner)
+    inline void remove_begin_update_handle(u64 owner)
+    {
+        begin_update_functions.erase(owner);
+    }
+
+    inline void remove_pre_draw_handle(u64 owner)
+    {
+        pre_draw_functions.erase(owner);
+    }
+
+    inline void remove_post_draw_handle(u64 owner)
+    {
+        post_draw_functions.erase(owner);
+    }
+
+    inline void remove_draw_handle(u64 owner)
+    {
+        draw_functions.erase(owner);
+    }
+
+    inline void remove_cleanup_handle(u64 owner)
+    {
+        cleanup_functions.erase(owner);
+    }
+
+    inline void remove_event_handler(u64 owner)
     {
         for (pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > & cur : event_handlers)
             cur.second.erase(owner);
-        begin_update_functions.erase(owner);
-        pre_draw_functions.erase(owner);
-        post_draw_functions.erase(owner);
-        draw_functions.erase(owner);
-        cleanup_functions.erase(owner);
+    }
+
+    void remove_handles(unsigned long owner)
+    {
+        remove_event_handler(owner);
+        remove_begin_update_handle(owner);
+        remove_pre_draw_handle(owner);
+        remove_post_draw_handle(owner);
+        remove_draw_handle(owner);
+        remove_cleanup_handle(owner);
     }
 
     void add_to_grim_reaper(gameobject* ob)

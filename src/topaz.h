@@ -91,6 +91,12 @@ namespace topaz
     void add_draw_function(unsigned long owner, const function< void(matrix&, matrix&, camera*)> & func);
     void add_cleanup_function(const function< void()> & func);
     void add_cleanup_function(unsigned long owner, const function< void()> & func);
+    inline void remove_begin_update_handle(u64 owner);
+    inline void remove_pre_draw_handle(u64 owner);
+    inline void remove_post_draw_handle(u64 owner);
+    inline void remove_draw_handle(u64 owner);
+    inline void remove_cleanup_handle(u64 owner);
+    inline void remove_event_handler(u64 owner);
     void remove_handles(unsigned long owner);
     void add_to_grim_reaper(gameobject* ob);
 }
