@@ -37,6 +37,7 @@
 #include "rigidbody.h"
 #include <fstream>
 #include "overlay.h"
+#include "terrain.h"
 
 using std::unordered_map;
 
@@ -68,17 +69,23 @@ int main(int argc, char** argv)
     panda_model->write_to_gnu_plot(f);
     f.close();
 
-    topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
-    o.scale(0.25);
-    o.translateXY(0.5, 0.5);
+    // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
+    // o.scale(0.25);
+    // o.translateXY(0.5, 0.5);
     
-    panda_unit = new topaz::unit(panda_model);
-    panda_unit->set_scale(0.005);
+    // panda_unit = new topaz::unit(panda_model);
+    // panda_unit->set_scale(0.005);
     
     topaz::add_event_handler(&handle_keypress);
     topaz::add_event_handler(&handle_resize);
     topaz::add_pre_draw_function(&handle_keyboard);
     topaz::add_pre_draw_function(&print_fps);
+
+    // float grid[] = {1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1};
+    float grid[] = {0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0};
+    topaz::terrain t(4,4,grid);
+    t.paint(0,0,4,4,topaz::load_texture("green-panda-model.png"));
+    t.finalize();
 
     game_loop(camera, P);
   

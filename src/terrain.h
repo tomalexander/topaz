@@ -34,6 +34,8 @@ namespace topaz
         ~terrain();
 
         void draw(const matrix & V, const matrix & P, camera* C);
+        void paint(u64 x1, u64 y1, u64 x2, u64 y2, GLuint texture);
+        void finalize();
       private:
         void fill_verticies(float* data);
         

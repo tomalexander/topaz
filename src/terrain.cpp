@@ -62,10 +62,10 @@ namespace topaz
         model_ptr->set_num_verticies(width*height);
         for (u64 x = 0; x < width; ++x)
         {
-            for (u64 y = 0; y < height; ++x)
+            for (u64 y = 0; y < height; ++y)
             {
-                model_ptr->verticies[x*height+y].x = ((float)x) / ((float)width);
-                model_ptr->verticies[x*height+y].z = ((float)y) / ((float)height);
+                model_ptr->verticies[x*height+y].x = ((float)x) / ((float)(width-1));
+                model_ptr->verticies[x*height+y].z = ((float)y) / ((float)(height-1));
                 model_ptr->verticies[x*height+y].y = data[x*height+y];
 
                 model_ptr->verticies[x*height+y].u = 0;
@@ -77,18 +77,49 @@ namespace topaz
         model_ptr->set_num_indicies(6 * (width-1) * (height-1));
         for (u64 x = 0; x < width-1; ++x)
         {
-            for (u64 y = 0; y < height-1; ++x)
+            for (u64 y = 0; y < height-1; ++y)
             {
                 model_ptr->indicies[6*(x*(height-1)+y) + 0] = x*height+y;
                 model_ptr->indicies[6*(x*(height-1)+y) + 1] = x*height+y+1;
                 model_ptr->indicies[6*(x*(height-1)+y) + 2] = (x+1)*height+y;
                 model_ptr->indicies[6*(x*(height-1)+y) + 3] = (x+1)*height+y;
-                model_ptr->indicies[6*(x*(height-1)+y) + 4] = (x+1)*height+y+1;
-                model_ptr->indicies[6*(x*(height-1)+y) + 5] = x*height+y+1;
+                model_ptr->indicies[6*(x*(height-1)+y) + 5] = (x+1)*height+y+1;
+                model_ptr->indicies[6*(x*(height-1)+y) + 4] = x*height+y+1;
             }
         }
+    }
 
+    void terrain::finalize()
+    {
         //Move to GPU
         model_ptr->move_to_gpu();
+    }
+
+    /** 
+     * Paint the terrain with a texture
+     *
+     * @param x1 An x-coordinate corresponding to the float grid coordinates
+     * @param y1 A y-coordinate corresponding to the float grid coordinates
+     * @param x2 An x-coordinate corresponding to the float grid coordinates
+     * @param y2 A y-coordinate corresponding to the float grid coordinates
+     * @param texture The texture to paint on the terrain
+     */
+    void terrain::paint(u64 x1, u64 y1, u64 x2, u64 y2, GLuint texture)
+    {
+        u64 min_x = (x1 < x2 ? x1 : x2);
+        u64 min_y = (y1 < y2 ? y1 : y2);
+        u64 max_x = (x1 > x2 ? x1 : x2);
+        u64 max_y = (y1 > y2 ? y1 : y2);
+        for (u64 x = min_x; x < max_x; ++x)
+        {
+            for (u64 y = min_y; y < max_y; ++y)
+            {
+                float x_percent = ((float)(x-min_x)) / ((float)(max_x-min_x));
+                float y_percent = ((float)(y-min_y)) / ((float)(max_y-min_y));
+                model_ptr->verticies[x*height+y].u = x_percent;
+                model_ptr->verticies[x*height+y].v = y_percent;
+            }
+        }
+        model_ptr->texture = texture;
     }
 }
