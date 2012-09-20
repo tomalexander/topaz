@@ -26,6 +26,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SFML/OpenGL.hpp>
 
 using std::cout;
 using std::string;
@@ -35,6 +36,13 @@ using std::vector;
 namespace topaz
 {
     class point;
+
+    struct texture_data
+    {
+        float u, v;
+        float opacity;
+        GLuint texture_id;
+    };
 
     struct vertex
     {
@@ -64,6 +72,7 @@ namespace topaz
                 float rgb[4];
             };
         };
+        vector<texture_data> multitex;
         vector<int> joint_indicies;
         vector<float> joint_membership;
     };
