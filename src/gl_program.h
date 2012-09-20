@@ -30,6 +30,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include <iostream>
+#include "types.h"
 
 using std::map;
 using std::vector;
@@ -57,6 +58,7 @@ namespace topaz
 
         int num_joints;
         int num_joints_per_vertex;
+        u8 num_textures;
 
         void set_num_joints(int _num_joints);
         string generate_vertex_shader(vector<string> & uniforms);

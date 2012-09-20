@@ -35,6 +35,7 @@ namespace topaz
         uses_texture = false;
         uses_joints = false;
         is_2d = false;
+        multitex = false;
     }
 
     gl_program::~gl_program()
@@ -92,18 +93,25 @@ namespace topaz
         if (uses_texture)
             ret << "layout(location=1) in vec2 in_Tex;\n";
 
+        int layout_loc = 4;
         if (uses_joints)
         {
-            int layout_loc = 4;
             int num_joint_vec4 = get_num_joint_vec4();
             for (int x = 0; x < num_joint_vec4; ++x)
             {
-                ret << "layout(location=" << layout_loc + x << ") in ivec4 in_joint_indicies" << x << ";\n";
+                ret << "layout(location=" << layout_loc++ << ") in ivec4 in_joint_indicies" << x << ";\n";
             }
-            layout_loc += num_joint_vec4;
             for (int x = 0; x < num_joint_vec4; ++x)
             {
-                ret << "layout(location=" << layout_loc + x << ") in vec4 in_joint_membership" << x << ";\n";
+                ret << "layout(location=" << layout_loc++ << ") in vec4 in_joint_membership" << x << ";\n";
+            }
+        }
+        if (multitex)
+        {
+            for (u8 i = 0; i < num_textures; ++i)
+            {
+                ret << "layout(location=" << layout_loc++ << ") in vec3 in_multitex_floats" << i << ";\n";
+                ret << "layout(location=" << layout_loc++ << ") in int in_multitex_texture" << i << ";\n";
             }
         }
 
