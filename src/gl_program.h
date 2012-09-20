@@ -52,6 +52,7 @@ namespace topaz
             bool uses_texture : 1;
             bool uses_joints : 1;
             bool is_2d : 1;
+            bool multitex : 1;
         };
 
         int num_joints;

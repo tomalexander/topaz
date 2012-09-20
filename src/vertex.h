@@ -77,6 +77,22 @@ namespace topaz
         vector<float> joint_membership;
     };
 
+    inline size_t count_num_textures(const vector<vertex> & verticies)
+    {
+        size_t ret = 0;
+        for (const vertex & cur : verticies)
+            ret = (ret > cur.multitex.size() ? ret : cur.multitex.size());
+        return ret;
+    }
+
+    inline size_t count_num_textures(const vertex* verticies, size_t num_verticies)
+    {
+        size_t ret = 0;
+        for (size_t i = 0; i < num_verticies; ++i)
+            ret = (ret > verticies[i].multitex.size() ? ret : verticies[i].multitex.size());
+        return ret;
+    }
+
     void print_vertex(vertex & vert, ostream & out = cout);
     vertex generate_vertex(const point & location);
     vertex generate_vertex(float x, float y, float z);

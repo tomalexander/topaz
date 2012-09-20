@@ -17,5 +17,9 @@
 - 1 :: uv coordinates
 - 2 :: normals
 - 3 :: rgba color
-- 4 :: joint_indicies uvec3
-- 5 :: joint_membership vec3
+- 4* :: joint_indicies uvec3
+- 5* :: joint_membership vec3
+- 6* :: multitex1 floats vec3
+- 7* :: multitex1 tex_id
+- 8* :: multitex2 floats vec3
+- 9* :: multitex2 tex_id

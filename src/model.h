@@ -69,6 +69,7 @@ namespace topaz
             bool has_texture : 1;
             bool has_joints : 1;
             bool has_normals : 1;
+            bool multitex : 1;
         };
 
         joint* root_joint;

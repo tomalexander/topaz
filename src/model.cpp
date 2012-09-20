@@ -24,6 +24,7 @@
 #include "nolight.h"
 #include "egg_parser.h"
 #include "animation.h"
+#include "vertex.h"
 
 namespace topaz
 {
@@ -39,6 +40,7 @@ namespace topaz
         uses_color = false;
         model_program = NULL;
         root_joint = NULL;
+        multitex = false;
         if (color_program == NULL)
             color_program = get_program("color");
         add_cleanup_function([&](){delete this;});
@@ -79,6 +81,7 @@ namespace topaz
         new_prog->uses_color = uses_color;
         new_prog->uses_texture = has_texture;
         new_prog->uses_joints = has_joints;
+        new_prog->multitex = multitex;
         new_prog->create_program();
         model_program = new_prog;
 
@@ -132,9 +135,9 @@ namespace topaz
         }
         CHECK_GL_ERROR("Texture");
 
+        u8 current_index = 4;
         if (has_joints)
         {
-            int current_index = 4;
             for (int x = 0; x < num_joints_per_vertex; x+=4)
             {
                 if (x+4 > num_joints_per_vertex) //less than 4 remaining
@@ -162,6 +165,16 @@ namespace topaz
         }
         CHECK_GL_ERROR("Joints");
 
+        if (multitex)
+        {
+            size_t num_textures = num_textures = count_num_textures(verticies, num_verticies);
+            glVertexAttribPointer(current_index++, 3, GL_FLOAT, GL_FALSE, size_per_vertex, (GLvoid*)(offset));
+            offset += 3*sizeof(float);
+            glVertexAttribIPointer(current_index++, 1, GL_INT, size_per_vertex, (GLvoid*)(offset));
+            offset += 1*sizeof(GLuint);
+        }
+        CHECK_GL_ERROR("multitex");
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         CHECK_GL_ERROR("Bind Buffer");
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies[0])*num_indicies, indicies, GL_STATIC_DRAW);
@@ -173,6 +186,7 @@ namespace topaz
 
     tuple<unsigned int, char*> model::arrange_vertex_memory() const
     {
+        size_t num_textures = 0;
         unsigned int size_per_vertex = 3*sizeof(float); /*position*/
         if (has_normals)
             size_per_vertex += 3*sizeof(float) /*normal*/;
@@ -183,6 +197,11 @@ namespace topaz
         if (has_joints)
         {
             size_per_vertex += num_joints_per_vertex * (sizeof(int) + sizeof(float)); /*joint index and membership*/
+        }
+        if (multitex)
+        {    
+            num_textures = count_num_textures(verticies, num_verticies);
+            size_per_vertex += num_textures * sizeof(texture_data);
         }
 
         char* data = (char*)malloc(size_per_vertex * num_verticies);
@@ -231,6 +250,11 @@ namespace topaz
                         dest_indicies += sizeof(int);
                     }
                 }
+            }
+            if (multitex)
+            {
+                memcpy(dest, &(cur->multitex[0]), num_textures * sizeof(texture_data));
+                dest += num_textures * sizeof(texture_data);
             }
         }
         return tuple<unsigned int, char*>(size_per_vertex, data);
