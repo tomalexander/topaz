@@ -65,13 +65,9 @@ int main(int argc, char** argv)
     topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
     panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
 
-    std::ofstream f("panda.data");
-    panda_model->write_to_gnu_plot(f);
-    f.close();
-
-    // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
-    // o.scale(0.25);
-    // o.translateXY(0.5, 0.5);
+    topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
+    o.scale(0.25);
+    o.translateXY(0.5, 0.5);
     
     // panda_unit = new topaz::unit(panda_model);
     // panda_unit->set_scale(0.005);
@@ -85,7 +81,8 @@ int main(int argc, char** argv)
     float grid[] = {0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0};
     topaz::terrain t(4,4,grid,0.5);
     t.set_scale(4);
-    t.paint(0,0,4,4,topaz::load_texture("green-panda-model.png"));
+    // t.paint(0,0,3,3,topaz::load_texture("green-panda-model.png"));
+    t.paint(1,1,2,2,1.0f,0.0f,0.0f);
     t.finalize();
 
     game_loop(camera, P);

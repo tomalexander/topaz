@@ -35,6 +35,7 @@ namespace topaz
 
         void draw(const matrix & V, const matrix & P, camera* C);
         void paint(u64 x1, u64 y1, u64 x2, u64 y2, GLuint texture, float u1 = 0.0f, float v1 = 0.0f, float u2 = 1.0f, float v2 = 1.0f);
+        void paint(u64 x1, u64 y1, u64 x2, u64 y2, float r, float g, float b, float a = 1.0f);
         void finalize();
         void set_scale(float new_scale);
       private:

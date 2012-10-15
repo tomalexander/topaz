@@ -25,10 +25,17 @@
 #include "camera.h"
 #include "model.h"
 
+namespace
+{
+    topaz::model* sphere_model = nullptr;
+}
+
 namespace topaz
 {
     sphere_primitive::sphere_primitive(sqt* _parent_transform, const vec & _color)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt(_parent_transform);
         color = _color;
         add_draw_function(id, std::bind(&topaz::sphere_primitive::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -36,6 +43,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(sqt* _parent_transform, const vec & _color, int milliseconds)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt(_parent_transform);
         time_left = milliseconds;
         color = _color;
@@ -45,6 +54,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(const point & position, float scale, const vec & _color)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x(), position.y(), position.z());
         transform->scale(scale);
@@ -54,6 +65,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(const point & position, float scale, const vec & _color, int milliseconds)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x(), position.y(), position.z());
         transform->scale(scale);
@@ -65,6 +78,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(sqt* _parent_transform)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt(_parent_transform);
         color = vec(1.0f, 1.0f, 1.0f, 1.0f);
         add_draw_function(id, std::bind(&topaz::sphere_primitive::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -72,6 +87,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(sqt* _parent_transform, float scale, const vec & _color)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt(_parent_transform);
         color = _color;
         add_draw_function(id, std::bind(&topaz::sphere_primitive::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -80,6 +97,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(sqt* _parent_transform, int milliseconds)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt(_parent_transform);
         time_left = milliseconds;
         color = vec(1.0f, 1.0f, 1.0f, 1.0f);
@@ -89,6 +108,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(const point & position, float scale)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x(), position.y(), position.z());
         transform->scale(scale);
@@ -98,6 +119,8 @@ namespace topaz
 
     sphere_primitive::sphere_primitive(const point & position, float scale, int milliseconds)
     {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x(), position.y(), position.z());
         transform->scale(scale);
@@ -117,9 +140,9 @@ namespace topaz
     void sphere_primitive::draw(const matrix & V, const matrix & P, camera* C)
     {
         matrix M = transform->to_matrix();
-        sphere_model->prep_for_draw(M, V, P, C, sphere_model->model_program, NULL);
-        glUniform4fv(sphere_model->model_program->uniform_locations["RGBA"], 1, &(color[0]));
-        sphere_model->draw();
+        ::sphere_model->prep_for_draw(M, V, P, C, ::sphere_model->model_program, NULL);
+        glUniform4fv(::sphere_model->model_program->uniform_locations["RGBA"], 1, &(color[0]));
+        ::sphere_model->draw();
     }
 
     void sphere_primitive::update(int milliseconds)

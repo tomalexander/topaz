@@ -124,16 +124,16 @@ namespace topaz
             glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, size_per_vertex, (GLvoid*)(offset));
             glEnableVertexAttribArray(3);
             offset += 4*sizeof(float);
+            CHECK_GL_ERROR("Color");
         }
-        CHECK_GL_ERROR("Color");
 
         if (has_texture) //UV
         {
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size_per_vertex, (GLvoid*)(offset));
             glEnableVertexAttribArray(1);
             offset += 2*sizeof(float);
+            CHECK_GL_ERROR("Texture");
         }
-        CHECK_GL_ERROR("Texture");
 
         u8 current_index = 4;
         if (has_joints)
@@ -189,7 +189,7 @@ namespace topaz
         size_t num_textures = 0;
         unsigned int size_per_vertex = 3*sizeof(float); /*position*/
         if (has_normals)
-            size_per_vertex += 3*sizeof(float) /*normal*/;
+            size_per_vertex += 3*sizeof(float); /*normal*/
         if (uses_color)
             size_per_vertex += 4*sizeof(float); /*rgba*/
         if (has_texture)

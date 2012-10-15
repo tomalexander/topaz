@@ -58,6 +58,8 @@ namespace topaz
         if (model_ptr != nullptr)
             delete model_ptr;
         model_ptr = new model();
+        model_ptr->has_texture = false;
+        model_ptr->uses_color = true;
 
         //Create verticies
         model_ptr->set_num_verticies(width*height);
@@ -69,8 +71,11 @@ namespace topaz
                 model_ptr->verticies[x*height+y].z = ((float)y) / ((float)(height-1));
                 model_ptr->verticies[x*height+y].y = data[x*height+y] * height_multiplier;
 
-                model_ptr->verticies[x*height+y].u = 0;
-                model_ptr->verticies[x*height+y].v = 0;
+                model_ptr->verticies[x*height+y].r = 1.0f;
+                model_ptr->verticies[x*height+y].g = 1.0f;
+                model_ptr->verticies[x*height+y].b = 1.0f;
+                model_ptr->verticies[x*height+y].a = 1.0f;
+                
             }
         }
 
@@ -121,9 +126,9 @@ namespace topaz
         float max_u = (u1 > u2 ? u1 : u2);
         float max_v = (v1 > v2 ? v1 : v2);
         
-        for (u64 x = min_x; x < max_x; ++x)
+        for (u64 x = min_x; x <= max_x; ++x)
         {
-            for (u64 y = min_y; y < max_y; ++y)
+            for (u64 y = min_y; y <= max_y; ++y)
             {
                 float x_percent = ((float)(x-min_x)) / ((float)(max_x-min_x));
                 float y_percent = ((float)(y-min_y)) / ((float)(max_y-min_y));
@@ -132,6 +137,37 @@ namespace topaz
             }
         }
         model_ptr->texture = texture;
+    }
+
+    /** 
+     * Paints the terrain with color
+     *
+     * @param x1 An x-coordinate corresponding to the float grid coordinates
+     * @param y1 A y-coordinate corresponding to the float grid coordinates
+     * @param x2 An x-coordinate corresponding to the float grid coordinates
+     * @param y2 A y-coordinate corresponding to the float grid coordinates
+     * @param r The red value [0..1]
+     * @param g The green value [0..1]
+     * @param b The blue value [0..1]
+     * @param a The alpha value [0..1]
+     */
+    void terrain::paint(u64 x1, u64 y1, u64 x2, u64 y2, float r, float g, float b, float a)
+    {
+        u64 min_x = (x1 < x2 ? x1 : x2);
+        u64 min_y = (y1 < y2 ? y1 : y2);
+        u64 max_x = (x1 > x2 ? x1 : x2);
+        u64 max_y = (y1 > y2 ? y1 : y2);
+        
+        for (u64 x = min_x; x <= max_x; ++x)
+        {
+            for (u64 y = min_y; y <= max_y; ++y)
+            {
+                model_ptr->verticies[x*height+y].r = r;
+                model_ptr->verticies[x*height+y].g = g;
+                model_ptr->verticies[x*height+y].b = b;
+                model_ptr->verticies[x*height+y].a = a;
+            }
+        }
     }
 
     void terrain::set_scale(float new_scale)

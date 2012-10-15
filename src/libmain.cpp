@@ -57,8 +57,6 @@ namespace topaz
     unordered_map<u64, function< void()> > cleanup_functions;
     vector<gameobject*> grim_reaper_list;
 
-    model* sphere_model = NULL;
-
     void init(char* argv0, int width, int height, const string & title)
     {
         
@@ -73,8 +71,6 @@ namespace topaz
 
         //Init Lua
         lua_init();
-
-        sphere_model = load_from_egg("sphere");
     }
 
     void close_window() { if (window != NULL) {window->close(); window = NULL;} }
