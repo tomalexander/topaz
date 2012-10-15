@@ -32,7 +32,7 @@ namespace topaz
     class joint;
     class rigidbody;
 
-    class unit : gameobject
+    class unit : public gameobject
     {
       public:
 

@@ -24,6 +24,7 @@
 #define GAMEOBJECT_H_
 
 #include "def.h"
+#include "types.h"
 
 namespace topaz
 {
@@ -36,7 +37,7 @@ namespace topaz
 
         void get_id();
 
-        unsigned long id;
+        u64 id;
       private:
     };
 }

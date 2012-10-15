@@ -25,6 +25,12 @@
 #include "egg_parser.h"
 #include "animation.h"
 #include "vertex.h"
+#include <unordered_map>
+
+namespace
+{
+    std::unordered_map<string, topaz::model*> loaded_models;
+}
 
 namespace topaz
 {
@@ -320,6 +326,27 @@ namespace topaz
     {
         num_joints_per_vertex = _num_joints_per_vertex;
         has_joints = true;
+    }
+
+    /** 
+     * Load a model from the model name, if it was already loaded return that
+     *
+     * @param model_name The model name without the file extension or path
+     *
+     * @return The model
+     */
+    model* get_model(const string & model_name)
+    {
+        auto it = loaded_models.find(model_name);
+        if (it == loaded_models.end())
+        {
+            model* ret = load_from_egg(model_name);
+            loaded_models.insert(make_pair(model_name, ret));
+            add_cleanup_function([ret]() {delete ret;});
+            return ret;
+        } else {
+            return it->second;
+        }
     }
 
     model* load_from_egg(const string & model_name)

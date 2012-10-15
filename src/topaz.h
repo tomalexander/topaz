@@ -23,6 +23,8 @@
 #ifndef TOPAZ_H_
 #define TOPAZ_H_
 
+#include "def.h"
+#include "types.h"
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>

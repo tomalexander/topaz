@@ -102,6 +102,7 @@ namespace topaz
 
     };
 
+    model* get_model(const string & model_name);
 }
 
 #endif
