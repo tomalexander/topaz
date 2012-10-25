@@ -95,6 +95,12 @@ namespace topaz
         return ret;
     }
 
+    // quaternion quaternion::get_inverse() const
+    // {
+    //     quaternion conjugate = get_conjugate();
+    //     return conjugate / (*this * conjugate);
+    // }
+
     quaternion& quaternion::operator=(const quaternion & other)
     {
         q = other.q;

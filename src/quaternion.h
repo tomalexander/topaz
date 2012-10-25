@@ -42,6 +42,7 @@ namespace topaz
         void normalize();
         quaternion normalized();
         quaternion get_conjugate() const;
+        // quaternion get_inverse() const;
 
         float& x() { return q.vector_floats[1]; }
         float& y() { return q.vector_floats[2]; }

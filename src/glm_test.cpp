@@ -20,35 +20,21 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
+#include "topaz.h"
+#include "point.h"
+#include "matrix.h"
+#include <stdio.h>
+#include <unordered_map>
+#include <fstream>
 
-#include "lookat_camera.h"
+using std::unordered_map;
 
-namespace topaz
+int main(int argc, char** argv)
 {
-    lookat_camera::lookat_camera() : location(0.0f, 0.0f, -15.0f),
-                                     target(0.0f, 0.0f, 0.0f),
-                                     up(0.0f, 1.0f, 0.0)
-    {
-        // look_at(location, target, up).print();
-    }
-
-    lookat_camera::~lookat_camera()
-    {
-
-    }
-
-    matrix lookat_camera::to_matrix()
-    {
-        return look_at(location, target, up);
-    }
-
-    point lookat_camera::get_position()
-    {
-        return location;
-    }
-
-    const point& lookat_camera::get_target()
-    {
-        return target;
-    }
+    topaz::quaternion q(topaz::vec(1,2,3), 90);
+    q.print();
+    topaz::point p(1,0,0);
+    (q*p).print();
+    (q.to_matrix()*p).print();
+    return 0;
 }
