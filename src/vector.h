@@ -73,7 +73,7 @@ namespace topaz
             
 
         vec& normalize();
-        vec normalized();
+        vec normalized() const;
         
         /** 
          * Get the dot product

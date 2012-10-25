@@ -25,6 +25,7 @@
 
 #include "types.h"
 #include <iostream>
+#include <tuple>
 
 namespace topaz
 {
@@ -42,6 +43,7 @@ namespace topaz
         void normalize();
         quaternion normalized();
         quaternion get_conjugate() const;
+        std::tuple<vec, float> get_axis_angle() const;
         // quaternion get_inverse() const;
 
         float& x() { return q.vector_floats[1]; }

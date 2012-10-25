@@ -77,7 +77,7 @@ namespace topaz
         return ret;
     }
 
-    vec vec::normalized()
+    vec vec::normalized() const
     {
         //square the data
         vector_data squared;

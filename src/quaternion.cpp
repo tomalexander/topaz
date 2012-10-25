@@ -46,9 +46,10 @@ namespace topaz
         theta /= 2;
         w() = cos(theta);
         float sint = sin(theta);
-        x() = axis.x() * sint;
-        y() = axis.y() * sint;
-        z() = axis.z() * sint;
+        vec normalized_axis = axis.normalized();
+        x() = normalized_axis.x() * sint;
+        y() = normalized_axis.y() * sint;
+        z() = normalized_axis.z() * sint;
     }
 
     quaternion::~quaternion()
@@ -93,6 +94,14 @@ namespace topaz
         ret = ret * -1;
         ret.w() *= -1;
         return ret;
+    }
+
+    std::tuple<vec, float> quaternion::get_axis_angle() const
+    {
+        float scale = sqrt(x() * x() + y() * y() + z() * z());
+        vec axis(x() / scale, y() / scale, z() / scale);
+        float angle = acos(w()) * 2.0f;
+        return std::make_tuple(axis, angle);
     }
 
     // quaternion quaternion::get_inverse() const
@@ -181,7 +190,7 @@ namespace topaz
     void quaternion::print(std::ostream & out, int indentation)
     {
         out << std::string(indentation*4, ' ') << "Quaternion:\n";
-        out << std::string(indentation*4 + 2, ' ') << x() << " " << y() << " " << z() << " " << w() << "\n";
+        out << std::string(indentation*4 + 2, ' ') << w() << " " << x() << "i " << y() << "j " << z() << "k\n";
     }
 
     quaternion& quaternion::rotateH(const float deg)

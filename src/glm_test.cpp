@@ -24,17 +24,29 @@
 #include "point.h"
 #include "matrix.h"
 #include <stdio.h>
-#include <unordered_map>
 #include <fstream>
+#include <iostream>
+#include <tuple>
 
-using std::unordered_map;
+using namespace std;
 
 int main(int argc, char** argv)
 {
-    topaz::quaternion q(topaz::vec(1,2,3), 90);
-    q.print();
-    topaz::point p(1,0,0);
-    (q*p).print();
-    (q.to_matrix()*p).print();
+    {
+        topaz::quaternion p(topaz::vec(1,2,3), TO_RADIANS(90));
+        topaz::quaternion q(topaz::vec(0,0,1), TO_RADIANS(180));
+        p.print();
+        q.print();
+        topaz::point a(1,0,0);
+        a.print();
+        (p*a).print();
+        topaz::quaternion pq = p*q;
+        pq.print();
+        topaz::vec axis;
+        float angle;
+        tie(axis, angle) = pq.get_axis_angle();
+        cout << "angle: " << TO_DEGREES(angle) << "\n";
+        axis.print();
+    }
     return 0;
 }
