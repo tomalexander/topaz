@@ -30,6 +30,7 @@
 #include "vector.h"
 #include "point.h"
 #include "quaternion.h"
+#include "vertex.h"
 
 using std::ostream;
 
@@ -61,6 +62,7 @@ namespace topaz
         matrix operator*(const matrix& other) const;
         matrix operator*(const float other) const;
         point operator*(const point& other) const;
+        vertex operator*(const vertex& other) const;
         matrix& operator*=(const matrix& other);
         matrix& operator*=(const float other);
         matrix operator+(const matrix& other) const

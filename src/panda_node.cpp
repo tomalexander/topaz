@@ -38,6 +38,7 @@ using std::function;
 
 namespace topaz
 {
+    extern matrix fix_z_up_matrix;
     void panda_node::parse()
     {
         //std::cout << tag << std::endl;
@@ -357,9 +358,10 @@ namespace topaz
 
     void fix_z_up(vertex& other)
     {
-        float tmp = other.z;
-        other.z = other.y;
-        other.y = -tmp;
+        // float tmp = other.z;
+        // other.z = -other.y;
+        // other.y = tmp;
+        other = fix_z_up_matrix * other;
     }
 
     void reverse_order(unsigned int* indicies, size_t start)

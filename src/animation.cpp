@@ -159,20 +159,8 @@ namespace topaz
             }
         }
 
-        //Apply it to local
-        //target_joint
-        // matrix local_upper_three = target_joint->local.get_upper_three();
-        // matrix new_local = local_upper_three * rotate.to_matrix();
-        // new_local(3,0) = target_joint->local(3,0) + translate.x();
-        // new_local(3,1) = target_joint->local(3,1) + translate.y();
-        // new_local(3,2) = target_joint->local(3,2) + translate.z();
-        // target_joint->local = new_local;
-        
-        // matrix translate_mtrx;
-        // translate_mtrx.translateXYZ(translate.x(), translate.y(), translate.z());
-        // tmp_transform = translate_mtrx * tmp_transform;
-        
         // target_joint->local = tmp_transform * target_joint->local;
-        target_joint->local *= tmp_transform;
+        target_joint->local = tmp_transform;
+        // target_joint->local *= tmp_transform;
     }
 }

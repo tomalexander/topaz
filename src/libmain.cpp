@@ -56,10 +56,11 @@ namespace topaz
     unordered_multimap<u64, function< void(matrix&, matrix&, camera*)> > draw_functions;
     unordered_multimap<u64, function< void()> > cleanup_functions;
     vector<gameobject*> grim_reaper_list;
+    matrix fix_z_up_matrix;
 
     void init(char* argv0, int width, int height, const string & title)
     {
-        
+        fix_z_up_matrix.rotateH(TO_RADIANS(90));
 
         //Initialize PhysFS
         PHYSFS_init(argv0);
