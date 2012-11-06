@@ -127,31 +127,25 @@ namespace topaz
                       case 'h':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.rotateH(2.0f*PI/360.0f*pos.second[post_frame_ind-1]);
+                            tmp_transform.rotateH(TO_RADIANS(pos.second[post_frame_ind-1]));
                         } else {
-                            float between = 2.0f*PI/360.0f*pos.second[pre_frame_ind-1] * (1.0f-percent_to_post);
-                            between += 2.0f*PI/360.0f*pos.second[post_frame_ind-1]*percent_to_post;
-                            tmp_transform.rotateH(between);
+                            tmp_transform.rotateH(TO_RADIANS(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
                         }
                         break;
                       case 'p':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.rotateP(2.0f*PI/360.0f*pos.second[post_frame_ind-1]);
+                            tmp_transform.rotateP(TO_RADIANS(pos.second[post_frame_ind-1]));
                         } else {
-                            float between = 2.0f*PI/360.0f*pos.second[pre_frame_ind-1] * (1.0f-percent_to_post);
-                            between += 2.0f*PI/360.0f*pos.second[post_frame_ind-1]*percent_to_post;
-                            tmp_transform.rotateP(between);
+                            tmp_transform.rotateP(TO_RADIANS(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
                         }
                         break;
                       case 'r':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.rotateR(2.0f*PI/360.0f*pos.second[post_frame_ind-1]);
+                            tmp_transform.rotateR(TO_RADIANS(pos.second[post_frame_ind-1]));
                         } else {
-                            float between = 2.0f*PI/360.0f*pos.second[pre_frame_ind-1] * (1.0f-percent_to_post);
-                            between += 2.0f*PI/360.0f*pos.second[post_frame_ind-1] * percent_to_post;
-                            tmp_transform.rotateR(between);
+                            tmp_transform.rotateR(TO_RADIANS(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
                         }
                         break;
                       default:
@@ -179,7 +173,6 @@ namespace topaz
         // tmp_transform = translate_mtrx * tmp_transform;
         
         // target_joint->local = tmp_transform * target_joint->local;
-        tmp_transform.set_identity();
         target_joint->local *= tmp_transform;
     }
 }

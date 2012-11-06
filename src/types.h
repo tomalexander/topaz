@@ -68,8 +68,8 @@ typedef union vector_data
 } vector_data;
 
 static const double PI = 3.14159265358979323846;
-#define TO_RADIANS(DEG) (DEG) * 180.0f / PI
-#define TO_DEGREES(RAD) (RAD) * PI / 180.0f
+#define TO_RADIANS(DEG) ((DEG) * PI / 180.0f)
+#define TO_DEGREES(RAD) ((RAD) * 180.0f / PI)
 #define FLOAT_TOLERANCE 0.00001f
 #define STOPPING_SPEED_TOLERANCE 1.0f
 #define INERTIA 0.1f
