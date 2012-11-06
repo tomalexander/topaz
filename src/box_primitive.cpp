@@ -20,6 +20,7 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
+#include "topaz.h"
 #include "box_primitive.h"
 #include "topaz.h"
 #include "camera.h"

@@ -85,27 +85,13 @@ namespace topaz
     vertex matrix::operator*(const vertex& other) const
     {
         vertex ret;
+        memcpy(&ret, &other, sizeof(vertex));
         point tmp(other.x, other.y, other.z);
         tmp = *this * tmp;
         ret.x = tmp.x();
         ret.y = tmp.y();
         ret.z = tmp.z();
         return ret;
-
-        // #if defined GCC
-        // v16sf other_column_1 = {other[0], other[0], other[0], other[0], other[1], other[1], other[1], other[1], other[2], other[2], other[2], other[2], other[3], other[3], other[3], other[3]};
-        // #endif
-        // #if defined CLANG
-        // v16sf other_column_1 = __builtin_shufflevector(other.data.full_vector, other.data.full_vector, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3);
-        // #endif
-
-        // matrix_data multiplied_column_1;
-
-        // multiplied_column_1.full_matrix = data.full_matrix * other_column_1;
-
-        // ret.data.full_vector = multiplied_column_1.matrix_vectors[0] + multiplied_column_1.matrix_vectors[1] + multiplied_column_1.matrix_vectors[2] + multiplied_column_1.matrix_vectors[3];
-
-        // return ret;
     }
 
     matrix matrix::operator*(const float other) const

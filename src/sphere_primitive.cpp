@@ -20,8 +20,8 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-#include "sphere_primitive.h"
 #include "topaz.h"
+#include "sphere_primitive.h"
 #include "camera.h"
 #include "model.h"
 

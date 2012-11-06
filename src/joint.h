@@ -23,6 +23,7 @@
 #ifndef JOINT_H_
 #define JOINT_H_
 
+#include "topaz.h"
 #include <map>
 #include <string>
 #include "matrix.h"

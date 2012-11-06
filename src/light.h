@@ -23,6 +23,7 @@
 #ifndef LIGHT_H_
 #define LIGHT_H_
 
+#include "topaz.h"
 #include "camera.h"
 #include "shaders.h"
 #include "gl_program.h"

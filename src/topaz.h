@@ -23,9 +23,9 @@
 #ifndef TOPAZ_H_
 #define TOPAZ_H_
 
+#include <GL/glew.h>
 #include "def.h"
 #include "types.h"
-#include <GL/glew.h>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include <string>
@@ -55,12 +55,6 @@ namespace topaz
     extern sf::Window* window;
     extern int window_width;
     extern int window_height;
-    /*extern list<pair<unsigned long, function< bool(const sf::Event&)> > > event_handlers;
-    extern list<pair<unsigned long, function< void(int)> > > begin_update_functions;
-    extern list<pair<unsigned long, function< void(int)> > > pre_draw_functions;
-    extern list<pair<unsigned long, function< void(int)> > > post_draw_functions;
-    extern list<pair<unsigned long, function< void(matrix&, matrix&, camera*)> > > draw_functions;
-    extern list<pair<unsigned long, function< void()> > > cleanup_functions;*/
     #ifndef LIBMAIN_CPP_
     extern model* sphere_model;
     #endif

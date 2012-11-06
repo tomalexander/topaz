@@ -24,6 +24,8 @@
 
 namespace topaz
 {
+    extern matrix fix_z_up_matrix;
+
     panda_node* load_animation(const string & file_path)
     {
         long file_data_size;
@@ -68,12 +70,7 @@ namespace topaz
         float seconds = ((float) animation_progress)/1000.0f;
         //std::cout << seconds << std::endl;
 
-        vec translate;
-        //quaternion rotate;
         matrix tmp_transform;
-
-        vec translate_origin;
-        quaternion rotate_origin;
 
         for (const char & order_char : an_joint->order)
         {
@@ -82,8 +79,6 @@ namespace topaz
                 
                 if (pos.first != order_char && order_char != 't')
                     continue;
-                // if (pos.second.size() == 1)
-                //     continue;
                 float time_for_frame = 1.0f / ((float) pos.second.size());
                 float frame_number_float = seconds / time_for_frame;
                 int pre_frame_ind = floor(frame_number_float);
@@ -96,25 +91,25 @@ namespace topaz
                       case 'x':
                         if (pre_frame_ind == 0)
                         {
-                            translate.x() = pos.second[post_frame_ind-1];
+                            tmp_transform.translateX(pos.second[post_frame_ind-1]);
                         } else {
-                            translate.x() += lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post);
+                            tmp_transform.translateX(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post));
                         }
                         break;
                       case 'y':
                         if (pre_frame_ind == 0)
                         {
-                            translate.y() = pos.second[post_frame_ind-1];
+                            tmp_transform.translateY(pos.second[post_frame_ind-1]);
                         } else {
-                            translate.y() += lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post);
+                            tmp_transform.translateY(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post));
                         }
                         break;
                       case 'z':
                         if (pre_frame_ind == 0)
                         {
-                            translate.z() = pos.second[post_frame_ind-1];
+                            tmp_transform.translateZ(pos.second[post_frame_ind-1]);
                         } else {
-                            translate.z() += lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post);
+                            tmp_transform.translateZ(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post));
                         }
                         break;
                       default:
@@ -153,14 +148,10 @@ namespace topaz
                     }
                 }
             }
-            if (order_char == 't')
-            {
-                tmp_transform.translateXYZ(translate.x(), translate.y(), translate.z());
-            }
         }
 
         // target_joint->local = tmp_transform * target_joint->local;
-        target_joint->local = tmp_transform;
+        // target_joint->local *= fix_z_up_matrix * tmp_transform;
         // target_joint->local *= tmp_transform;
     }
 }

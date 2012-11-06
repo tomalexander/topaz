@@ -23,6 +23,7 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
+#include <GL/glew.h>
 #include "topaz.h"
 #include <map>
 #include <utility>
