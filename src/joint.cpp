@@ -87,7 +87,7 @@ namespace topaz
             local.set_identity();
             if (current_animation != NULL)
             {
-                local = binding * local;
+                // local = binding * local;
                 current_animation->apply(animation_progress, this);
             } else {
                 local = binding * local;

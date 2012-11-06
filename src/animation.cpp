@@ -151,7 +151,7 @@ namespace topaz
         }
 
         // target_joint->local = tmp_transform * target_joint->local;
-        // target_joint->local *= fix_z_up_matrix * tmp_transform;
+        target_joint->local *= tmp_transform;
         // target_joint->local *= tmp_transform;
     }
 }
