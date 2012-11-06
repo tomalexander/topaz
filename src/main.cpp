@@ -59,11 +59,11 @@ int time_elapsed;
 
 int main(int argc, char** argv)
 {
-    // topaz::init(argv[0]);
-    // P = topaz::perspective(60.0f, 800.0f/600.0f, 0.1f, 100.f);
+    topaz::init(argv[0]);
+    P = topaz::perspective(60.0f, 800.0f/600.0f, 0.1f, 100.f);
     
-    // topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
-    // panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
+    topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
+    panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
 
     // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
     // o.scale(0.25);
@@ -72,10 +72,10 @@ int main(int argc, char** argv)
     // panda_unit = new topaz::unit(panda_model);
     // panda_unit->set_scale(0.005);
     
-    // topaz::add_event_handler(&handle_keypress);
-    // topaz::add_event_handler(&handle_resize);
-    // topaz::add_pre_draw_function(&handle_keyboard);
-    // topaz::add_pre_draw_function(&print_fps);
+    topaz::add_event_handler(&handle_keypress);
+    topaz::add_event_handler(&handle_resize);
+    topaz::add_pre_draw_function(&handle_keyboard);
+    topaz::add_pre_draw_function(&print_fps);
 
     // float grid[] = {1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1};
     // float grid[] = {0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0};
@@ -85,25 +85,24 @@ int main(int argc, char** argv)
     // t.paint(1,1,2,2,1.0f,0.0f,0.0f);
     // t.finalize();
     
-    // game_loop(camera, P);
+    game_loop(camera, P);
   
-    // topaz::cleanup();
+    topaz::cleanup();
 
-    topaz::quaternion q(topaz::vec(1,2,3), 90);
-    q.print();
-    topaz::point p(1,0,0);
-    (q*p).print();
-    (q.to_matrix()*p).print();
     return 0;
 }
 
 void print_fps(int milliseconds)
 {
+    static u32 frames = 0;
     static fs32 time_till_print = 1000;
     time_till_print -= milliseconds;
+    frames++;
     if (time_till_print <= 0)
     {
+        std::cout << "FPS: " << frames << "\n";
         time_till_print += 1000;
+        frames = 0;
     }
 }
 

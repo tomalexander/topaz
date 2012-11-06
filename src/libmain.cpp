@@ -37,7 +37,7 @@
 
 using std::unordered_map;
 using std::stringstream;
-using std::unordered_map;
+using std::unordered_multimap;
 
 namespace topaz
 {
@@ -50,11 +50,11 @@ namespace topaz
     void init_glew();
 
     list<pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > > event_handlers;
-    unordered_map<u64, function< void(int)> > begin_update_functions;
-    unordered_map<u64, function< void(int)> > pre_draw_functions;
-    unordered_map<u64, function< void(int)> > post_draw_functions;
-    unordered_map<u64, function< void(matrix&, matrix&, camera*)> > draw_functions;
-    unordered_map<u64, function< void()> > cleanup_functions;
+    unordered_multimap<u64, function< void(int)> > begin_update_functions;
+    unordered_multimap<u64, function< void(int)> > pre_draw_functions;
+    unordered_multimap<u64, function< void(int)> > post_draw_functions;
+    unordered_multimap<u64, function< void(matrix&, matrix&, camera*)> > draw_functions;
+    unordered_multimap<u64, function< void()> > cleanup_functions;
     vector<gameobject*> grim_reaper_list;
 
     void init(char* argv0, int width, int height, const string & title)
@@ -189,7 +189,6 @@ namespace topaz
 
         static sf::Clock clock;
         double average_time_elapsed = 0;
-        int time_to_next_fps = 1000;
         int time_elapsed;
         int last_tick = clock.getElapsedTime().asMilliseconds();
         while (window->isOpen())
@@ -198,12 +197,6 @@ namespace topaz
             time_elapsed = new_tick - last_tick;
             average_time_elapsed += time_elapsed / 1000.0f;
             average_time_elapsed /= 2;
-            time_to_next_fps -= time_elapsed;
-            if (time_to_next_fps < 0)
-            {
-                time_to_next_fps += 1000;
-                std::cout << "FPS: " << 1/average_time_elapsed << "\n";
-            }
             // time_elapsed /= 10;
             for (pair<unsigned long, function< void(int)> > cur : begin_update_functions)
                 cur.second(time_elapsed);
