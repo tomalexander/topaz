@@ -72,6 +72,7 @@ namespace topaz
     {
         joints.insert(make_pair(child->name, child));
         child->parent = this;
+        child->transform.parent = &transform;
     }
 
     void joint::update(unsigned int & animation_progress, animation* current_animation)
@@ -86,6 +87,7 @@ namespace topaz
             local.set_identity();
             if (current_animation != NULL)
             {
+                local = binding * local;
                 current_animation->apply(animation_progress, this);
             } else {
                 local = binding * local;
@@ -179,9 +181,9 @@ namespace topaz
         out << string(indentation*4, ' ') << "Joint " << name << "\n";
         out << string(indentation*4, ' ') << "Index in shader " << index_in_shader << "\n";
         out << string(indentation*4, ' ') << "Rotation:\n";
-        rotation.print(out, indentation+1);
+        transform.q.print(out, indentation+1);
         out << string(indentation*4, ' ') << "Translation:\n";
-        translation.print(out, indentation+1);
+        transform.t.print(out, indentation+1);
         
         for (pair<const int, float> & entry : membership)
         {

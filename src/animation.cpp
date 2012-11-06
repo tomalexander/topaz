@@ -79,6 +79,7 @@ namespace topaz
         {
             for (const pair<char, vector<float> > & pos : an_joint->positions)
             {
+                
                 if (pos.first != order_char && order_char != 't')
                     continue;
                 // if (pos.second.size() == 1)
@@ -177,6 +178,8 @@ namespace topaz
         // translate_mtrx.translateXYZ(translate.x(), translate.y(), translate.z());
         // tmp_transform = translate_mtrx * tmp_transform;
         
+        // target_joint->local = tmp_transform * target_joint->local;
+        tmp_transform.set_identity();
         target_joint->local *= tmp_transform;
     }
 }

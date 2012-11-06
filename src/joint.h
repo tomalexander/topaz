@@ -27,6 +27,7 @@
 #include <string>
 #include "matrix.h"
 #include "quaternion.h"
+#include "sqt.h"
 #include "vector.h"
 
 using std::map;
@@ -53,8 +54,7 @@ namespace topaz
         joint* find_root();
         void push_binding_down();
 
-        quaternion rotation;
-        vec translation;
+        sqt transform;
 
         //matrix transform;       /**< From egg file, B-1 */
         matrix binding;

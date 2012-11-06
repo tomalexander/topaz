@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 
 void print_fps(int milliseconds)
 {
-    static u32 frames = 0;
+    static fu32 frames = 0;
     static fs32 time_till_print = 1000;
     time_till_print -= milliseconds;
     frames++;
