@@ -68,7 +68,7 @@ int main(int argc, char** argv)
     // u.set_scale(0.005);
     // u.set_animation("panda-walk");
     topaz::unit u(pipe_model);
-    // u.set_animation("bar-bend");
+    u.set_animation("bar-bend");
     
 
     // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
@@ -90,6 +90,36 @@ int main(int argc, char** argv)
     // t.paint(0,0,3,3,topaz::load_texture("green-panda-model.png"));
     // t.paint(1,1,2,2,1.0f,0.0f,0.0f);
     // t.finalize();
+
+    // glm::mat4 joint1b(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 4, 0, 1);
+    // glm::mat4 joint2b(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, -0.10582, 0 ,1);
+    // glm::mat4 joint3b(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 4, 0.106, 0, 1);
+    // joint2b = joint1b * joint2b;
+    // joint3b = joint2b * joint3b;
+    // joint1b = glm::inverse(joint1b);
+    // joint2b = glm::inverse(joint2b);
+    // joint3b = glm::inverse(joint3b);
+    // glm::vec4 vert0(-1, -4, 1, 1);
+    // topaz::print(vert0);
+    // topaz::print(joint1b);
+    // topaz::print(joint2b);
+    // topaz::print(joint3b);
+    // float weight1 = 0.0062731;
+    // float weight2 = 0.497038;
+    // float weight3 = 0.496689;
+    // vert0 = glm::vec4(0, 0, 0, 1);
+
+    // topaz::print((joint1b * vert0 * weight1) + (joint2b * vert0 * weight2) + (joint3b * vert0 * weight3));
+    // topaz::print((joint1b * vert0 * weight1));
+
+    // glm::mat4 tmp(1.0f);
+    // tmp = glm::rotate(tmp, 90.0f, glm::vec3(0,0,1));
+    // tmp = glm::translate(tmp, glm::vec3(0,4,0));
+    // tmp = glm::inverse(tmp);
+    // topaz::print(tmp);
+    // topaz::print(joint1b);
+    // topaz::print(joint1b * tmp);
+    // return 0;
 
     game_loop(camera, P);
   

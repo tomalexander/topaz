@@ -87,7 +87,8 @@ namespace topaz
                 float time_for_frame = 1.0f / ((float) pos.second.size());
                 float frame_number_float = seconds / time_for_frame;
                 int pre_frame_ind = floor(frame_number_float);
-                int post_frame_ind = ceil(frame_number_float);
+                int post_frame_ind = pre_frame_ind + 1;
+                //int post_frame_ind = ceil(frame_number_float);
                 float percent_to_post = frame_number_float - ((float)pre_frame_ind);
                 if (order_char == 't')
                 {

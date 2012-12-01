@@ -91,12 +91,14 @@ namespace topaz
             if (current_animation != NULL)
             {
                 current_animation->apply(animation_progress, this);
+                world = parent->world * local;
             } else {
+                world = binding;
+                //local = inverse_binding;
                 //local = binding;
             }
             
             //Compute world matrix
-            world = parent->world * local;
         }
 
         //Recursively call update on all children
@@ -108,7 +110,7 @@ namespace topaz
         //factor in B^-1
         if (name != "_ROOT")
         {
-            world *= binding;
+            //world *= binding;
             //world = binding * world;
         }
         //world.print();
@@ -119,7 +121,7 @@ namespace topaz
         if (name != "_ROOT")
         {
             size_t start_index = index_in_shader*16;
-            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world), sizeof(float)*16);
+            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world * inverse_binding), sizeof(float)*16);
         }
 
         for (pair<string, joint*> child : joints)

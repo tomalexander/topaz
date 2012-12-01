@@ -15,6 +15,18 @@ void print(const glm::vec3 & data, std::ostream & out, int indentation)
     out << std::endl;
 }
 
+void print(const glm::vec4 & data, std::ostream & out, int indentation)
+{
+    out << std::string(indentation*4, ' ') << "VEC4:" << std::endl;
+    for (int y = 0; y < 4; ++y)
+    {
+        if (y != 0)
+            out << "\t";
+        out << std::string(indentation*4+2, ' ') << std::setw(8) << data[y];
+    }
+    out << std::endl;
+}
+
 void print(const glm::mat4 & data, std::ostream & out, int indentation)
 {
     out << std::string(indentation*4, ' ') << "MATRIX:" << std::endl;
