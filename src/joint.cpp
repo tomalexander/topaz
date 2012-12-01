@@ -89,16 +89,14 @@ namespace topaz
             local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
-                // local = binding * local;
+                local = binding * local;
                 current_animation->apply(animation_progress, this);
             } else {
                 local = binding * local;
             }
-
             
             //Compute world matrix
-            world = parent->world * local;
-            world = world * inverse_binding;
+            world = parent->world * local * inverse_binding;
         }
 
         //Recursively call update on all children

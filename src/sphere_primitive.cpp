@@ -151,4 +151,14 @@ namespace topaz
         if (time_left <= 0)
             add_to_grim_reaper(this);
     }
+
+    void draw_sphere_single_frame(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, const glm::vec4 & color)
+    {
+        if (::sphere_model == nullptr)
+            ::sphere_model = load_from_egg("sphere");
+        ::sphere_model->prep_for_draw(M, V, P, C, ::sphere_model->model_program, NULL);
+        glUniform4fv(::sphere_model->model_program->uniform_locations["RGBA"], 1, &(color[0]));
+        ::sphere_model->draw();
+    }
 }
+

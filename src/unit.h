@@ -42,6 +42,7 @@ namespace topaz
 
         void update_matrix();
         void draw(const glm::mat4 & V, const glm::mat4 & P, camera* C);
+        void draw_joints(const glm::mat4 & V, const glm::mat4 & P, camera* C);
 
         void set_scale(float new_scale = 1.0f);
 

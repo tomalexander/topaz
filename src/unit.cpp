@@ -28,6 +28,8 @@
 #include <sstream>
 #include "rigidbody.h"
 #include "sqt.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include "print.h"
 
 using std::min;
 using std::max;
@@ -90,7 +92,26 @@ namespace topaz
             CHECK_GL_ERROR("filling joint matricies");
         }
 
-        model_ptr->draw();
+        //model_ptr->draw();
+        if (model_ptr->has_joints)
+            draw_joints(V, P, C);
+    }
+
+    void unit::draw_joints(const glm::mat4 & V, const glm::mat4 & P, camera* C)
+    {
+        list<joint*> to_draw;
+        to_draw.push_back(root_joint);
+        while (!to_draw.empty())
+        {
+            joint* current = to_draw.front();
+            to_draw.pop_front();
+            for (const pair<string, joint*> & child : current->joints)
+                to_draw.push_back(child.second);
+            if (current == root_joint)
+                continue;
+
+            draw_sphere_single_frame(current->world, V, P, C, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        }
     }
 
     void unit::set_scale(float new_scale)

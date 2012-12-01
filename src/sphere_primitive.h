@@ -54,6 +54,8 @@ namespace topaz
         sqt* transform;
         int time_left;
     };
+
+    void draw_sphere_single_frame(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, const glm::vec4 & color);
 }
 
 #endif

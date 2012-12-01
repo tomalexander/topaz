@@ -37,6 +37,7 @@
 #include "overlay.h"
 #include "terrain.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "print.h"
 
 using std::unordered_map;
 
@@ -65,7 +66,7 @@ int main(int argc, char** argv)
     panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
     topaz::unit u(panda_model);
     u.set_scale(0.005);
-    //u.set_animation("panda-walk");
+    u.set_animation("panda-walk");
 
     // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
     // o.scale(0.25);
@@ -86,12 +87,11 @@ int main(int argc, char** argv)
     // t.paint(0,0,3,3,topaz::load_texture("green-panda-model.png"));
     // t.paint(1,1,2,2,1.0f,0.0f,0.0f);
     // t.finalize();
-    
+
     game_loop(camera, P);
   
     topaz::cleanup();
-
-    
+   
     return 0;
 }
 
