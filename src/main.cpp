@@ -65,7 +65,7 @@ int main(int argc, char** argv)
     panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
     topaz::unit u(panda_model);
     u.set_scale(0.005);
-    u.set_animation("panda-walk");
+    //u.set_animation("panda-walk");
 
     // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));
     // o.scale(0.25);
