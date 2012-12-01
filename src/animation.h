@@ -51,7 +51,7 @@ namespace topaz
         animation();
         ~animation();
 
-        void apply(unsigned int & animation_progress, joint* target_joint);
+        void apply(const unsigned int & animation_progress, joint* target_joint);
 
         map<string, animation_joint*> joints;
       private:

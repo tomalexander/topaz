@@ -93,7 +93,7 @@ namespace topaz
                 current_animation->apply(animation_progress, this);
                 world = parent->world * local;
             } else {
-                world = binding;
+                world = inverse_binding;
                 //local = inverse_binding;
                 //local = binding;
             }

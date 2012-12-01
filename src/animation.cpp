@@ -58,7 +58,7 @@ namespace topaz
         }
     }
 
-    void animation::apply(unsigned int & animation_progress, joint* target_joint)
+    void animation::apply(const unsigned int & animation_progress, joint* target_joint)
     {
         string joint_name = target_joint->name;
         animation_joint* an_joint = NULL;
