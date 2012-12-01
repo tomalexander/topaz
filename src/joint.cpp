@@ -26,6 +26,7 @@
 #include <utility>
 #include <glm/gtc/type_ptr.hpp>
 #include "print.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 using std::list;
 using std::make_pair;
@@ -89,10 +90,12 @@ namespace topaz
             local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
-                local = binding * local;
+                //local = glm::translate(glm::mat4(1.0f), glm::vec3(2,0,0)) * binding;
                 current_animation->apply(animation_progress, this);
+                local *= binding;
+                //topaz::print(local);
             } else {
-                local = binding * local;
+                local = binding;
             }
             
             //Compute world matrix

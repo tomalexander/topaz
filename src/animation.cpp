@@ -23,6 +23,7 @@
 #include "animation.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/compatibility.hpp>
+#include "print.h"
 
 namespace topaz
 {
@@ -70,8 +71,9 @@ namespace topaz
         }
             
         float seconds = ((float) animation_progress)/1000.0f;
-        //std::cout << seconds << std::endl;
+        topaz::print(target_joint->local);
         target_joint->local = glm::translate(target_joint->local, glm::vec3(2.0f * seconds,0,0));
+        topaz::print(target_joint->local);
         return;
 
         glm::mat4 tmp_transform;
