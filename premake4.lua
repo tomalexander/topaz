@@ -83,10 +83,3 @@ language("C++")
 buildoptions({"-std=c++0x"})
 link_library_deps();
 files({"src/libmain.cpp", "src/egg_parser.cpp", "src/util.cpp", "src/model.cpp", "src/quaternion.cpp", "src/sqt.cpp", "src/matrix.cpp", "src/panda_node.cpp", "src/shaders.cpp", "src/vector.cpp", "src/camera.cpp", "src/free_view_camera.cpp", "src/light.cpp", "src/nolight.cpp", "src/lookat_camera.cpp", "src/uberlight.cpp", "src/floor_model.cpp", "src/unit.cpp", "src/joint.cpp", "src/animation.cpp", "src/vertex.cpp", "src/gl_program.cpp", "src/rigidbody.cpp", "src/gameobject.cpp", "src/collider.cpp", "src/sphere_collider.cpp", "src/sphere_primitive.cpp", "src/collision.cpp", "src/aabb_collider.cpp", "src/box_primitive.cpp", "src/main.cpp", "src/overlay.cpp", "src/terrain.cpp"})
-
-project("glm_test")
-kind("ConsoleApp")
-language("C++")
-buildoptions({"-std=c++0x"})
-link_library_deps();
-files({"src/libmain.cpp", "src/egg_parser.cpp", "src/util.cpp", "src/model.cpp", "src/quaternion.cpp", "src/sqt.cpp", "src/matrix.cpp", "src/panda_node.cpp", "src/shaders.cpp", "src/vector.cpp", "src/camera.cpp", "src/free_view_camera.cpp", "src/light.cpp", "src/nolight.cpp", "src/lookat_camera.cpp", "src/uberlight.cpp", "src/floor_model.cpp", "src/unit.cpp", "src/joint.cpp", "src/animation.cpp", "src/vertex.cpp", "src/gl_program.cpp", "src/rigidbody.cpp", "src/gameobject.cpp", "src/collider.cpp", "src/sphere_collider.cpp", "src/sphere_primitive.cpp", "src/collision.cpp", "src/aabb_collider.cpp", "src/box_primitive.cpp", "src/glm_test.cpp", "src/overlay.cpp", "src/terrain.cpp"})
