@@ -91,23 +91,44 @@ int main(int argc, char** argv)
     // t.paint(1,1,2,2,1.0f,0.0f,0.0f);
     // t.finalize();
 
-    // glm::mat4 joint1b(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 4, 0, 1);
-    // glm::mat4 joint2b(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, -0.10582, 0 ,1);
-    // glm::mat4 joint3b(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 4, 0.106, 0, 1);
-    // joint2b = joint1b * joint2b;
-    // joint3b = joint2b * joint3b;
+    glm::mat4 joint1b(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 4, 0, 1);
+    glm::mat4 joint2b(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, -0.10582, 0 ,1);
+    glm::mat4 joint3b(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 4, 0.106, 0, 1);
+    joint2b = joint1b * joint2b;
+    joint3b = joint2b * joint3b;
+    // joint2b *= joint1b;
+    // joint3b *= joint2b;
     // joint1b = glm::inverse(joint1b);
     // joint2b = glm::inverse(joint2b);
     // joint3b = glm::inverse(joint3b);
-    // glm::vec4 vert0(-1, -4, 1, 1);
-    // topaz::print(vert0);
-    // topaz::print(joint1b);
-    // topaz::print(joint2b);
-    // topaz::print(joint3b);
-    // float weight1 = 0.0062731;
-    // float weight2 = 0.497038;
-    // float weight3 = 0.496689;
-    // vert0 = glm::vec4(0, 0, 0, 1);
+    glm::vec4 vert0(-1, -4, 1, 0);
+    topaz::print(vert0);
+    topaz::print(joint1b);
+    topaz::print(joint2b);
+    topaz::print(joint3b);
+    float weight1 = 0.0062731;
+    float weight2 = 0.497038;
+    float weight3 = 0.496689;
+
+    glm::mat4 joint1w(1.0f);
+    joint1w = glm::rotate(joint1w, 90.0f, glm::vec3(0,0,1));
+    joint1w = glm::translate(joint1w, glm::vec3(0,4,0));
+
+    glm::mat4 joint2w(1.0f);
+    joint2w = glm::translate(joint2w, glm::vec3(4, -0.10582, 0));
+
+    glm::mat4 joint3w(1.0f);
+    joint3w = glm::rotate(joint3w, -90.0f, glm::vec3(0,0,1));
+    joint3w = glm::translate(joint3w, glm::vec3(4,0.106,0));
+    
+    joint2w = joint1w * joint2w;
+    joint3w = joint2w * joint3w;
+    // joint2w *= joint1w;
+    // joint3w *= joint2w;
+    
+    glm::vec4 calculated = (joint1w * joint1b * vert0 * weight1) + (joint2w * joint2b * vert0 * weight2) + (joint3w * joint3b * vert0 * weight3);
+    topaz::print(calculated);
+    //return 0;
 
     // topaz::print((joint1b * vert0 * weight1) + (joint2b * vert0 * weight2) + (joint3b * vert0 * weight3));
     // topaz::print((joint1b * vert0 * weight1));

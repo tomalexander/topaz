@@ -121,7 +121,7 @@ namespace topaz
         if (name != "_ROOT")
         {
             size_t start_index = index_in_shader*16;
-            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world * inverse_binding), sizeof(float)*16);
+            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world * binding), sizeof(float)*16);
         }
 
         for (pair<string, joint*> child : joints)

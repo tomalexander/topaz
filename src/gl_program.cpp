@@ -143,7 +143,7 @@ namespace topaz
         {
             for (int x = 0; x < num_joints_per_vertex; ++x)
             {
-                ret << "    vec4 joint" << x << " = (joints[" << get_joint_index(x) << "] * vec4(in_Position, 1.0)) * " << get_joint_membership(x) << ";\n";
+                ret << "    vec4 joint" << x << " = (joints[" << get_joint_index(x) << "] * vec4(in_Position, 0.0)) * " << get_joint_membership(x) << ";\n";
             }
             ret << "    vec4 v_prime = ";
             for (int x = 0; x < num_joints_per_vertex; ++x)
