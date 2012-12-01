@@ -26,6 +26,27 @@
 
 using std::stringstream;
 
+namespace
+{
+    void negate_v(topaz::panda_node* node)
+    {
+        for (topaz::panda_node* child : node->children)
+        {
+            if (child->tag == "V")
+            {
+                stringstream inp(child->content);
+                stringstream out;
+                float tmp;
+                while (inp >> tmp)
+                {
+                    out << -tmp << " ";
+                }
+                child->content = out.str();
+            }
+        }
+    }
+}
+
 namespace topaz
 {
     extern glm::mat4 fix_z_up_matrix;
@@ -53,7 +74,6 @@ namespace topaz
 
             if (current->tag == "CoordinateSystem")
             {
-                std::cout << "CONTENT:" << current->content << "\n";
                 if (current->content == "Z-Up")
                 {
                     assign_coordinate_system(node, ZUP);
@@ -81,10 +101,6 @@ namespace topaz
                 queue.push_back(child);
         
             coordinate_system system = detect_coordinate_system(node);
-            if (system == ZUP)
-                std::cout << "ZUP DETECTED\n";
-            else
-                std::cout << "YUP DETECTED\n";
             if (system == ZUP && (node->tag == "Vertex" || node->tag == "Normal"))
             {
                 float x,y,z;
@@ -129,6 +145,32 @@ namespace topaz
                     out << mat[i%4][i/4] << " ";
                 }
                 node->content = out.str();
+            } else if (system == ZUP && node->tag == "Char*" && node->name == "order") {
+                size_t hpos = node->content.find('h');
+                size_t rpos = node->content.find('r');
+                if (hpos != string::npos)
+                {
+                    node->content[hpos] = 'r';
+                }
+                if (rpos != string::npos)
+                {
+                    node->content[rpos] = 'h';
+                }
+            } else if (system == ZUP && node->tag == "S$Anim") {
+                if (node->name == "r")
+                {
+                    node->name = "h";
+                    negate_v(node);
+                }
+                if (node->name == "h")
+                    node->name = "r";
+                if (node->name == "y")
+                {
+                    node->name = "z";
+                    negate_v(node);
+                }
+                if (node->name == "z")
+                    node->name = "y";
             }
         }
     }
