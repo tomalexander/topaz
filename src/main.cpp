@@ -63,12 +63,12 @@ int main(int argc, char** argv)
     P = glm::perspective(60.0f, 800.0f/600.0f, 0.1f, 100.f);
     
     topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
-    panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
-    topaz::unit u(panda_model);
-    u.set_scale(0.005);
-    u.set_animation("panda-walk");
-    //topaz::unit u(pipe_model);
-    //u.set_animation("bar-bend");
+    //panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
+    // topaz::unit u(panda_model);
+    // u.set_scale(0.005);
+    //u.set_animation("panda-walk");
+    topaz::unit u(pipe_model);
+    u.set_animation("bar-bend");
     
 
     // topaz::overlay o(1, 1, topaz::load_texture("green-panda-model.png"));

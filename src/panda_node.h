@@ -29,6 +29,7 @@
 #include "vertex.h"
 #include "util.h"
 #include "animation.h"
+#include "coordinate_system.h"
 
 using std::vector;
 using std::string;
@@ -37,15 +38,17 @@ namespace topaz
 {
     class animation;
     class model;
+    string filter_out_tags(const string & inp);
 
     class panda_node
     {
       public:
-        panda_node(const string & tag, const string & name, const string & content):
+        panda_node(const string & tag, const string & name, const string & content, panda_node* parent = nullptr):
             tag(tag),
             name(name),
-            content(content)
-        {parent = NULL; coordinate_system = ""; uses_color = false; parse();}
+            content(content),
+            parent(parent)
+        {coordinate_system = UNASSIGNED; uses_color = false; if (parent != nullptr) parent->add_child(this); generate_tag_tree(content, this); this->content = trim_whitespace(filter_out_tags(this->content));}
         ~panda_node()
         {
             for (panda_node* & cur : children)
@@ -70,7 +73,7 @@ static void generate_tag_tree(const string & content, panda_node* parent);
         panda_node* parent;
 
         /* Stuff parsed out of content to make transition to model class easier */
-        string coordinate_system;
+        coordinate_system coordinate_system;
         string texture_file_name;
 
         vertex vert;
@@ -99,7 +102,7 @@ static void generate_tag_tree(const string & content, panda_node* parent);
       private:
     };
 
-    string filter_out_tags(const string & inp);
+    
 }
 
 #endif

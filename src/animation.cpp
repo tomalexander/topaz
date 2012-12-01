@@ -39,6 +39,8 @@ namespace topaz
         string contents(file_data);
 
         panda_node* top_node = new panda_node("","",contents);
+        fix_coordinate_system(top_node);
+        top_node->parse();
         
         delete [] file_data;
         return top_node;

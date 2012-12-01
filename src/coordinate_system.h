@@ -22,3 +22,11 @@
  */
 #pragma once
 
+namespace topaz
+{
+    class panda_node;
+
+    enum coordinate_system {YUP, ZUP, UNASSIGNED};
+    coordinate_system detect_coordinate_system(panda_node* node);
+    void fix_coordinate_system(panda_node* top);
+}

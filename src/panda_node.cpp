@@ -29,6 +29,7 @@
 #include <list>
 #include <functional>
 #include "joint.h"
+#include "coordinate_system.h"
 
 using std::stringstream;
 using std::map;
@@ -42,9 +43,8 @@ namespace topaz
     void panda_node::parse()
     {
         //std::cout << tag << std::endl;
-        generate_tag_tree(content, this);
-
-        content = trim_whitespace(filter_out_tags(content));
+        for (panda_node* child : children)
+            child->parse();
 
         if (tag == "Group")
         {
@@ -64,7 +64,7 @@ namespace topaz
             }
             vert.x = x;
             vert.y = y;
-            vert.z = -z;
+            vert.z = z;
             for (panda_node* child : children)
             {
                 if (child->tag == "Normal")
@@ -321,8 +321,7 @@ namespace topaz
         size_t index = 0;
         while (get_tag(content, tag, name, subcontent, index))
         {
-            panda_node* child_node = new panda_node(tag,name,subcontent);
-            parent->add_child(child_node);
+            panda_node* child_node = new panda_node(tag,name,subcontent, parent);
         }
     }
 
@@ -356,24 +355,6 @@ namespace topaz
         return ret;
     }
 
-    void fix_z_up(vertex& other)
-    {
-        // float tmp = other.z;
-        // other.z = -other.y;
-        // other.y = tmp;
-        glm::vec4 new_positions = fix_z_up_matrix * glm::vec4(other.x, other.y, other.z, 1);
-        other.x = new_positions.x;
-        other.y = new_positions.y;
-        other.z = new_positions.z;
-    }
-
-    void reverse_order(unsigned int* indicies, size_t start)
-    {
-        int tmp = indicies[start];
-        indicies[start] = indicies[start+2];
-        indicies[start+2] = tmp;
-    }
-
     /** 
      * Generate a new topaz model from the root panda_node
      *
@@ -384,33 +365,8 @@ namespace topaz
     model* panda_node::to_model(panda_node* root)
     {
         model* ret = new model();
-        function<void (vertex&)> clean_vertex_system;
-        function<void (unsigned int*, size_t)> clean_triangle;
         list<panda_node*> to_visit;
         
-        //Check for Coordinate System
-        to_visit.push_back(root);
-        while (to_visit.size() > 0)
-        {
-            panda_node* current = to_visit.front();
-            to_visit.pop_front();
-
-            for (panda_node* child : current->children)
-            {
-                to_visit.push_back(child);
-            }
-
-            if (current->tag == "CoordinateSystem")
-            {
-                to_visit.clear();
-                if (current->content == "Z-Up")
-                {
-                    clean_vertex_system = &fix_z_up;
-                    clean_triangle = &reverse_order;
-                }
-            }
-        }
-
         //Check for normals
         to_visit.push_back(root);
         while (to_visit.size() > 0)
@@ -467,11 +423,6 @@ namespace topaz
                 to_visit.clear();
                 ret->texture = load_texture(current->texture_file_name);
                 found_texture = true;
-                if (current->content == "Z-Up")
-                {
-                    clean_vertex_system = &fix_z_up;
-                    clean_triangle = &reverse_order;
-                }
             }
         }
         ret->has_texture = found_texture;
@@ -493,7 +444,6 @@ namespace topaz
             if (current->tag == "Vertex")
             {
                 ret->verticies[current_index] = current->vert;
-                if (clean_vertex_system) clean_vertex_system(ret->verticies[current_index]);
                 vertex_id_to_array_index.insert(make_pair(current->vertex_number, current_index));
                 ++current_index;
             }
@@ -527,7 +477,6 @@ namespace topaz
                     ++count;
                     if (count == 3)
                     {
-                        if (clean_triangle) clean_triangle(ret->indicies, current_index-3);
                         count = 0;
                     }
                 }

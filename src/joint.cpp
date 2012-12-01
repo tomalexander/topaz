@@ -222,7 +222,7 @@ namespace topaz
         joint* ret = new joint(inp->name, available_index_in_shader);
         
         
-        ret->binding = glm::transpose(inp->mat)/*.inverse()*/;
+        ret->binding = inp->mat/*.inverse()*/;
 
         // ret->rotation = ret->transform.to_quaternion();
         // ret->translation.x() = ret->transform(3,0);
