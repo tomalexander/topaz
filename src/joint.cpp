@@ -109,6 +109,7 @@ namespace topaz
         if (name != "_ROOT")
         {
             world *= binding;
+            //world = binding * world;
         }
         //world.print();
     }
