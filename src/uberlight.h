@@ -33,13 +33,13 @@ namespace topaz
         uberlight();
         ~uberlight();
 
-        virtual void populate_uniforms(const matrix & M, const matrix & V, const matrix & P, camera* C, gl_program* program);
+        virtual void populate_uniforms(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, gl_program* program);
 
-        matrix to_matrix();
+        glm::mat4 to_matrix();
 
-        point position;
-        point target;
-        vec up;
+        glm::vec3 position;
+        glm::vec3 target;
+        glm::vec3 up;
         float se_width,
             se_height,
             se_width_edge,

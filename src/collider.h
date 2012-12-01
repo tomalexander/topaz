@@ -31,9 +31,6 @@ namespace topaz
 {
     enum collider_type {SPHERE, AABB};
 
-    class point;
-    class vec;
-
     class collider
     {
       public:
@@ -41,13 +38,13 @@ namespace topaz
         collider(const collider_type & _type);
         ~collider();
 
-        virtual point* is_colliding_with(collider* other) = 0;
+        virtual glm::vec3* is_colliding_with(collider* other) = 0;
         #if DRAW_COLLISION_SOLIDS == 1
         virtual void display_as_colliding(bool colliding) = 0;
         #endif
 
         collider_type type;
-        point position;
+        glm::vec3 position;
 
         sqt* transform;
         int collider_id;

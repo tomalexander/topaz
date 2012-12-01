@@ -35,12 +35,12 @@ namespace topaz
     class aabb_collider : public collider
     {
       public:
-        aabb_collider(sqt* _parent_transform, const point & _lesser_corner, const point & _greater_corner);
+        aabb_collider(sqt* _parent_transform, const glm::vec3 & _lesser_corner, const glm::vec3 & _greater_corner);
         ~aabb_collider();
 
-        virtual point* is_colliding_with(collider* other);
-        point get_world_position();
-        point* AABB_collision(aabb_collider* other);
+        virtual glm::vec3* is_colliding_with(collider* other);
+        glm::vec3 get_world_position();
+        glm::vec3* AABB_collision(aabb_collider* other);
 
         #if DRAW_COLLISION_SOLIDS == 1
         virtual void display_as_colliding(bool colliding);
@@ -48,8 +48,8 @@ namespace topaz
         #endif
 
         sqt* transform;
-        point lesser_corner;
-        point greater_corner;
+        glm::vec3 lesser_corner;
+        glm::vec3 greater_corner;
       private:
     };
 }

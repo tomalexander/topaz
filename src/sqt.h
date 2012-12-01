@@ -23,9 +23,8 @@
 #ifndef SQT_H_
 #define SQT_H_
 
-#include "quaternion.h"
-#include "matrix.h"
-#include "vector.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace topaz {
 
@@ -35,7 +34,7 @@ namespace topaz {
         sqt(sqt* _parent);
         ~sqt();
 
-        matrix to_matrix();
+        glm::mat4 to_matrix();
         sqt& translateX(const float x);
         sqt& translateY(const float y);
         sqt& translateZ(const float z);
@@ -45,28 +44,28 @@ namespace topaz {
         sqt& rotateHPR(const float h, const float p, const float r);
         sqt& scale(const float sc);
         sqt& translateXYZ(const float x, const float y, const float z);
-        sqt& translateXYZ(const vec & vec);
+        sqt& translateXYZ(const glm::vec3 & vec);
         sqt& transformXYZHPRS(const float x, const float y, const float z, const float h, const float p, const float r, const float sc);
         sqt& reset();
         float get_world_s();
-        const vec& get_t() {return t;}
-        sqt& set_t(const vec & pos) { t = pos; return *this;}
-        const quaternion& get_q() {return q;}
-        sqt& set_q(const quaternion & new_q) { q = new_q; return *this;}
+        const glm::vec3& get_t() {return t;}
+        sqt& set_t(const glm::vec3 & pos) { t = pos; return *this;}
+        const glm::quat& get_q() {return q;}
+        sqt& set_q(const glm::quat & new_q) { q = new_q; return *this;}
 
-        float& get_x() {return t.x();}
-        float& get_y() {return t.y();}
-        float& get_z() {return t.z();}
+        float& get_x() {return t.x;}
+        float& get_y() {return t.y;}
+        float& get_z() {return t.z;}
         float& get_s() {return s;}
-        float& get_qx() {return q.x();}
-        float& get_qy() {return q.y();}
-        float& get_qz() {return q.z();}
-        float& get_qw() {return q.w();}
+        float& get_qx() {return q.x;}
+        float& get_qy() {return q.y;}
+        float& get_qz() {return q.z;}
+        float& get_qw() {return q.w;}
 
 
         float s;                /**< Scale Magnitude */
-        quaternion q;           /**< Rotation Quaternion */
-        vec t;        /**< Translation Vector */
+        glm::quat q;           /**< Rotation Quaternion */
+        glm::vec3 t;        /**< Translation Vector */
         sqt* parent;            /**< coordinate space this sqt is in */
     };
 

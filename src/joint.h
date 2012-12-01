@@ -26,10 +26,7 @@
 #include "topaz.h"
 #include <map>
 #include <string>
-#include "matrix.h"
-#include "quaternion.h"
 #include "sqt.h"
-#include "vector.h"
 
 using std::map;
 using std::string;
@@ -46,8 +43,8 @@ namespace topaz
         ~joint();
 
         void update(unsigned int & animation_progress, animation* current_animation);
-        void print(int indentation = 0, ostream & out = std::cout);
-        void recursive_print(int indentation = 0, ostream & out = std::cout);
+        void print(int indentation = 0, std::ostream & out = std::cout);
+        void recursive_print(int indentation = 0, std::ostream & out = std::cout);
         void check_if_associated(const int vert_index, map<int, float> & joint_association);
         void populate_float_array(float* joint_matricies);
         joint* find_joint_indexed_in_shader(int index);
@@ -58,10 +55,10 @@ namespace topaz
         sqt transform;
 
         //matrix transform;       /**< From egg file, B-1 */
-        matrix binding;
-        matrix inverse_binding;
-        matrix local;
-        matrix world;
+        glm::mat4 binding;
+        glm::mat4 inverse_binding;
+        glm::mat4 local;
+        glm::mat4 world;
 
         map<int, float> membership; /**< key is index or vertex, float is percentage of membership */
         map<string, joint*> joints; /**< contains child joints */

@@ -21,7 +21,7 @@
  *    distribution.
  */
 #include "vertex.h"
-#include "point.h"
+#include <glm/glm.hpp>
 
 namespace topaz
 {
@@ -44,12 +44,12 @@ namespace topaz
         out << "\n";
     }
 
-    vertex generate_vertex(const point & location)
+    vertex generate_vertex(const glm::vec3 & location)
     {
         vertex ret;
-        ret.x = location.x();
-        ret.y = location.y();
-        ret.z = location.z();
+        ret.x = location.x;
+        ret.y = location.y;
+        ret.z = location.z;
         return ret;
     }
     vertex generate_vertex(float x, float y, float z)

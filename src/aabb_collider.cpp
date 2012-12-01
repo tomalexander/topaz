@@ -21,22 +21,20 @@
  *    distribution.
  */
 #include "aabb_collider.h"
-#include "point.h"
-#include "vector.h"
 #if DRAW_COLLISION_SOLIDS == 1
 #include "box_primitive.h"
 #endif
 
 namespace topaz
 {
-    aabb_collider::aabb_collider(sqt* _parent_transform, const point & _lesser_corner, const point & _greater_corner)
+    aabb_collider::aabb_collider(sqt* _parent_transform, const glm::vec3 & _lesser_corner, const glm::vec3 & _greater_corner)
     {
         type = AABB;
         transform = new sqt(_parent_transform);
         lesser_corner = _lesser_corner;
         greater_corner = _greater_corner;
         #if DRAW_COLLISION_SOLIDS == 1
-        display_box = new box_primitive(transform, vec(1,1,1,0.5), lesser_corner, greater_corner);
+        display_box = new box_primitive(transform, glm::vec4(1,1,1,0.5), lesser_corner, greater_corner);
         #endif
         #if USE_OPENCL == 1
         collider_id = global_accelerator->num_of_colliders;
@@ -54,7 +52,7 @@ namespace topaz
         #endif
     }
 
-    point* aabb_collider::is_colliding_with(collider* other)
+    glm::vec3* aabb_collider::is_colliding_with(collider* other)
     {
         switch (other->type)
         {
@@ -67,83 +65,83 @@ namespace topaz
         return NULL;
     }
 
-    point* aabb_collider::AABB_collision(aabb_collider* other)
+    glm::vec3* aabb_collider::AABB_collision(aabb_collider* other)
     {
-        matrix this_to_world = transform->to_matrix();
-        matrix world_to_this = this_to_world.inverse();
-        matrix other_to_world = other->transform->to_matrix();
-        matrix world_to_other = other_to_world.inverse();
+        glm::mat4 this_to_world = transform->to_matrix();
+        glm::mat4 world_to_this = glm::inverse(this_to_world);
+        glm::mat4 other_to_world = other->transform->to_matrix();
+        glm::mat4 world_to_other = glm::inverse(other_to_world);
         
-        vec other_diag = other->greater_corner - other->lesser_corner;
-        vec other_diag_world = other_to_world * other_diag;
-        vec other_diag_this = world_to_this * other_diag_world;
+        glm::vec3 other_diag = other->greater_corner - other->lesser_corner;
+        glm::vec3 other_diag_world = glm::vec3(other_to_world * glm::vec4(other_diag,1.0f));
+        glm::vec3 other_diag_this = glm::vec3(world_to_this * glm::vec4(other_diag_world, 1.0f));
         
-        point other_lesser_corner_world = other_to_world * other->lesser_corner;
-        point other_lesser_corner_this = world_to_this * other_lesser_corner_world;
+        glm::vec3 other_lesser_corner_world = glm::vec3(other_to_world * glm::vec4(other->lesser_corner, 1.0f));
+        glm::vec3 other_lesser_corner_this = glm::vec3(world_to_this * glm::vec4(other_lesser_corner_world, 1.0f));
 
-        point* ret = new point();
+        glm::vec3* ret = new glm::vec3();
 
-        if ((other_lesser_corner_this.x()+other_diag_this.x() > lesser_corner.x() && other_lesser_corner_this.x()+other_diag_this.x() < greater_corner.x()) && (other_lesser_corner_this.x() > lesser_corner.x() && other_lesser_corner_this.x() < greater_corner.x()))
+        if ((other_lesser_corner_this.x+other_diag_this.x > lesser_corner.x && other_lesser_corner_this.x+other_diag_this.x < greater_corner.x) && (other_lesser_corner_this.x > lesser_corner.x && other_lesser_corner_this.x < greater_corner.x))
         {
             //other fully contained
-            ret->x() = other_lesser_corner_this.x()+other_diag_this.x()/2.0f;
-        } else if (other_lesser_corner_this.x() > lesser_corner.x() && other_lesser_corner_this.x() < greater_corner.x())
+            ret->x = other_lesser_corner_this.x+other_diag_this.x/2.0f;
+        } else if (other_lesser_corner_this.x > lesser_corner.x && other_lesser_corner_this.x < greater_corner.x)
         {
             //lesser contained
-            ret->x() = other_lesser_corner_this.x() + (greater_corner.x()-other_lesser_corner_this.x())/2.0f;
-        } else if (other_lesser_corner_this.x()+other_diag_this.x() > lesser_corner.x() && other_lesser_corner_this.x()+other_diag_this.x() < greater_corner.x())
+            ret->x = other_lesser_corner_this.x + (greater_corner.x-other_lesser_corner_this.x)/2.0f;
+        } else if (other_lesser_corner_this.x+other_diag_this.x > lesser_corner.x && other_lesser_corner_this.x+other_diag_this.x < greater_corner.x)
         {
             //greater contained
-            ret->x() = lesser_corner.x() + (other_lesser_corner_this.x()+other_diag_this.x()-lesser_corner.x())/2.0f;
+            ret->x = lesser_corner.x + (other_lesser_corner_this.x+other_diag_this.x-lesser_corner.x)/2.0f;
         } else {
             delete ret;
             return NULL;
         }
 
-        if ((other_lesser_corner_this.y()+other_diag_this.y() > lesser_corner.y() && other_lesser_corner_this.y()+other_diag_this.y() < greater_corner.y()) && (other_lesser_corner_this.y() > lesser_corner.y() && other_lesser_corner_this.y() < greater_corner.y()))
+        if ((other_lesser_corner_this.y+other_diag_this.y > lesser_corner.y && other_lesser_corner_this.y+other_diag_this.y < greater_corner.y) && (other_lesser_corner_this.y > lesser_corner.y && other_lesser_corner_this.y < greater_corner.y))
         {
             //other fully contained
-            ret->y() = other_lesser_corner_this.y()+other_diag_this.y()/2.0f;
-        } else if (other_lesser_corner_this.y() > lesser_corner.y() && other_lesser_corner_this.y() < greater_corner.y())
+            ret->y = other_lesser_corner_this.y+other_diag_this.y/2.0f;
+        } else if (other_lesser_corner_this.y > lesser_corner.y && other_lesser_corner_this.y < greater_corner.y)
         {
             //lesser contained
-            ret->y() = other_lesser_corner_this.y() + (greater_corner.y()-other_lesser_corner_this.y())/2.0f;
-        } else if (other_lesser_corner_this.y()+other_diag_this.y() > lesser_corner.y() && other_lesser_corner_this.y()+other_diag_this.y() < greater_corner.y())
+            ret->y = other_lesser_corner_this.y + (greater_corner.y-other_lesser_corner_this.y)/2.0f;
+        } else if (other_lesser_corner_this.y+other_diag_this.y > lesser_corner.y && other_lesser_corner_this.y+other_diag_this.y < greater_corner.y)
         {
             //greater contained
-            ret->y() = lesser_corner.y() + (other_lesser_corner_this.y()+other_diag_this.y()-lesser_corner.y())/2.0f;
+            ret->y = lesser_corner.y + (other_lesser_corner_this.y+other_diag_this.y-lesser_corner.y)/2.0f;
         } else {
             delete ret;
             return NULL;
         }
 
-        if ((other_lesser_corner_this.z()+other_diag_this.z() > lesser_corner.z() && other_lesser_corner_this.z()+other_diag_this.z() < greater_corner.z()) && (other_lesser_corner_this.z() > lesser_corner.z() && other_lesser_corner_this.z() < greater_corner.z()))
+        if ((other_lesser_corner_this.z+other_diag_this.z > lesser_corner.z && other_lesser_corner_this.z+other_diag_this.z < greater_corner.z) && (other_lesser_corner_this.z > lesser_corner.z && other_lesser_corner_this.z < greater_corner.z))
         {
             //other fully contained
-            ret->z() = other_lesser_corner_this.z()+other_diag_this.z()/2.0f;
-        } else if (other_lesser_corner_this.z() > lesser_corner.z() && other_lesser_corner_this.z() < greater_corner.z())
+            ret->z = other_lesser_corner_this.z+other_diag_this.z/2.0f;
+        } else if (other_lesser_corner_this.z > lesser_corner.z && other_lesser_corner_this.z < greater_corner.z)
         {
             //lesser contained
-            ret->z() = other_lesser_corner_this.z() + (greater_corner.z()-other_lesser_corner_this.z())/2.0f;
-        } else if (other_lesser_corner_this.z()+other_diag_this.z() > lesser_corner.z() && other_lesser_corner_this.z()+other_diag_this.z() < greater_corner.z())
+            ret->z = other_lesser_corner_this.z + (greater_corner.z-other_lesser_corner_this.z)/2.0f;
+        } else if (other_lesser_corner_this.z+other_diag_this.z > lesser_corner.z && other_lesser_corner_this.z+other_diag_this.z < greater_corner.z)
         {
             //greater contained
-            ret->z() = lesser_corner.z() + (other_lesser_corner_this.z()+other_diag_this.z()-lesser_corner.z())/2.0f;
+            ret->z = lesser_corner.z + (other_lesser_corner_this.z+other_diag_this.z-lesser_corner.z)/2.0f;
         } else {
             delete ret;
             return NULL;
         }
 
 
-        *ret = this_to_world * (*ret);
+        *ret = glm::vec3(this_to_world * glm::vec4(*ret, 1.0f));
         
         return ret;
     }
 
-    point aabb_collider::get_world_position()
+    glm::vec3 aabb_collider::get_world_position()
     {
-        point origin(0,0,0);
-        return transform->to_matrix() * origin;
+        glm::vec4 origin(0,0,0,1);
+        return glm::vec3(transform->to_matrix() * origin);
     }
 
     #if DRAW_COLLISION_SOLIDS == 1
@@ -151,9 +149,9 @@ namespace topaz
     {
         if (colliding)
         {
-            display_box->color = vec(1,0,0,0.5);
+            display_box->color = glm::vec4(1,0,0,0.5);
         } else {
-            display_box->color = vec(1,1,1,0.5);
+            display_box->color = glm::vec4(1,1,1,0.5);
         }
     }
     #endif

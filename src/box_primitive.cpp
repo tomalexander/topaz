@@ -28,7 +28,7 @@
 
 namespace topaz
 {
-    box_primitive::box_primitive(sqt* _parent_transform, const vec & _color, const point & _lesser_corner, const point & _greater_corner)
+    box_primitive::box_primitive(sqt* _parent_transform, const glm::vec4 & _color, const glm::vec3 & _lesser_corner, const glm::vec3 & _greater_corner)
     {
         transform = new sqt(_parent_transform);
         color = _color;
@@ -44,15 +44,15 @@ namespace topaz
         delete mod;
     }
 
-    void box_primitive::draw(const matrix & V, const matrix & P, camera* C)
+    void box_primitive::draw(const glm::mat4 & V, const glm::mat4 & P, camera* C)
     {
-        matrix M = transform->to_matrix();
+        glm::mat4 M = transform->to_matrix();
         mod->prep_for_draw(M, V, P, C, mod->model_program, NULL);
         glUniform4fv(mod->model_program->uniform_locations["RGBA"], 1, &(color[0]));
         mod->draw();
     }
 
-    void box_primitive::generate_model(const point & _lesser_corner, const point & _greater_corner)
+    void box_primitive::generate_model(const glm::vec3 & _lesser_corner, const glm::vec3 & _greater_corner)
     {
         mod = new model();
         
@@ -64,12 +64,12 @@ namespace topaz
         mod->has_normals = false;
         
         mod->verticies[0] = generate_vertex(lesser_corner);
-        mod->verticies[1] = generate_vertex(greater_corner.x(), lesser_corner.y(), lesser_corner.z());
-        mod->verticies[2] = generate_vertex(lesser_corner.x(), greater_corner.y(), lesser_corner.z());
-        mod->verticies[3] = generate_vertex(greater_corner.x(), greater_corner.y(), lesser_corner.z());
-        mod->verticies[4] = generate_vertex(lesser_corner.x(), lesser_corner.y(), greater_corner.z());
-        mod->verticies[5] = generate_vertex(greater_corner.x(), lesser_corner.y(), greater_corner.z());
-        mod->verticies[6] = generate_vertex(lesser_corner.x(), greater_corner.y(), greater_corner.z());
+        mod->verticies[1] = generate_vertex(greater_corner.x, lesser_corner.y, lesser_corner.z);
+        mod->verticies[2] = generate_vertex(lesser_corner.x, greater_corner.y, lesser_corner.z);
+        mod->verticies[3] = generate_vertex(greater_corner.x, greater_corner.y, lesser_corner.z);
+        mod->verticies[4] = generate_vertex(lesser_corner.x, lesser_corner.y, greater_corner.z);
+        mod->verticies[5] = generate_vertex(greater_corner.x, lesser_corner.y, greater_corner.z);
+        mod->verticies[6] = generate_vertex(lesser_corner.x, greater_corner.y, greater_corner.z);
         mod->verticies[7] = generate_vertex(greater_corner);
 
         mod->indicies[0] = 0;

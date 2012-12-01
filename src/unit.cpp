@@ -71,7 +71,7 @@ namespace topaz
         delete transform;
     }
 
-    void unit::draw(const matrix & V, const matrix & P, camera* C)
+    void unit::draw(const glm::mat4 & V, const glm::mat4 & P, camera* C)
     {
         topaz::gl_program* program = light_program;
         if (light_program == NULL)
@@ -110,17 +110,17 @@ namespace topaz
 
     float unit::get_distance_to(unit* other)
     {
-        point difference = transform->get_t() - other->transform->get_t();
-        point square = difference * difference;
-        float sum = square.x() + square.y() + square.z();
+        glm::vec3 difference = transform->get_t() - other->transform->get_t();
+        glm::vec3 square = difference * difference;
+        float sum = square.x + square.y + square.z;
         return sqrt(sum);
     }
 
-    float unit::get_distance_to(const point & other)
+    float unit::get_distance_to(const glm::vec3 & other)
     {
-        point difference = other*-1 + transform->get_t();
-        point square = difference * difference;
-        float sum = square.x() + square.y() + square.z();
+        glm::vec3 difference = -other + transform->get_t();
+        glm::vec3 square = difference * difference;
+        float sum = square.x + square.y + square.z;
         return sqrt(sum);
     }
 
@@ -159,7 +159,7 @@ namespace topaz
             rigid_body = new rigidbody(transform, this, SPHERE_TENSOR, type);
     }
     
-    void unit::add_location(const vec & diff)
+    void unit::add_location(const glm::vec3 & diff)
     {
         transform->translateXYZ(diff);
         //transform->t += diff;

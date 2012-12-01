@@ -83,7 +83,7 @@ static void generate_tag_tree(const string & content, panda_node* parent);
 
         /* Stuff parsed out of content to make animation easier */
         float fps;
-        matrix mat;
+        glm::mat4 mat;
         float membership;
         //vertex refs from above is re-used
         vector<float> V_values;

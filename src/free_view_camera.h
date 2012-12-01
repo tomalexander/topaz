@@ -24,6 +24,8 @@
 #define FREE_VIEW_CAMERA_H_
 
 #include "camera.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace topaz
 {
@@ -33,8 +35,8 @@ namespace topaz
         free_view_camera();
         ~free_view_camera();
 
-        virtual matrix to_matrix();
-        virtual point get_position();
+        virtual glm::mat4 to_matrix();
+        virtual glm::vec3 get_position();
 
         void move_forward(float magnitude);
         void strafe(float magnitude);
@@ -42,8 +44,8 @@ namespace topaz
         void pitch(float magnitude);
 
       private:
-        quaternion rotation;
-        point camera_position;
+        glm::quat rotation;
+        glm::vec3 camera_position;
     };
 }
 #endif

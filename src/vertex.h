@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 #include <SFML/OpenGL.hpp>
+#include <glm/glm.hpp>
 
 using std::cout;
 using std::string;
@@ -94,7 +95,7 @@ namespace topaz
     }
 
     void print_vertex(vertex & vert, ostream & out = cout);
-    vertex generate_vertex(const point & location);
+    vertex generate_vertex(const glm::vec3 & location);
     vertex generate_vertex(float x, float y, float z);
 }
 

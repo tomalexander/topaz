@@ -20,33 +20,16 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-#include "topaz.h"
-#include "point.h"
-#include "matrix.h"
-#include <stdio.h>
-#include <fstream>
+#pragma once
+
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <iostream>
-#include <tuple>
+#include <iomanip>
 
-using namespace std;
-
-int main(int argc, char** argv)
+namespace topaz
 {
-    {
-        topaz::quaternion p(topaz::vec(1,2,3), TO_RADIANS(90));
-        topaz::quaternion q(topaz::vec(0,0,1), TO_RADIANS(180));
-        p.print();
-        q.print();
-        topaz::point a(1,0,0);
-        a.print();
-        (p*a).print();
-        topaz::quaternion pq = p*q;
-        pq.print();
-        topaz::vec axis;
-        float angle;
-        tie(axis, angle) = pq.get_axis_angle();
-        cout << "angle: " << TO_DEGREES(angle) << "\n";
-        axis.print();
-    }
-    return 0;
+void print(const glm::vec3 & data, std::ostream & out = std::cout, int indentation = 0);
+void print(const glm::mat4 & data, std::ostream & out = std::cout, int indentation = 0);
+void print(const glm::quat & data, std::ostream & out = std::cout, int indentation = 0);
 }

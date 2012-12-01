@@ -21,16 +21,17 @@
  *    distribution.
  */
 #include "nolight.h"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace topaz
 {
-    void nolight::populate_uniforms(const matrix & M, const matrix & V, const matrix & P, camera* C, gl_program* program)
+    void nolight::populate_uniforms(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, gl_program* program)
     {
-        glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, &(M.data.matrix_floats[0]));
+        glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, glm::value_ptr(M));
         CHECK_GL_ERROR("Filling model matrix");
-        glUniformMatrix4fv(program->uniform_locations["ViewMatrix"], 1, GL_FALSE, &(V.data.matrix_floats[0]));
+        glUniformMatrix4fv(program->uniform_locations["ViewMatrix"], 1, GL_FALSE, glm::value_ptr(V));
         CHECK_GL_ERROR("Filling view matrix");
-        glUniformMatrix4fv(program->uniform_locations["ProjectionMatrix"], 1, GL_FALSE, &(P.data.matrix_floats[0]));
+        glUniformMatrix4fv(program->uniform_locations["ProjectionMatrix"], 1, GL_FALSE, glm::value_ptr(P));
         CHECK_GL_ERROR("filling projection matrix");
         glUniform1i(program->uniform_locations["s_tex"],0);
         CHECK_GL_ERROR("filling s_tex");

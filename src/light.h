@@ -33,7 +33,7 @@ namespace topaz
     class light
     {
       public:
-        virtual void populate_uniforms(const matrix & M, const matrix & V, const matrix & P, camera* C, gl_program* program) = 0;
+        virtual void populate_uniforms(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, gl_program* program) = 0;
       private:
     };
 }

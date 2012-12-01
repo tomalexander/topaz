@@ -24,9 +24,6 @@
 #define LOOKAT_CAMERA_H_
 
 #include "camera.h"
-#include "point.h"
-#include "vector.h"
-#include "matrix.h"
 
 namespace topaz
 {
@@ -36,18 +33,18 @@ namespace topaz
         lookat_camera();
         ~lookat_camera();
 
-        virtual matrix to_matrix();
-        virtual point get_position();
+        virtual glm::mat4 to_matrix();
+        virtual glm::vec3 get_position();
 
-        void set_location(point new_location) {location = new_location;}
-        void add_location(const point & other) {location = location + other;}
-        void slide(const point & other) {location = location + other; target = target + other;}
-        const point& get_target();
+        void set_location(glm::vec3 new_location) {location = new_location;}
+        void add_location(const glm::vec3 & other) {location = location + other;}
+        void slide(const glm::vec3 & other) {location = location + other; target = target + other;}
+        const glm::vec3& get_target();
 
       private:
-        point location;
-        point target;
-        vec up;
+        glm::vec3 location;
+        glm::vec3 target;
+        glm::vec3 up;
     };
 }
 

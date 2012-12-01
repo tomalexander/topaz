@@ -21,6 +21,8 @@
  *    distribution.
  */
 #include "overlay.h"
+#include <cstring>
+#include <glm/gtc/type_ptr.hpp>
 namespace topaz
 {
     overlay::overlay(float width, float height, GLuint texture) :
@@ -145,7 +147,7 @@ namespace topaz
     {
         glUseProgram(program->program_id);
         glUniform1i(program->uniform_locations["s_tex"], 0);
-        glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, &position.to_matrix()[0]);
+        glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, glm::value_ptr(position.to_matrix()));
         glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)0);

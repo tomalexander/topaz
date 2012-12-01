@@ -25,7 +25,6 @@
 
 #include "def.h"
 #include "gameobject.h"
-#include "matrix.h"
 #include "sqt.h"
 
 namespace topaz
@@ -35,21 +34,21 @@ namespace topaz
     class sphere_primitive : gameobject
     {
       public:
-        sphere_primitive(sqt* _parent_transform, const vec & _color);
-        sphere_primitive(sqt* _parent_transform, const vec & _color, int milliseconds);
-        sphere_primitive(const point & position, float scale, const vec & _color);
-        sphere_primitive(const point & position, float scale, const vec & _color, int milliseconds);
+        sphere_primitive(sqt* _parent_transform, const glm::vec4 & _color);
+        sphere_primitive(sqt* _parent_transform, const glm::vec4 & _color, int milliseconds);
+        sphere_primitive(const glm::vec3 & position, float scale, const glm::vec4 & _color);
+        sphere_primitive(const glm::vec3 & position, float scale, const glm::vec4 & _color, int milliseconds);
         sphere_primitive(sqt* _parent_transform);
-        sphere_primitive(sqt* _parent_transform, float scale, const vec & _color = vec(1.0f,1.0f,1.0f,1.0f));
+        sphere_primitive(sqt* _parent_transform, float scale, const glm::vec4 & _color = glm::vec4(1.0f,1.0f,1.0f,1.0f));
         sphere_primitive(sqt* _parent_transform, int milliseconds);
-        sphere_primitive(const point & position, float scale);
-        sphere_primitive(const point & position, float scale, int milliseconds);
+        sphere_primitive(const glm::vec3 & position, float scale);
+        sphere_primitive(const glm::vec3 & position, float scale, int milliseconds);
         ~sphere_primitive();
 
-        void draw(const matrix & V, const matrix & P, camera* C);
+        void draw(const glm::mat4 & V, const glm::mat4 & P, camera* C);
         void update(int milliseconds);
 
-        vec color;
+        glm::vec4 color;
         
       private:
         sqt* transform;

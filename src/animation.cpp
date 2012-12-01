@@ -21,10 +21,12 @@
  *    distribution.
  */
 #include "animation.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/compatibility.hpp>
 
 namespace topaz
 {
-    extern matrix fix_z_up_matrix;
+    extern glm::mat4 fix_z_up_matrix;
 
     panda_node* load_animation(const string & file_path)
     {
@@ -70,7 +72,7 @@ namespace topaz
         float seconds = ((float) animation_progress)/1000.0f;
         //std::cout << seconds << std::endl;
 
-        matrix tmp_transform;
+        glm::mat4 tmp_transform;
 
         for (const char & order_char : an_joint->order)
         {
@@ -91,25 +93,25 @@ namespace topaz
                       case 'x':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.translateX(pos.second[post_frame_ind-1]);
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(pos.second[post_frame_ind-1], 0, 0));
                         } else {
-                            tmp_transform.translateX(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 0, 0));
                         }
                         break;
                       case 'y':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.translateY(pos.second[post_frame_ind-1]);
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, pos.second[post_frame_ind-1], 0));
                         } else {
-                            tmp_transform.translateY(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 0));
                         }
                         break;
                       case 'z':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.translateZ(pos.second[post_frame_ind-1]);
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, pos.second[post_frame_ind-1]));
                         } else {
-                            tmp_transform.translateZ(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
                         }
                         break;
                       default:
@@ -122,25 +124,25 @@ namespace topaz
                       case 'h':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.rotateH(TO_RADIANS(pos.second[post_frame_ind-1]));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(1, 0, 0));
                         } else {
-                            tmp_transform.rotateH(TO_RADIANS(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(1, 0, 0));
                         }
                         break;
                       case 'p':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.rotateP(TO_RADIANS(pos.second[post_frame_ind-1]));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(0, 1, 0));
                         } else {
-                            tmp_transform.rotateP(TO_RADIANS(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(0, 1, 0));
                         }
                         break;
                       case 'r':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform.rotateR(TO_RADIANS(pos.second[post_frame_ind-1]));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(0, 0, 1));
                         } else {
-                            tmp_transform.rotateR(TO_RADIANS(lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(0, 0, 1));
                         }
                         break;
                       default:

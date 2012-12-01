@@ -48,7 +48,7 @@ namespace topaz {
         {
             calculate_axis_aligned_bounding_box(parent_unit);
         } else if (type == "SPHERE") {
-            colliders.push_back(new sphere_collider(transform, vec(center_of_mass), farthest_dimension * transform->get_world_s()));
+            colliders.push_back(new sphere_collider(transform, center_of_mass, farthest_dimension * transform->get_world_s()));
         }
         last_position = transform->get_t();
         calculate_tensor(tensor);
@@ -77,18 +77,18 @@ namespace topaz {
             global_accelerator->get_use_gravity(rigidbody_id) = 1.0f;
         else
             global_accelerator->get_use_gravity(rigidbody_id) = 0.0f;
-        global_accelerator->get_center_of_mass(rigidbody_id)[0] = center_of_mass.x();
-        global_accelerator->get_center_of_mass(rigidbody_id)[1] = center_of_mass.y();
-        global_accelerator->get_center_of_mass(rigidbody_id)[2] = center_of_mass.z();
-        global_accelerator->get_velocity(rigidbody_id)[0] = velocity.x();
-        global_accelerator->get_velocity(rigidbody_id)[1] = velocity.y();
-        global_accelerator->get_velocity(rigidbody_id)[2] = velocity.z();
+        global_accelerator->get_center_of_mass(rigidbody_id)[0] = center_of_mass.x;
+        global_accelerator->get_center_of_mass(rigidbody_id)[1] = center_of_mass.y;
+        global_accelerator->get_center_of_mass(rigidbody_id)[2] = center_of_mass.z;
+        global_accelerator->get_velocity(rigidbody_id)[0] = velocity.x;
+        global_accelerator->get_velocity(rigidbody_id)[1] = velocity.y;
+        global_accelerator->get_velocity(rigidbody_id)[2] = velocity.z;
         global_accelerator->get_mass(rigidbody_id) = mass;
         global_accelerator->get_elasticity(rigidbody_id) = elasticity;
         memcpy(global_accelerator->get_I(rigidbody_id), &(I[0]), 16*sizeof(float));
-        global_accelerator->get_angular_momentum(rigidbody_id)[0] = angular_momentum.x();
-        global_accelerator->get_angular_momentum(rigidbody_id)[1] = angular_momentum.y();
-        global_accelerator->get_angular_momentum(rigidbody_id)[2] = angular_momentum.z();
+        global_accelerator->get_angular_momentum(rigidbody_id)[0] = angular_momentum.x;
+        global_accelerator->get_angular_momentum(rigidbody_id)[1] = angular_momentum.y;
+        global_accelerator->get_angular_momentum(rigidbody_id)[2] = angular_momentum.z;
         global_accelerator->get_rigidbody_parent(rigidbody_id) = transform->sqt_id;
         for (collider* cur : colliders)
         {
@@ -106,18 +106,18 @@ namespace topaz {
             use_gravity = true;
         else
             use_gravity = false;
-        center_of_mass.x() = global_accelerator->get_center_of_mass(rigidbody_id)[0];
-        center_of_mass.y() = global_accelerator->get_center_of_mass(rigidbody_id)[1];
-        center_of_mass.z() = global_accelerator->get_center_of_mass(rigidbody_id)[2];
-        velocity.x() = global_accelerator->get_velocity(rigidbody_id)[0];
-        velocity.y() = global_accelerator->get_velocity(rigidbody_id)[1];
-        velocity.z() = global_accelerator->get_velocity(rigidbody_id)[2];
+        center_of_mass.x = global_accelerator->get_center_of_mass(rigidbody_id)[0];
+        center_of_mass.y = global_accelerator->get_center_of_mass(rigidbody_id)[1];
+        center_of_mass.z = global_accelerator->get_center_of_mass(rigidbody_id)[2];
+        velocity.x = global_accelerator->get_velocity(rigidbody_id)[0];
+        velocity.y = global_accelerator->get_velocity(rigidbody_id)[1];
+        velocity.z = global_accelerator->get_velocity(rigidbody_id)[2];
         mass = global_accelerator->get_mass(rigidbody_id);
         elasticity = global_accelerator->get_elasticity(rigidbody_id);
         memcpy(&(I[0]), global_accelerator->get_I(rigidbody_id), 16*sizeof(float));
-        angular_momentum.x() = global_accelerator->get_angular_momentum(rigidbody_id)[0];
-        angular_momentum.y() = global_accelerator->get_angular_momentum(rigidbody_id)[1];
-        angular_momentum.z() = global_accelerator->get_angular_momentum(rigidbody_id)[2];
+        angular_momentum.x = global_accelerator->get_angular_momentum(rigidbody_id)[0];
+        angular_momentum.y = global_accelerator->get_angular_momentum(rigidbody_id)[1];
+        angular_momentum.z = global_accelerator->get_angular_momentum(rigidbody_id)[2];
         #endif
     }
 
@@ -126,9 +126,9 @@ namespace topaz {
         if (tensor == SPHERE_TENSOR)
         {
             float value = 2.0f/5.0f * mass * farthest_dimension  * farthest_dimension * transform->get_world_s() * transform->get_world_s();
-            I(0,0) = value;
-            I(1,1) = value;
-            I(2,2) = value;
+            I[0][0] = value;
+            I[1][1] = value;
+            I[2][2] = value;
         }
     }
 
@@ -155,7 +155,7 @@ namespace topaz {
         {
             for (collider* their_collider : other->colliders)
             {
-                point* contact = my_collider->is_colliding_with(their_collider);
+                glm::vec3* contact = my_collider->is_colliding_with(their_collider);
                 if (contact != NULL)
                 {
                     #if DRAW_COLLISION_SOLIDS == 1
@@ -192,7 +192,7 @@ namespace topaz {
                 continue;
 
             //Handle math
-            vec collision_force = handle_linear_collision(cur);
+            glm::vec3 collision_force = handle_linear_collision(cur);
             handle_angular_collision(cur, collision_force);
             handled_collisions.push_back(cur.into);
         }
@@ -201,22 +201,22 @@ namespace topaz {
             delete cur.contact;
     }
 
-    vec rigidbody::handle_linear_collision(const collision & other)
+    glm::vec3 rigidbody::handle_linear_collision(const collision & other)
     {
         // transform->set_t(last_position);
         // other.into->transform->set_t(other.into->last_position);
         /*
          * Calculate vectors
          */
-        point this_com = get_world_center_of_mass();
-        point other_com = other.into->get_world_center_of_mass();
-        vec norm = (this_com - *(other.contact)).normalized();
+        glm::vec3 this_com = get_world_center_of_mass();
+        glm::vec3 other_com = other.into->get_world_center_of_mass();
+        glm::vec3 norm = glm::normalize((this_com - *(other.contact)));
 
         /*
          * Calculate p hat
          */
         float bottom = 1.0f/mass + 1.0f/other.into->mass;
-        float top = (elasticity + 1.0f) * (other.into->velocity.dot(norm) - velocity.dot(norm));
+        float top = (elasticity + 1.0f) * (glm::dot(other.into->velocity, norm) - glm::dot(velocity, norm));
         float italic_p_hat = top/bottom;
 
         /*
@@ -227,76 +227,76 @@ namespace topaz {
         return norm*italic_p_hat;
     }
 
-    void rigidbody::handle_angular_collision(const collision & other, const vec & collision_force)
+    void rigidbody::handle_angular_collision(const collision & other, const glm::vec3 & collision_force)
     {
-        point this_com = get_world_center_of_mass();
-        point other_com = other.into->get_world_center_of_mass();
-        vec this_r = *(other.contact) - this_com;
-        vec other_r = *(other.contact) - other_com;
+        glm::vec3 this_com = get_world_center_of_mass();
+        glm::vec3 other_com = other.into->get_world_center_of_mass();
+        glm::vec3 this_r = *(other.contact) - this_com;
+        glm::vec3 other_r = *(other.contact) - other_com;
 
-        torques.push_back(make_pair(0, this_r.cross(collision_force)));
-        other.into->torques.push_back(make_pair(0, other_r.cross(collision_force*-1)));
+        torques.push_back(make_pair(0, glm::cross(this_r, collision_force)));
+        other.into->torques.push_back(make_pair(0, glm::cross(other_r,-collision_force)));
     }
 
-    void rigidbody::immovable_collision(const vec & norm)
+    void rigidbody::immovable_collision(const glm::vec3 & norm)
     {
-        vec new_velocity = velocity - norm*(velocity.dot(norm) * (elasticity + 1.0f));
+        glm::vec3 new_velocity = velocity - norm*(glm::dot(velocity, norm) * (elasticity + 1.0f));
         velocity = new_velocity;
     }
 
     void rigidbody::populate_acceleration(float* accelerations, int milliseconds)
     {
-        vec acceleration;
-        for (pair<int, vec> & force : forces)
+        glm::vec3 acceleration;
+        for (pair<int, glm::vec3> & force : forces)
         {
             add_force_to_acceleration(acceleration, force.second);
             force.first -= milliseconds;
         }
-        for (const vec & force : constant_forces)
+        for (const glm::vec3 & force : constant_forces)
         {
             add_force_to_acceleration(acceleration, force);
         }
         if (use_gravity)
-            add_force_to_acceleration(acceleration, vec(0, -9.8, 0));
-        forces.remove_if([](const pair<int, vec> & force){return force.first <= 0;});
+            add_force_to_acceleration(acceleration, glm::vec3(0, -9.8, 0));
+        forces.remove_if([](const pair<int, glm::vec3> & force){return force.first <= 0;});
 
-        accelerations[rigidbody_id*3+0] = acceleration.x();
-        accelerations[rigidbody_id*3+1] = acceleration.y();
-        accelerations[rigidbody_id*3+2] = acceleration.z();
+        accelerations[rigidbody_id*3+0] = acceleration.x;
+        accelerations[rigidbody_id*3+1] = acceleration.y;
+        accelerations[rigidbody_id*3+2] = acceleration.z;
     }
 
     void rigidbody::update(int milliseconds)
     {
         last_position = transform->get_t();
-        double seconds = ((double)milliseconds) / ((double)1000.0);
+        float seconds = ((double)milliseconds) / ((double)1000.0);
         
-        vec acceleration;
-        for (pair<int, vec> & force : forces)
+        glm::vec3 acceleration;
+        for (pair<int, glm::vec3> & force : forces)
         {
             add_force_to_acceleration(acceleration, force.second);
             force.first -= milliseconds;
         }
-        for (const vec & force : constant_forces)
+        for (const glm::vec3 & force : constant_forces)
         {
             add_force_to_acceleration(acceleration, force);
         }
         if (use_gravity)
-            add_force_to_acceleration(acceleration, vec(0, -9.8, 0));
-        forces.remove_if([](const pair<int, vec> & force){return force.first <= 0;});
+            add_force_to_acceleration(acceleration, glm::vec3(0, -9.8, 0));
+        forces.remove_if([](const pair<int, glm::vec3> & force){return force.first <= 0;});
 
-        for (pair<int, vec> & torque : torques)
+        for (pair<int, glm::vec3> & torque : torques)
         {
             add_torque_to_angular_momentum(torque.second * seconds);
             torque.first -= milliseconds;
         }
-        for (const vec & torque : constant_torques)
+        for (const glm::vec3 & torque : constant_torques)
         {
             add_torque_to_angular_momentum(torque * seconds);
         }
-        torques.remove_if([](const pair<int, vec> & torque){return torque.first <= 0;});
-        vec angular_velocity = I * angular_momentum;
-        quaternion angular_velocity_q(angular_velocity.data.full_vector);
-        angular_velocity_q.w() = 0;
+        torques.remove_if([](const pair<int, glm::vec3> & torque){return torque.first <= 0;});
+        glm::vec3 angular_velocity = glm::vec3(I * glm::vec4(angular_momentum, 1.0f));
+        glm::quat angular_velocity_q(angular_velocity);
+        angular_velocity_q.w = 0;
         transform->set_q(transform->get_q() + (angular_velocity_q * transform->get_q()) * 0.5 * seconds);
 
         #if PHYSICS_METHOD == 0
@@ -323,75 +323,75 @@ namespace topaz {
         if (transform->get_y() < 0)
         {
             transform->get_y() = 0;
-            immovable_collision(vec(0,1,0));
+            immovable_collision(glm::vec3(0,1,0));
         }
         #endif
         #if CLIP_BOX == 1
         if (transform->get_x() < -CLIP_BOX_SIZE)
         {
             transform->get_x() = -CLIP_BOX_SIZE;
-            immovable_collision(vec(1,0,0));
+            immovable_collision(glm::vec3(1,0,0));
         }
         if (transform->get_x() > CLIP_BOX_SIZE)
         {
             transform->get_x() = CLIP_BOX_SIZE;
-            immovable_collision(vec(-1,0,0));
+            immovable_collision(glm::vec3(-1,0,0));
         }
         if (transform->get_z() < -CLIP_BOX_SIZE)
         {
             transform->get_z() = -CLIP_BOX_SIZE;
-            immovable_collision(vec(0,0,1));
+            immovable_collision(glm::vec3(0,0,1));
         }
         if (transform->get_z() > CLIP_BOX_SIZE)
         {
             transform->get_z() = CLIP_BOX_SIZE;
-            immovable_collision(vec(0,0,-1));
+            immovable_collision(glm::vec3(0,0,-1));
         }
         #endif
     }
 
-    void rigidbody::explicit_euler_numerical_integration(const vec & acceleration, const double & seconds)
+    void rigidbody::explicit_euler_numerical_integration(const glm::vec3 & acceleration, const double & seconds)
     {
-        velocity += acceleration * seconds;
-        transform->translateXYZ(velocity * seconds);
+        velocity += acceleration * (float)seconds;
+        transform->translateXYZ(velocity * (float)seconds);
     }
 
-    void rigidbody::maths(const vec & acceleration, const double & seconds)
+    void rigidbody::maths(const glm::vec3 & acceleration, const double & seconds)
     {
         //Update position based on 1/2at^2 + vt + x
-        transform->translateXYZ(acceleration * 0.5 * seconds * seconds + velocity*seconds);
+        transform->translateXYZ(acceleration * 0.5f * (float)seconds * (float)seconds + velocity*(float)seconds);
         //Update velocity so that v_0 is correct for the next calculation
-        velocity += acceleration * seconds;
+        velocity += acceleration * (float)seconds;
     }
 
-    void rigidbody::add_force_to_acceleration(vec & acceleration, const vec & force)
+    void rigidbody::add_force_to_acceleration(glm::vec3 & acceleration, const glm::vec3 & force)
     {
         acceleration += force / mass;
     }
 
-    void rigidbody::add_torque_to_angular_momentum(const vec & torque)
+    void rigidbody::add_torque_to_angular_momentum(const glm::vec3 & torque)
     {
         angular_momentum += torque;
     }
 
     void rigidbody::calculate_center_of_mass(unit* parent)
     {
-        point com;
+        glm::vec3 com;
         model* mod = parent->get_model_ptr();
         //float scale = parent->get_scale();
         for (size_t x = 0; x < mod->num_verticies; ++x)
         {
-            com.x() += mod->verticies[x].x;
-            com.y() += mod->verticies[x].y;
-            com.z() += mod->verticies[x].z;
+            com.x += mod->verticies[x].x;
+            com.y += mod->verticies[x].y;
+            com.z += mod->verticies[x].z;
         }
-        center_of_mass = com / mod->num_verticies;
-        center_of_mass.sanitize();
+        center_of_mass = com / (float)mod->num_verticies;
     }
 
-    point rigidbody::get_world_center_of_mass()
+    glm::vec3 rigidbody::get_world_center_of_mass()
     {
-        return transform->to_matrix() * center_of_mass;
+        glm::vec4 transformed = transform->to_matrix() * glm::vec4(center_of_mass, 1.0f);
+        return glm::vec3(transformed.x, transformed.y, transformed.z);
     }
 
     float rigidbody::calculate_farthest_dimension(unit* parent)
@@ -400,12 +400,12 @@ namespace topaz {
         model* mod = parent->get_model_ptr();
         for (size_t x = 0; x < mod->num_verticies; ++x)
         {
-            if (fabs(mod->verticies[x].x - center_of_mass.x()) > farthest)
-                farthest = fabs(mod->verticies[x].x - center_of_mass.x());
-            if (fabs(mod->verticies[x].y - center_of_mass.y()) > farthest)
-                farthest = fabs(mod->verticies[x].y - center_of_mass.y());
-            if (fabs(mod->verticies[x].z - center_of_mass.z()) > farthest)
-                farthest = fabs(mod->verticies[x].z - center_of_mass.z());
+            if (fabs(mod->verticies[x].x - center_of_mass.x) > farthest)
+                farthest = fabs(mod->verticies[x].x - center_of_mass.x);
+            if (fabs(mod->verticies[x].y - center_of_mass.y) > farthest)
+                farthest = fabs(mod->verticies[x].y - center_of_mass.y);
+            if (fabs(mod->verticies[x].z - center_of_mass.z) > farthest)
+                farthest = fabs(mod->verticies[x].z - center_of_mass.z);
         }
         farthest_dimension = farthest;
         return farthest;
@@ -436,6 +436,6 @@ namespace topaz {
                 max_z = mod->verticies[x].z;
         }
 
-        colliders.push_back(new aabb_collider(transform, point(min_x, min_y, min_z), point(max_x, max_y, max_z)));
+        colliders.push_back(new aabb_collider(transform, glm::vec3(min_x, min_y, min_z), glm::vec3(max_x, max_y, max_z)));
     }
 }

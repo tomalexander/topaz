@@ -22,6 +22,7 @@
  */
 
 #include "lookat_camera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace topaz
 {
@@ -37,17 +38,17 @@ namespace topaz
 
     }
 
-    matrix lookat_camera::to_matrix()
+    glm::mat4 lookat_camera::to_matrix()
     {
-        return look_at(location, target, up);
+        return glm::lookAt(location, target, up);
     }
 
-    point lookat_camera::get_position()
+    glm::vec3 lookat_camera::get_position()
     {
         return location;
     }
 
-    const point& lookat_camera::get_target()
+    const glm::vec3& lookat_camera::get_target()
     {
         return target;
     }

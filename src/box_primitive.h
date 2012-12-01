@@ -25,7 +25,6 @@
 
 #include "def.h"
 #include "gameobject.h"
-#include "matrix.h"
 #include "sqt.h"
 
 namespace topaz
@@ -36,14 +35,14 @@ namespace topaz
     class box_primitive : public gameobject
     {
       public:
-        box_primitive(sqt* _parent_transform, const vec & _color, const point & _lesser_corner, const point & _greater_corner);
+        box_primitive(sqt* _parent_transform, const glm::vec4 & _color, const glm::vec3 & _lesser_corner, const glm::vec3 & _greater_corner);
         ~box_primitive();
-        void draw(const matrix & V, const matrix & P, camera* C);
-        void generate_model(const point & _lesser_corner, const point & _greater_corner);
+        void draw(const glm::mat4 & V, const glm::mat4 & P, camera* C);
+        void generate_model(const glm::vec3 & _lesser_corner, const glm::vec3 & _greater_corner);
 
-        vec color;
-        point lesser_corner;
-        point greater_corner;
+        glm::vec4 color;
+        glm::vec3 lesser_corner;
+        glm::vec3 greater_corner;
 
       private:
         sqt* transform;

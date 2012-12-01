@@ -43,7 +43,7 @@ namespace topaz
         delete model_ptr;
     }
 
-    void terrain::draw(const matrix & V, const matrix & P, camera* C)
+    void terrain::draw(const glm::mat4 & V, const glm::mat4 & P, camera* C)
     {
         gl_program* program = light_program;
         if (light_program == NULL)

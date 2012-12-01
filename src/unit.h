@@ -41,17 +41,17 @@ namespace topaz
         ~unit();
 
         void update_matrix();
-        void draw(const matrix & V, const matrix & P, camera* C);
+        void draw(const glm::mat4 & V, const glm::mat4 & P, camera* C);
 
         void set_scale(float new_scale = 1.0f);
 
         void update(int milliseconds);
         float get_distance_to(unit* other);
-        float get_distance_to(const point & other);
+        float get_distance_to(const glm::vec3 & other);
         void set_model(model* _model_ptr);
         void set_rigidbody(const string & type);
         void sync_from_rigidbody(int milliseconds);
-        void add_location(const vec & diff);
+        void add_location(const glm::vec3 & diff);
 
         light* light_source;
         gl_program* light_program;
@@ -62,7 +62,7 @@ namespace topaz
 
         rigidbody* rigid_body;
 
-        const point get_location() {return point(transform->get_t());}
+        const glm::vec3 get_location() {return transform->get_t();}
         model* get_model_ptr() {return model_ptr;}
         bool set_animation(const string & animation_name);
 

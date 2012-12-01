@@ -22,8 +22,6 @@
  */
 #include "topaz.h"
 #include "model.h"
-#include "point.h"
-#include "matrix.h"
 #include "panda_node.h"
 #include "egg_parser.h"
 #include <stdio.h>
@@ -38,6 +36,7 @@
 #include <fstream>
 #include "overlay.h"
 #include "terrain.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 using std::unordered_map;
 
@@ -48,7 +47,7 @@ void handle_keyboard(int milliseconds);
 void handle_mouse_move();
 void print_fps(int milliseconds);
 
-topaz::matrix P;
+glm::mat4 P;
 topaz::lookat_camera camera;
 topaz::uberlight main_light;
 topaz::model* panda_model;
@@ -60,7 +59,7 @@ int time_elapsed;
 int main(int argc, char** argv)
 {
     topaz::init(argv[0]);
-    P = topaz::perspective(60.0f, 800.0f/600.0f, 0.1f, 100.f);
+    P = glm::perspective(60.0f, 800.0f/600.0f, 0.1f, 100.f);
     
     topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
     panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
@@ -131,27 +130,27 @@ void handle_keyboard(int time_elapsed)
     float seconds = ((float)time_elapsed) / 1000.0f;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        camera.slide(topaz::point(10.0f*seconds, 0.0f, 0.0f));
+        camera.slide(glm::vec3(10.0f*seconds, 0.0f, 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        camera.slide(topaz::point(-10.0f*seconds, 0.0f, 0.0f));
+        camera.slide(glm::vec3(-10.0f*seconds, 0.0f, 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        camera.slide(topaz::point(0.0f, 0.0f, 10.0f*seconds));
+        camera.slide(glm::vec3(0.0f, 0.0f, 10.0f*seconds));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        camera.slide(topaz::point(0.0f, 0.0f, -10.0f*seconds));
+        camera.slide(glm::vec3(0.0f, 0.0f, -10.0f*seconds));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
     {
-        camera.slide(topaz::point(0.0f, 10.0f*seconds, 0.0f));
+        camera.slide(glm::vec3(0.0f, 10.0f*seconds, 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
     {
-        camera.slide(topaz::point(0.0f, -10.0f*seconds, 0.0f));
+        camera.slide(glm::vec3(0.0f, -10.0f*seconds, 0.0f));
     }
 }
 
@@ -160,7 +159,7 @@ bool handle_resize(const sf::Event & event)
     if (event.type != sf::Event::Resized)
         return false;
     topaz::resize_window(event.size.width, event.size.height);
-    topaz::perspective(60.0f, ((float)event.size.width)/((float)event.size.height), 0.1f, 100.f);
+    glm::perspective(60.0f, ((float)event.size.width)/((float)event.size.height), 0.1f, 100.f);
     return true;
 }
 

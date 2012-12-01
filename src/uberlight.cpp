@@ -21,6 +21,8 @@
  *    distribution.
  */
 #include "uberlight.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace topaz
 {
@@ -56,30 +58,30 @@ namespace topaz
 
     }
 
-    void uberlight::populate_uniforms(const matrix & M, const matrix & V, const matrix & P, camera* C, gl_program* program)
+    void uberlight::populate_uniforms(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, gl_program* program)
     {
-        glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, &(M.data.matrix_floats[0]));
+        glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, glm::value_ptr(M));
         CHECK_GL_ERROR("Filling model matrix");
-        glUniformMatrix4fv(program->uniform_locations["ViewMatrix"], 1, GL_FALSE, &(V.data.matrix_floats[0]));
+        glUniformMatrix4fv(program->uniform_locations["ViewMatrix"], 1, GL_FALSE, glm::value_ptr(V));
         CHECK_GL_ERROR("Filling view matrix");
-        glUniformMatrix4fv(program->uniform_locations["ProjectionMatrix"], 1, GL_FALSE, &(P.data.matrix_floats[0]));
+        glUniformMatrix4fv(program->uniform_locations["ProjectionMatrix"], 1, GL_FALSE, glm::value_ptr(P));
         CHECK_GL_ERROR("filling projection matrix");
         glUniform1i(program->uniform_locations["s_tex"],0);
         CHECK_GL_ERROR("filling s_tex");
 
-        glUniform3fv(program->uniform_locations["WCLightPos"], 1, &(position.data.vector_floats[0]));
-        point camera_position = C->get_position();
-        glUniform4fv(program->uniform_locations["ViewPosition"], 1, &(camera_position.data.vector_floats[0]));
+        glUniform3fv(program->uniform_locations["WCLightPos"], 1, glm::value_ptr(position));
+        glm::vec3 camera_position = C->get_position();
+        glUniform4fv(program->uniform_locations["ViewPosition"], 1, glm::value_ptr(glm::vec4(camera_position, 1.0f)));
         CHECK_GL_ERROR("Positions");
 
-        topaz::matrix mc_to_wc = V*M;
-        glUniformMatrix4fv(program->uniform_locations["MCtoWC"], 1, GL_FALSE, &(mc_to_wc.data.matrix_floats[0]));
-        topaz::matrix mc_to_wc_it = mc_to_wc.inverse().transpose();
-        glUniformMatrix4fv(program->uniform_locations["MCtoWCit"], 1, GL_FALSE, &(mc_to_wc_it.data.matrix_floats[0]));
-        topaz::matrix wc_to_lc = to_matrix();
-        glUniformMatrix4fv(program->uniform_locations["WCtoLC"], 1, GL_FALSE, &(wc_to_lc.data.matrix_floats[0]));
-        topaz::matrix wc_to_lc_it = wc_to_lc.inverse().transpose();
-        glUniformMatrix4fv(program->uniform_locations["WCtoLCit"], 1, GL_FALSE, &(wc_to_lc_it.data.matrix_floats[0]));
+        glm::mat4 mc_to_wc = V*M;
+        glUniformMatrix4fv(program->uniform_locations["MCtoWC"], 1, GL_FALSE, glm::value_ptr(mc_to_wc));
+        glm::mat4 mc_to_wc_it = glm::transpose(glm::inverse(mc_to_wc));
+        glUniformMatrix4fv(program->uniform_locations["MCtoWCit"], 1, GL_FALSE, glm::value_ptr(mc_to_wc_it));
+        glm::mat4 wc_to_lc = to_matrix();
+        glUniformMatrix4fv(program->uniform_locations["WCtoLC"], 1, GL_FALSE, glm::value_ptr(wc_to_lc));
+        glm::mat4 wc_to_lc_it = glm::transpose(glm::inverse(wc_to_lc));
+        glUniformMatrix4fv(program->uniform_locations["WCtoLCit"], 1, GL_FALSE, glm::value_ptr(wc_to_lc_it));
         CHECK_GL_ERROR("Loading matricies");
 
         glUniform1f(program->uniform_locations["SeWidth"], se_width);
@@ -101,8 +103,8 @@ namespace topaz
         glUniform1f(program->uniform_locations["DsFarEdge"], ds_far_edge);
     }
 
-    matrix uberlight::to_matrix()
+    glm::mat4 uberlight::to_matrix()
     {
-        return look_at(position, target, up);
+        return glm::lookAt(position, target, up);
     }
 }

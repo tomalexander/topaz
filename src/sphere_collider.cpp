@@ -21,13 +21,11 @@
  *    distribution.
  */
 #include "sphere_collider.h"
-#include "point.h"
-#include "vector.h"
 #include "aabb_collider.h"
 
 namespace topaz
 {
-    sphere_collider::sphere_collider(sqt* _parent_transform, const vec & _offset, float _radius)
+    sphere_collider::sphere_collider(sqt* _parent_transform, const glm::vec3 & _offset, float _radius)
     {
         type = SPHERE;
         radius = _radius;
@@ -51,7 +49,7 @@ namespace topaz
         delete transform;
     }
 
-    point* sphere_collider::is_colliding_with(collider* other)
+    glm::vec3* sphere_collider::is_colliding_with(collider* other)
     {
         switch (other->type)
         {
@@ -67,37 +65,37 @@ namespace topaz
         return NULL;
     }
 
-    point* sphere_collider::AABB_collision(aabb_collider* other)
+    glm::vec3* sphere_collider::AABB_collision(aabb_collider* other)
     {
-        point world_sphere_location = get_world_position();
+        glm::vec3 world_sphere_location = get_world_position();
         float world_radius = radius/* * transform->get_world_s()*/;
-        matrix box_to_world = other->transform->to_matrix();
-        matrix world_to_box = box_to_world.inverse();
-        point box_sphere_location = world_to_box * world_sphere_location;
-        point* closest = new point();
-        if (box_sphere_location.x() <  other->lesser_corner.x())
-            closest->x() = other->lesser_corner.x();
-        else if (box_sphere_location.x() >  other->greater_corner.x())
-            closest->x() = other->greater_corner.x();
+        glm::mat4 box_to_world = other->transform->to_matrix();
+        glm::mat4 world_to_box = glm::inverse(box_to_world);
+        glm::vec3 box_sphere_location = glm::vec3(world_to_box * glm::vec4(world_sphere_location,1.0f));
+        glm::vec3* closest = new glm::vec3();
+        if (box_sphere_location.x <  other->lesser_corner.x)
+            closest->x = other->lesser_corner.x;
+        else if (box_sphere_location.x >  other->greater_corner.x)
+            closest->x = other->greater_corner.x;
         else
-            closest->x() = box_sphere_location.x();
+            closest->x = box_sphere_location.x;
 
-        if (box_sphere_location.y() <  other->lesser_corner.y())
-            closest->y() = other->lesser_corner.y();
-        else if (box_sphere_location.y() >  other->greater_corner.y())
-            closest->y() = other->greater_corner.y();
+        if (box_sphere_location.y <  other->lesser_corner.y)
+            closest->y = other->lesser_corner.y;
+        else if (box_sphere_location.y >  other->greater_corner.y)
+            closest->y = other->greater_corner.y;
         else
-            closest->y() = box_sphere_location.y();
+            closest->y = box_sphere_location.y;
 
-        if (box_sphere_location.z() <  other->lesser_corner.z())
-            closest->z() = other->lesser_corner.z();
-        else if (box_sphere_location.z() >  other->greater_corner.z())
-            closest->z() = other->greater_corner.z();
+        if (box_sphere_location.z <  other->lesser_corner.z)
+            closest->z = other->lesser_corner.z;
+        else if (box_sphere_location.z >  other->greater_corner.z)
+            closest->z = other->greater_corner.z;
         else
-            closest->z() = box_sphere_location.z();
+            closest->z = box_sphere_location.z;
 
-        (*closest) = box_to_world * (*closest);
-        if ((world_sphere_location - (*closest)).get_length() <= world_radius)
+        (*closest) = glm::vec3(box_to_world * glm::vec4((*closest), 1.0f));
+        if (glm::length(world_sphere_location - (*closest)) <= world_radius)
         {
             return closest;
         } else {
@@ -107,18 +105,18 @@ namespace topaz
         return NULL;
     }
 
-    point* sphere_collider::sphere_collision(sphere_collider* other)
+    glm::vec3* sphere_collider::sphere_collision(sphere_collider* other)
     {
-        vec difference = get_world_position() - other->get_world_position();
+        glm::vec3 difference = get_world_position() - other->get_world_position();
         difference = difference * difference;
-        float distance = difference.x() + difference.y() + difference.z();
+        float distance = difference.x + difference.y + difference.z;
         float min_distance = radius + other->radius;
         if (distance <= (min_distance * min_distance))
         {
-            point this_position = get_world_position();
-            vec this_to_other = other->get_world_position() - this_position;
+            glm::vec3 this_position = get_world_position();
+            glm::vec3 this_to_other = other->get_world_position() - this_position;
             this_to_other /= 2.0f;
-            return new point(this_position.x()+this_to_other.x(), this_position.y()+this_to_other.y(), this_position.z()+this_to_other.z());
+            return new glm::vec3(this_position.x+this_to_other.x, this_position.y+this_to_other.y, this_position.z+this_to_other.z);
         } else {
             return NULL;
         }
@@ -132,7 +130,7 @@ namespace topaz
         visible = _visible;
         if (visible)
         {
-            draw_sphere = new sphere_primitive(transform, radius / transform->get_world_s(), vec(1,1,1,0.5));
+            draw_sphere = new sphere_primitive(transform, radius / transform->get_world_s(), glm::vec4(1,1,1,0.5));
         } else {
             delete draw_sphere;
             draw_sphere = NULL;
@@ -144,16 +142,16 @@ namespace topaz
     {
         if (colliding)
         {
-            draw_sphere->color = vec(1,0,0,0.5);
+            draw_sphere->color = glm::vec4(1,0,0,0.5);
         } else {
-            draw_sphere->color = vec(1,1,1,0.5);
+            draw_sphere->color = glm::vec4(1,1,1,0.5);
         }
     }
     #endif
 
-    point sphere_collider::get_world_position()
+    glm::vec3 sphere_collider::get_world_position()
     {
-        point origin(0,0,0);
-        return transform->to_matrix() * origin;
+        glm::vec3 origin(0,0,0);
+        return glm::vec3(transform->to_matrix() * glm::vec4(origin, 1.0f));
     }
 }

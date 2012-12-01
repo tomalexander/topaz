@@ -23,10 +23,7 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "matrix.h"
-#include "vector.h"
-#include "point.h"
-#include "quaternion.h"
+#include <glm/glm.hpp>
 
 namespace topaz
 {
@@ -37,8 +34,8 @@ namespace topaz
         camera();
         ~camera();
 
-        virtual matrix to_matrix() = 0;
-        virtual point get_position() = 0;
+        virtual glm::mat4 to_matrix() = 0;
+        virtual glm::vec3 get_position() = 0;
       private:
     };
 

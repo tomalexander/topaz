@@ -38,7 +38,7 @@ using std::function;
 
 namespace topaz
 {
-    extern matrix fix_z_up_matrix;
+    extern glm::mat4 fix_z_up_matrix;
     void panda_node::parse()
     {
         //std::cout << tag << std::endl;
@@ -238,7 +238,7 @@ namespace topaz
             {
                 float x;
                 tmp >> x;
-                mat[i] = x;
+                mat[i%4][i/4] = x;
             }
         }
         else if (tag == "VertexRef")
@@ -361,7 +361,10 @@ namespace topaz
         // float tmp = other.z;
         // other.z = -other.y;
         // other.y = tmp;
-        other = fix_z_up_matrix * other;
+        glm::vec4 new_positions = fix_z_up_matrix * glm::vec4(other.x, other.y, other.z, 1);
+        other.x = new_positions.x;
+        other.y = new_positions.y;
+        other.z = new_positions.z;
     }
 
     void reverse_order(unsigned int* indicies, size_t start)

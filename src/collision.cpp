@@ -24,7 +24,7 @@
 
 namespace topaz
 {
-    collision::collision(rigidbody* _from, rigidbody* _into, point* _contact)
+    collision::collision(rigidbody* _from, rigidbody* _into, glm::vec3* _contact)
     {
         from = _from;
         into = _into;

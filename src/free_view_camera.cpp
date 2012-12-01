@@ -21,6 +21,7 @@
  *    distribution.
  */
 #include "free_view_camera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace topaz
 {
@@ -34,40 +35,46 @@ namespace topaz
 
     }
 
-    matrix free_view_camera::to_matrix()
+    glm::mat4 free_view_camera::to_matrix()
     {
-        matrix ret = rotation.to_matrix();
-        ret.transpose();
-        ret(3,0) = -camera_position.x();
-        ret(3,1) = -camera_position.y();
-        ret(3,2) = -camera_position.z();
+        glm::mat4 ret = glm::mat4_cast(rotation);
+        ret = glm::transpose(ret);
+        ret[3][0] = -camera_position.x;
+        ret[3][1] = -camera_position.y;
+        ret[3][2] = -camera_position.z;
         return ret;
     }
 
-    point free_view_camera::get_position()
+    glm::vec3 free_view_camera::get_position()
     {
         return camera_position;
     }
 
     void free_view_camera::move_forward(float magnitude)
     {
-        camera_position += rotation * vec(0.0f, 0.0f, -magnitude);
+        glm::vec4 offset = rotation * glm::vec4(0.0f, 0.0f, -magnitude, 1);
+        camera_position.x += offset.x;
+        camera_position.y += offset.y;
+        camera_position.z += offset.z;
     }
 
     void free_view_camera::strafe(float magnitude)
     {
-        camera_position += rotation * vec(magnitude, 0.0f, 0.0f);
+        glm::vec4 offset = rotation * glm::vec4(magnitude, 0.0f, 0.0f, 1);
+        camera_position.x += offset.x;
+        camera_position.y += offset.y;
+        camera_position.z += offset.z;
     }
 
     void free_view_camera::yaw(float magnitude)
     {
-        quaternion new_rotation(vec(0.0f, 1.0f, 0.0f), magnitude);
+        glm::quat new_rotation = glm::angleAxis(magnitude, 0.0f, 1.0f, 0.0f);
         rotation = new_rotation * rotation;
     }
 
     void free_view_camera::pitch(float magnitude)
     {
-        quaternion new_rotation(vec(1.0f, 0.0f, 0.0f), magnitude);
+        glm::quat new_rotation = glm::angleAxis(magnitude, 1.0f, 0.0f, 0.0f);
         rotation = rotation * new_rotation;
     }
 }

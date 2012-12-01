@@ -36,10 +36,10 @@
 #include <iostream>
 #include <list>
 #include <functional>
-#include "matrix.h"
 #include "camera.h"
 #include "gl_program.h"
 #include "gameobject.h"
+#include <glm/glm.hpp>
 
 using std::map;
 using std::string;
@@ -70,7 +70,7 @@ namespace topaz
     gl_program* get_program(const string & program_name);
 
     void check_gl_error(const string & error_message, long line_number, const string & file_name);
-    void game_loop(camera& C, matrix& P);
+    void game_loop(camera& C, glm::mat4& P);
     model* load_from_egg(const string & model_name, const std::initializer_list<string> & animation_names);
     model* load_from_egg(const string & model_name);
     void lua_init(const string & script_name = "main.lua");
@@ -83,8 +83,8 @@ namespace topaz
     void add_pre_draw_function(unsigned long owner, const function< void(int)> & func);
     void add_post_draw_function(const function< void(int)> & func);
     void add_post_draw_function(unsigned long owner, const function< void(int)> & func);
-    void add_draw_function(const function< void(matrix&, matrix&, camera*)> & func);
-    void add_draw_function(unsigned long owner, const function< void(matrix&, matrix&, camera*)> & func);
+    void add_draw_function(const function< void(glm::mat4&, glm::mat4&, camera*)> & func);
+    void add_draw_function(unsigned long owner, const function< void(glm::mat4&, glm::mat4&, camera*)> & func);
     void add_cleanup_function(const function< void()> & func);
     void add_cleanup_function(unsigned long owner, const function< void()> & func);
     inline void remove_begin_update_handle(u64 owner);

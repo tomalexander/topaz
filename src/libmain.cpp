@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include "util.h"
 #include "egg_parser.h"
-#include "matrix.h"
 #include "shaders.h"
 #include <unordered_map>
 #include <sstream>
@@ -34,6 +33,7 @@
 #include <oolua/oolua.h>
 #include "lua_demo.h"
 #include <unordered_map>
+#include <glm/gtc/matrix_transform.hpp>
 
 using std::unordered_map;
 using std::stringstream;
@@ -53,14 +53,14 @@ namespace topaz
     unordered_multimap<u64, function< void(int)> > begin_update_functions;
     unordered_multimap<u64, function< void(int)> > pre_draw_functions;
     unordered_multimap<u64, function< void(int)> > post_draw_functions;
-    unordered_multimap<u64, function< void(matrix&, matrix&, camera*)> > draw_functions;
+    unordered_multimap<u64, function< void(glm::mat4&, glm::mat4&, camera*)> > draw_functions;
     unordered_multimap<u64, function< void()> > cleanup_functions;
     vector<gameobject*> grim_reaper_list;
-    matrix fix_z_up_matrix;
+    glm::mat4 fix_z_up_matrix;
 
     void init(char* argv0, int width, int height, const string & title)
     {
-        fix_z_up_matrix.rotateH(TO_RADIANS(90));
+        fix_z_up_matrix = glm::rotate(fix_z_up_matrix, 90.0f, glm::vec3(1.0f,0.0f,0.0f));
 
         //Initialize PhysFS
         PHYSFS_init(argv0);
@@ -182,7 +182,7 @@ namespace topaz
         exit(EXIT_FAILURE);
     }
 
-    void game_loop(camera& C, matrix& P)
+    void game_loop(camera& C, glm::mat4& P)
     {
         CHECK_GL_ERROR("Entering Game Loop");
         if (window == NULL)
@@ -213,9 +213,9 @@ namespace topaz
             for (pair<unsigned long, function< void(int)> > cur : pre_draw_functions)
                 cur.second(time_elapsed);
 
-            matrix V = C.to_matrix();
+            glm::mat4 V = C.to_matrix();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            for (pair<unsigned long, function< void(matrix&, matrix&, camera*)> > cur : draw_functions)
+            for (pair<unsigned long, function< void(glm::mat4&, glm::mat4&, camera*)> > cur : draw_functions)
             {
                 cur.second(V, P, &C);
                 
@@ -320,12 +320,12 @@ namespace topaz
         post_draw_functions.insert(make_pair(owner, func));
     }
 
-    void add_draw_function(const function< void(matrix&, matrix&, camera*)> & func)
+    void add_draw_function(const function< void(glm::mat4&, glm::mat4&, camera*)> & func)
     {
         add_draw_function(-1, func);
     }
 
-    void add_draw_function(unsigned long owner, const function< void(matrix&, matrix&, camera*)> & func)
+    void add_draw_function(unsigned long owner, const function< void(glm::mat4&, glm::mat4&, camera*)> & func)
     {
         draw_functions.insert(make_pair(owner, func));
     }

@@ -78,7 +78,7 @@ namespace topaz
         map<string, animation*> animations;
 
         void print(std::ostream & out = std::cout);
-        void prep_for_draw(const matrix & M, const matrix & V, const matrix & P, camera* C, gl_program* program, light* light_source = NULL);
+        void prep_for_draw(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, gl_program* program, light* light_source = NULL);
         void draw();
 
         union

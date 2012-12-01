@@ -35,20 +35,20 @@ namespace topaz
     class sphere_collider : public collider
     {
       public:
-        sphere_collider(sqt* _parent_transform, const vec & _offset, float _radius);
+        sphere_collider(sqt* _parent_transform, const glm::vec3 & _offset, float _radius);
         ~sphere_collider();
 
-        virtual point* is_colliding_with(collider* other);
+        virtual glm::vec3* is_colliding_with(collider* other);
         void set_visible(bool _visible);
-        point get_world_position();
+        glm::vec3 get_world_position();
         
         #if DRAW_COLLISION_SOLIDS == 1
         virtual void display_as_colliding(bool colliding);
         #endif
 
       private:
-        point* sphere_collision(sphere_collider* other);
-        point* AABB_collision(aabb_collider* other);
+        glm::vec3* sphere_collision(sphere_collider* other);
+        glm::vec3* AABB_collision(aabb_collider* other);
         float radius;
         bool visible;
         sphere_primitive* draw_sphere;

@@ -24,10 +24,7 @@
 #define RIGIDBODY_H_
 #include "def.h"
 #include "topaz.h"
-#include "vector.h"
 #include "gameobject.h"
-#include "point.h"
-#include "quaternion.h"
 #include <utility>
 #include "sphere_collider.h"
 #include "collision.h"
@@ -58,30 +55,30 @@ namespace topaz
         float calculate_farthest_dimension(unit* parent);
         void calculate_axis_aligned_bounding_box(unit* parent);
         void handle_collisions(int milliseconds);
-        vec handle_linear_collision(const collision & other);
-        void handle_angular_collision(const collision & other, const vec & collision_force);
-        void immovable_collision(const vec & norm);
+        glm::vec3 handle_linear_collision(const collision & other);
+        void handle_angular_collision(const collision & other, const glm::vec3 & collision_force);
+        void immovable_collision(const glm::vec3 & norm);
         void calculate_tensor(TENSOR tensor);
 
-        vec velocity;
-        point center_of_mass;
+        glm::vec3 velocity;
+        glm::vec3 center_of_mass;
         sqt* transform;
         bool use_gravity;
         float mass;
         float elasticity;
         vector<collider*> colliders;
-        list<pair<int, vec> > forces;
-        list<pair<int, vec> > torques;
-        list<vec> constant_forces;
-        list<vec> constant_torques;
+        list<pair<int, glm::vec3> > forces;
+        list<pair<int, glm::vec3> > torques;
+        list<glm::vec3> constant_forces;
+        list<glm::vec3> constant_torques;
         float farthest_dimension;
         vector<rigidbody*> handled_collisions;
-        vec last_position;
-        matrix I;
-        vec angular_momentum;   /**< L */
+        glm::vec3 last_position;
+        glm::mat4 I;
+        glm::vec3 angular_momentum;   /**< L */
         int rigidbody_id;
 
-        point get_world_center_of_mass();
+        glm::vec3 get_world_center_of_mass();
         vector<collision> check_for_collision();
         pair<bool, collision> is_colliding_with(rigidbody* other);
         void push_to_cl();
@@ -90,10 +87,10 @@ namespace topaz
         void check_bounds();
         
       private:
-        void add_force_to_acceleration(vec & acceleration, const vec & force);
-        void add_torque_to_angular_momentum(const vec & torque);
-        void explicit_euler_numerical_integration(const vec & acceleration, const double & seconds);
-        void maths(const vec & acceleration, const double & seconds);
+        void add_force_to_acceleration(glm::vec3 & acceleration, const glm::vec3 & force);
+        void add_torque_to_angular_momentum(const glm::vec3 & torque);
+        void explicit_euler_numerical_integration(const glm::vec3 & acceleration, const double & seconds);
+        void maths(const glm::vec3 & acceleration, const double & seconds);
     };
 }
 #endif

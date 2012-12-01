@@ -20,12 +20,14 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
+#include <glm/gtc/type_ptr.hpp>
 #include "model.h"
 #include "nolight.h"
 #include "egg_parser.h"
 #include "animation.h"
 #include "vertex.h"
 #include <unordered_map>
+#include <cstring>
 
 namespace
 {
@@ -282,7 +284,7 @@ namespace topaz
         out << '\n';
     }
 
-    void model::prep_for_draw(const matrix & M, const matrix & V, const matrix & P, camera* C, gl_program* program, light* light_source)
+    void model::prep_for_draw(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, gl_program* program, light* light_source)
     {
         static nolight nolight_tmp;
         glUseProgram(program->program_id);
@@ -296,11 +298,11 @@ namespace topaz
                 light_source->populate_uniforms(M, V, P, C, program);
             }
         } else { //No texture
-            glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, &(M.data.matrix_floats[0]));
+            glUniformMatrix4fv(program->uniform_locations["ModelMatrix"], 1, GL_FALSE, glm::value_ptr(M));
             CHECK_GL_ERROR("Filling model matrix");
-            glUniformMatrix4fv(program->uniform_locations["ViewMatrix"], 1, GL_FALSE, &(V.data.matrix_floats[0]));
+            glUniformMatrix4fv(program->uniform_locations["ViewMatrix"], 1, GL_FALSE, glm::value_ptr(V));
             CHECK_GL_ERROR("Filling view matrix");
-            glUniformMatrix4fv(program->uniform_locations["ProjectionMatrix"], 1, GL_FALSE, &(P.data.matrix_floats[0]));
+            glUniformMatrix4fv(program->uniform_locations["ProjectionMatrix"], 1, GL_FALSE, glm::value_ptr(P));
             CHECK_GL_ERROR("filling projection matrix");
             //nolight_tmp.populate_uniforms(M, V, P, C, color_program);
         }

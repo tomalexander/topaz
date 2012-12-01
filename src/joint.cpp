@@ -24,6 +24,8 @@
 #include "panda_node.h"
 #include <list>
 #include <utility>
+#include <glm/gtc/type_ptr.hpp>
+#include "print.h"
 
 using std::list;
 using std::make_pair;
@@ -59,13 +61,13 @@ namespace topaz
         {
             binding = parent->binding * binding;
         } else {
-            binding.set_identity();
+            binding = glm::mat4(1.0f);
         }
         for (pair<string, joint*> element : joints)
         {
             element.second->push_binding_down();
         }
-        inverse_binding = binding.inverse();
+        inverse_binding = glm::inverse(binding);
     }
 
     void joint::add_child(joint* child)
@@ -84,7 +86,7 @@ namespace topaz
             // local(3,0) = translation.x();
             // local(3,1) = translation.y();
             // local(3,2) = translation.z();
-            local.set_identity();
+            local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
                 // local = binding * local;
@@ -118,7 +120,7 @@ namespace topaz
         if (name != "_ROOT")
         {
             size_t start_index = index_in_shader*16;
-            world.fill_float_array(&(joint_matricies[start_index]));
+            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world), sizeof(float)*16);
         }
 
         for (pair<string, joint*> child : joints)
@@ -181,9 +183,9 @@ namespace topaz
         out << string(indentation*4, ' ') << "Joint " << name << "\n";
         out << string(indentation*4, ' ') << "Index in shader " << index_in_shader << "\n";
         out << string(indentation*4, ' ') << "Rotation:\n";
-        transform.q.print(out, indentation+1);
+        topaz::print(transform.q, out, indentation+1);
         out << string(indentation*4, ' ') << "Translation:\n";
-        transform.t.print(out, indentation+1);
+        topaz::print(transform.t, out, indentation+1);
         
         for (pair<const int, float> & entry : membership)
         {

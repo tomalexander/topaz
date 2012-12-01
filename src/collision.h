@@ -25,7 +25,6 @@
 
 #include "def.h"
 #include "topaz.h"
-#include "point.h"
 
 namespace topaz
 {
@@ -33,12 +32,12 @@ namespace topaz
     class collision
     {
       public:
-        collision(rigidbody* _from, rigidbody* _into, point* _contact);
+        collision(rigidbody* _from, rigidbody* _into, glm::vec3* _contact);
         ~collision();
 
         rigidbody* from;
         rigidbody* into;
-        point* contact;
+        glm::vec3* contact;
       private:
     };
 }
