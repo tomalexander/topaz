@@ -92,7 +92,7 @@ namespace topaz
             CHECK_GL_ERROR("filling joint matricies");
         }
 
-        // model_ptr->draw();
+        model_ptr->draw();
         if (model_ptr->has_joints)
             draw_joints(V, P, C);
     }

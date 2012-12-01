@@ -90,16 +90,13 @@ namespace topaz
             local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
-                //local = glm::translate(glm::mat4(1.0f), glm::vec3(2,0,0)) * binding;
                 current_animation->apply(animation_progress, this);
-                local *= binding;
-                //topaz::print(local);
             } else {
                 local = binding;
             }
             
             //Compute world matrix
-            world = parent->world * local * inverse_binding;
+            world = parent->world * local;
         }
 
         //Recursively call update on all children
@@ -111,7 +108,7 @@ namespace topaz
         //factor in B^-1
         if (name != "_ROOT")
         {
-            //world = world * inverse_binding;
+            world *= binding;
         }
         //world.print();
     }
@@ -222,7 +219,7 @@ namespace topaz
         joint* ret = new joint(inp->name, available_index_in_shader);
         
         
-        ret->binding = inp->mat/*.inverse()*/;
+        ret->binding = glm::transpose(inp->mat)/*.inverse()*/;
 
         // ret->rotation = ret->transform.to_quaternion();
         // ret->translation.x() = ret->transform(3,0);

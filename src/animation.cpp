@@ -71,10 +71,9 @@ namespace topaz
         }
             
         float seconds = ((float) animation_progress)/1000.0f;
-        topaz::print(target_joint->local);
-        target_joint->local = glm::translate(target_joint->local, glm::vec3(2.0f * seconds,0,0));
-        topaz::print(target_joint->local);
-        return;
+        // seconds = 0;
+        // target_joint->local = glm::translate(target_joint->local, glm::vec3(2.0f * seconds,0,0));
+        // return;
 
         glm::mat4 tmp_transform;
 
@@ -128,17 +127,17 @@ namespace topaz
                       case 'h':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(1, 0, 0));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(0, 1, 0));
                         } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(1, 0, 0));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(0, 1, 0));
                         }
                         break;
                       case 'p':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(0, 1, 0));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(1, 0, 0));
                         } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(0, 1, 0));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(1, 0, 0));
                         }
                         break;
                       case 'r':
