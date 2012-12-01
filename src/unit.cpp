@@ -110,7 +110,8 @@ namespace topaz
             if (current == root_joint)
                 continue;
 
-            draw_sphere_single_frame(current->world, V, P, C, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+            // draw_sphere_single_frame(transform->to_matrix() * current->world * glm::scale(glm::mat4(1.0f), glm::vec3(25.0f)), V, P, C, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+            draw_sphere_single_frame(transform->to_matrix() * current->world, V, P, C, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         }
     }
 

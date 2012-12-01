@@ -92,7 +92,7 @@ namespace topaz
             {
                 current_animation->apply(animation_progress, this);
             } else {
-                local = binding;
+                //local = binding;
             }
             
             //Compute world matrix
