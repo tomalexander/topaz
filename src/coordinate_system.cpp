@@ -128,7 +128,6 @@ namespace topaz
                 // }
                 // node->content = out.str();
             } else if (node->tag == "Matrix4") {
-                std::cout << "Matrix in:\n" << node->content << "\n";
                 stringstream tmp(node->content);
                 glm::mat4 mat(1.0f);
                 for (int i = 0; i < 16; ++i)
@@ -146,7 +145,6 @@ namespace topaz
                     out << mat[i%4][i/4] << " ";
                 }
                 node->content = out.str();
-                std::cout << "Matrix out:\n" << node->content << "\n";
             }//  else if (system == ZUP && node->tag == "Char*" && node->name == "order") {
             //     size_t hpos = node->content.find('h');
             //     size_t rpos = node->content.find('r');
@@ -200,6 +198,13 @@ namespace topaz
                 {
                     node->name = "r";
                 }
+                if (node->name == "y")
+                {
+                    node->name = "z";
+                    negate_v(node);
+                }
+                else if (node->name == "z")
+                    node->name = "y";
             }
         }
     }

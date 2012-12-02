@@ -207,18 +207,6 @@ namespace topaz
         
         
         ret->binding = inp->mat;
-        std::cout << inp->name << "\n";
-        if (inp->name == "Bone_skull")
-        {
-            std::cout << "Input binding:\n";
-            topaz::print(ret->binding);
-        }
-
-        // ret->rotation = ret->transform.to_quaternion();
-        // ret->translation.x() = ret->transform(3,0);
-        // ret->translation.y() = ret->transform(3,1);
-        // ret->translation.z() = ret->transform(3,2);
-        // ret->local = inp->mat;
         
         list<panda_node*> to_visit;
         to_visit.push_back(inp);
