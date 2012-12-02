@@ -128,6 +128,7 @@ namespace topaz
                 // }
                 // node->content = out.str();
             } else if (node->tag == "Matrix4") {
+                std::cout << "Matrix in:\n" << node->content << "\n";
                 stringstream tmp(node->content);
                 glm::mat4 mat(1.0f);
                 for (int i = 0; i < 16; ++i)
@@ -137,15 +138,46 @@ namespace topaz
                     mat[i%4][i/4] = x;
                 }
                 mat = glm::transpose(mat);
-                if (system == ZUP)
-                    mat = fix_z_up_matrix * mat;
+                // if (system == ZUP)
+                //     mat = fix_z_up_matrix * mat;
                 stringstream out;
                 for (int i = 0; i < 16; ++i)
                 {
                     out << mat[i%4][i/4] << " ";
                 }
                 node->content = out.str();
-            } else if (system == ZUP && node->tag == "Char*" && node->name == "order") {
+                std::cout << "Matrix out:\n" << node->content << "\n";
+            }//  else if (system == ZUP && node->tag == "Char*" && node->name == "order") {
+            //     size_t hpos = node->content.find('h');
+            //     size_t rpos = node->content.find('r');
+            //     if (hpos != string::npos)
+            //     {
+            //         node->content[hpos] = 'r';
+            //     }
+            //     if (rpos != string::npos)
+            //     {
+            //         node->content[rpos] = 'h';
+            //     }
+            // } else if (system == ZUP && node->tag == "S$Anim") {
+            //     if (node->name == "r")
+            //     {
+            //         node->name = "h";
+            //         negate_v(node);
+            //     }
+            //     if (node->name == "h")
+            //         node->name = "r";
+            //     if (node->name == "y")
+            //     {
+            //         node->name = "z";
+            //         negate_v(node);
+            //     }
+            //     if (node->name == "z")
+            //         node->name = "y";
+            // }
+
+            if (node->tag == "Char*" && node->name == "order")
+            {
+                std::reverse(node->content.begin(), node->content.end());
                 size_t hpos = node->content.find('h');
                 size_t rpos = node->content.find('r');
                 if (hpos != string::npos)
@@ -156,21 +188,18 @@ namespace topaz
                 {
                     node->content[rpos] = 'h';
                 }
-            } else if (system == ZUP && node->tag == "S$Anim") {
+            }
+            if (node->tag == "S$Anim")
+            {
                 if (node->name == "r")
                 {
                     node->name = "h";
                     negate_v(node);
                 }
-                if (node->name == "h")
-                    node->name = "r";
-                if (node->name == "y")
+                else if (node->name == "h")
                 {
-                    node->name = "z";
-                    negate_v(node);
+                    node->name = "r";
                 }
-                if (node->name == "z")
-                    node->name = "y";
             }
         }
     }

@@ -188,8 +188,6 @@ namespace topaz
             }
         }
 
-        // target_joint->local = tmp_transform * target_joint->local;
         target_joint->local *= tmp_transform;
-        // target_joint->local *= tmp_transform;
     }
 }

@@ -89,7 +89,7 @@ namespace topaz
                 current_animation->apply(animation_progress, this);
                 world = parent->world * local;
             } else {
-                world = inverse_binding;
+                world = binding;
             }   
         }
 
@@ -105,7 +105,7 @@ namespace topaz
         if (name != "_ROOT")
         {
             size_t start_index = index_in_shader*16;
-            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world * binding), sizeof(float)*16);
+            memcpy(&(joint_matricies[start_index]), glm::value_ptr(world * inverse_binding), sizeof(float)*16);
         }
 
         for (pair<string, joint*> child : joints)
@@ -206,7 +206,13 @@ namespace topaz
         joint* ret = new joint(inp->name, available_index_in_shader);
         
         
-        ret->binding = inp->mat/*.inverse()*/;
+        ret->binding = inp->mat;
+        std::cout << inp->name << "\n";
+        if (inp->name == "Bone_skull")
+        {
+            std::cout << "Input binding:\n";
+            topaz::print(ret->binding);
+        }
 
         // ret->rotation = ret->transform.to_quaternion();
         // ret->translation.x() = ret->transform(3,0);

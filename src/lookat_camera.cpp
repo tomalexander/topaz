@@ -26,7 +26,7 @@
 
 namespace topaz
 {
-    lookat_camera::lookat_camera() : location(0.0f, 0.0f, -15.0f),
+    lookat_camera::lookat_camera() : location(0.0f, 0.0f, 15.0f),
                                      target(0.0f, 0.0f, 0.0f),
                                      up(0.0f, 1.0f, 0.0)
     {
