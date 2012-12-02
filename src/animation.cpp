@@ -84,7 +84,7 @@ namespace topaz
             for (const pair<char, vector<float> > & pos : an_joint->positions)
             {
                 
-                if (pos.first != order_char && order_char != 't')
+                if (pos.first != order_char && order_char != 't' && order_char != 's')
                     continue;
                 float time_for_frame = 1.0f / ((float) pos.second.size());
                 float frame_number_float = seconds / time_for_frame;
@@ -123,7 +123,37 @@ namespace topaz
                       default:
                         break;
                     }
-            
+                } else if (order_char == 's') {
+                    //Scale and Shear
+                    switch (pos.first)
+                    {
+                      case 'i':
+                        if (pre_frame_ind == 0)
+                        {
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(pos.second[post_frame_ind-1], 1.0f, 1.0f));
+                        } else {
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 1, 1));
+                        }
+                        break;
+                      case 'j':
+                        if (pre_frame_ind == 0)
+                        {
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, pos.second[post_frame_ind-1], 1));
+                        } else {
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 1));
+                        }
+                        break;
+                      case 'k':
+                        if (pre_frame_ind == 0)
+                        {
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, pos.second[post_frame_ind-1]));
+                        } else {
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
+                        }
+                        break;
+                      default:
+                        break;
+                    }
                 } else {
                     switch(pos.first)
                     {

@@ -64,11 +64,11 @@ int main(int argc, char** argv)
     
     topaz::model* pipe_model = topaz::load_from_egg("bar", {"bar-bend"});
     panda_model = topaz::load_from_egg("panda-model", {"panda-walk"});
-    topaz::unit u(panda_model);
-    u.set_scale(0.005);
-    u.set_animation("panda-walk");
-    // topaz::unit u(pipe_model);
-    // u.set_animation("bar-bend");
+    // topaz::unit u(panda_model);
+    // u.set_scale(0.005);
+    // u.set_animation("panda-walk");
+    topaz::unit u(pipe_model);
+    u.set_animation("bar-bend");
     
     
 
