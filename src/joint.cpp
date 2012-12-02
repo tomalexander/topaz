@@ -82,11 +82,7 @@ namespace topaz
     {
         if (name != "_ROOT")
         {
-            //Compute local matrix
-            // local = rotation.to_matrix();
-            // local(3,0) = translation.x();
-            // local(3,1) = translation.y();
-            // local(3,2) = translation.z();
+            //Compute world matrix
             local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
@@ -94,11 +90,7 @@ namespace topaz
                 world = parent->world * local;
             } else {
                 world = inverse_binding;
-                //local = inverse_binding;
-                //local = binding;
-            }
-            
-            //Compute world matrix
+            }   
         }
 
         //Recursively call update on all children
@@ -106,14 +98,6 @@ namespace topaz
         {
             element.second->update(animation_progress, current_animation);
         }
-
-        //factor in B^-1
-        if (name != "_ROOT")
-        {
-            //world *= binding;
-            //world = binding * world;
-        }
-        //world.print();
     }
 
     void joint::populate_float_array(float* joint_matricies)
