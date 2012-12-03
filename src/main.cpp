@@ -366,6 +366,16 @@ int main(int argc, char** argv)
     // }
     // return 0;
 
+    //Vertex 334
+    //Row 756
+    // Bone_rf_foot:0.5 Bone_rf_leg_lower:0.5
+    // glm::vec4 origin(-226.985, -230.959, 86.578, 1);
+    // topaz::joint* foot = u.root_joint->find_joint_name("Bone_rf_foot");
+    // topaz::joint* leg = u.root_joint->find_joint_name("Bone_rf_leg_lower");
+    // u.root_joint->update(0, u.current_animation);
+    // glm::vec4 out = 0.5 * (foot->world * foot->inverse_binding * origin) + leg->world * leg->inverse_binding * origin * 0.5;
+    // return 0;
+
     game_loop(camera, P);
   
     topaz::cleanup();

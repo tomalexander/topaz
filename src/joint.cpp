@@ -79,7 +79,7 @@ namespace topaz
         child->transform.parent = &transform;
     }
 
-    void joint::update(unsigned int & animation_progress, animation* current_animation)
+    void joint::update(const unsigned int & animation_progress, animation* current_animation)
     {
         if (name != "_ROOT")
         {

@@ -42,7 +42,7 @@ namespace topaz
         joint(const string & name, unsigned int & available_index_in_shader);
         ~joint();
 
-        void update(unsigned int & animation_progress, animation* current_animation);
+        void update(const unsigned int & animation_progress, animation* current_animation);
         void print(int indentation = 0, std::ostream & out = std::cout);
         void recursive_print(int indentation = 0, std::ostream & out = std::cout);
         void check_if_associated(const int vert_index, map<int, float> & joint_association);
