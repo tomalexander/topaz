@@ -235,44 +235,6 @@ namespace topaz
             }
         }
 
-        //vector<string> targets = {"Bone_rf_foot_nub", "Bone_rf_foot", "Bone_rf_leg_lower", "Bone_rf_leg_upper", "Bone_rf_clavicle", "Dummy_shoulders"};
-        // vector<string> targets = {"Bone_rf_foot"};
-        vector<string> targets = {"Dummy_lf_foot_heel"};
-        if (contains(joint_name, targets))
-        {
-            if (similar(tmp_transform, target_joint->local_binding, 0.001f))
-            {
-                // std::cout << joint_name << ": " << "OK\n";
-                // for (const pair<char, vector<float> > & pos : an_joint->positions)
-                // {
-                //     std::cout << "  " << pos.first << " " << pos.second.size() << " " << (has_negative(pos.second) ? "-" : "+") << "\n";
-                // }
-                // topaz::print(tmp_transform);
-                // topaz::print(target_joint->local_binding);
-            } else {
-                // std::cout << joint_name << ": "<< "BAD\n";
-                // for (const pair<char, vector<float> > & pos : an_joint->positions)
-                // {
-                //     std::cout << "  " << pos.first << " " << pos.second.size() << " " << (has_negative(pos.second) ? "-" : "+") << "\n";
-                // }
-                // topaz::print(tmp_transform);
-                // topaz::print(target_joint->local_binding);
-            }
-        }
-
-        string tree = "";
-        if (joint_name == tree)
-        {
-            for (joint* current = target_joint; current != nullptr && current->name != "_ROOT"; current = current->parent)
-            {
-                std::cout << current->name << "\n";
-            }
-        }
-
-        string end = "";
-        if (joint_name == end)
-            exit(0);
-
         return tmp_transform;
     }
 }

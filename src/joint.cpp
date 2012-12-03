@@ -45,7 +45,6 @@ namespace topaz
         if (name != "_ROOT")
         {
             index_in_shader = available_index_in_shader++;
-            std::cout << index_in_shader << " " << name << "\n";
         }
     }
 
