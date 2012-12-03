@@ -308,7 +308,63 @@ int main(int argc, char** argv)
     // topaz::print(bone_rf_leg_upper);
     // topaz::print(leg_upper);
     
-    topaz::print(bone_rf_foot_nub);
+    // topaz::print(bone_rf_foot_nub);
+
+    // int frame_number = 0;
+    // topaz::print(u.current_animation->apply(frame_number, u.root_joint->find_joint_name("Bone_rf_foot"), true));
+    // vector<string> joint_name_list = {"Dummy_hips", "Bone_lr_leg_hip", "Bone_lr_leg_upper", "Bone_lr_leg_lower", "Bone_lr_foot", "Bone_lr_foot_nub", "Bone_rr_leg_hip", "Bone_rr_leg_upper", "Bone_rr_leg_lower", "Bone_rr_foot", "Bone_rr_foot_nub", "Bone_spine01", "Bone_spine02", "Bone_spine03", "Bone_spine_nub", "Dummy_lf_foot_heel", "Dummy_lf_foot_toe", "Dummy_lr_foot_heel", "Dummy_lr_foot_toe", "Dummy_rf_foot_heel", "Dummy_rf_foot_toe", "Dummy_rr_foot_heel", "Dummy_rr_foot_toe", "Dummy_shoulders", "Bone_lf_clavicle", "Bone_lf_leg_upper", "Bone_lf_leg_lower", "Bone_lf_foot", "Bone_lf_foot_nub", "Bone_neck", "Bone_jaw01", "Bone_jaw02", "Bone_jaw03", "Bone_jaw_nub", "Bone_skull", "Bone_skull_nub", "Dummy_jaw", "Bone_rf_clavicle", "Bone_rf_leg_upper", "Bone_rf_leg_lower", "Bone_rf_foot", "Bone_rf_foot_nub"};
+    // for (int frame_number = 0; frame_number < 62; ++frame_number)
+    // {
+    //     for (string jname : joint_name_list)
+    //     {
+    //         glm::mat4 world(1.0f);
+    //         vector<topaz::joint*> jlist;
+    //         for (topaz::joint* current = u.root_joint->find_joint_name(jname); current->name != "_ROOT"; current = current->parent)
+    //         {
+    //             jlist.push_back(current);
+    //         }
+    //         for (auto it = jlist.rbegin(); it != jlist.rend(); ++it)
+    //         {
+    //             topaz::joint* current = *it;
+    //             world *= u.current_animation->apply(frame_number, current, true);
+    //         }
+    //         std::cout << jname << "\n";
+    //         for (u8 y = 0; y < 4; ++y)
+    //         {
+    //             for (u8 x = 0; x < 4; ++x)
+    //             {
+    //                 if (x != 0)
+    //                     std::cout << " ";
+    //                 std::cout << world[x][y];
+    //             }
+    //             std::cout << "\n";
+    //         }
+    //         std::cout << "\n";
+    //     }
+    // }
+    // return 0;
+
+    // vector<string> joint_name_list = {"Dummy_hips", "Bone_lr_leg_hip", "Bone_lr_leg_upper", "Bone_lr_leg_lower", "Bone_lr_foot", "Bone_lr_foot_nub", "Bone_rr_leg_hip", "Bone_rr_leg_upper", "Bone_rr_leg_lower", "Bone_rr_foot", "Bone_rr_foot_nub", "Bone_spine01", "Bone_spine02", "Bone_spine03", "Bone_spine_nub", "Dummy_lf_foot_heel", "Dummy_lf_foot_toe", "Dummy_lr_foot_heel", "Dummy_lr_foot_toe", "Dummy_rf_foot_heel", "Dummy_rf_foot_toe", "Dummy_rr_foot_heel", "Dummy_rr_foot_toe", "Dummy_shoulders", "Bone_lf_clavicle", "Bone_lf_leg_upper", "Bone_lf_leg_lower", "Bone_lf_foot", "Bone_lf_foot_nub", "Bone_neck", "Bone_jaw01", "Bone_jaw02", "Bone_jaw03", "Bone_jaw_nub", "Bone_skull", "Bone_skull_nub", "Dummy_jaw", "Bone_rf_clavicle", "Bone_rf_leg_upper", "Bone_rf_leg_lower", "Bone_rf_foot", "Bone_rf_foot_nub"};
+    // for (string jname : joint_name_list)
+    // {
+    //     glm::mat4 world(1.0f);
+    //     vector<topaz::joint*> jlist;
+    //     topaz::joint* current = u.root_joint->find_joint_name(jname);
+    //     world = current->local_binding;
+    //     std::cout << jname << "\n";
+    //     for (u8 y = 0; y < 4; ++y)
+    //     {
+    //         for (u8 x = 0; x < 4; ++x)
+    //         {
+    //             if (x != 0)
+    //                 std::cout << " ";
+    //             std::cout << world[x][y];
+    //         }
+    //         std::cout << "\n";
+    //     }
+    //     std::cout << "\n";
+    // }
+    // return 0;
 
     game_loop(camera, P);
   

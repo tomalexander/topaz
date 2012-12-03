@@ -50,6 +50,14 @@ namespace
         }
         return false;
     }
+
+    bool has_negative(const vector<float> & values)
+    {
+        for (const float & cur : values)
+            if (cur < 0.0f)
+                return true;
+        return false;
+    }
 }
 
 namespace topaz
@@ -87,7 +95,7 @@ namespace topaz
         }
     }
 
-    void animation::apply(const unsigned int & animation_progress, joint* target_joint)
+    glm::mat4 animation::apply(const unsigned int & animation_progress, joint* target_joint, bool progress_is_frame_number)
     {
         string joint_name = target_joint->name;
         animation_joint* an_joint = NULL;
@@ -114,8 +122,19 @@ namespace topaz
                 float frame_number_float = seconds / time_for_frame;
                 int pre_frame_ind = floor(frame_number_float);
                 int post_frame_ind = pre_frame_ind + 1;
-                //int post_frame_ind = ceil(frame_number_float);
+                if (pre_frame_ind != 0 && post_frame_ind == pos.second.size())
+                    post_frame_ind = 0;
                 float percent_to_post = frame_number_float - ((float)pre_frame_ind);
+
+                if (progress_is_frame_number)
+                {
+                    pre_frame_ind = (pos.second.size() == 1 ? 0 : animation_progress);
+                    post_frame_ind = pre_frame_ind + 1;
+                    if (pre_frame_ind != 0 && post_frame_ind == pos.second.size())
+                        post_frame_ind = 0;
+                    percent_to_post = 0.0f;
+                }
+                
                 if (order_char == 't')
                 {
                     switch (pos.first)
@@ -123,25 +142,25 @@ namespace topaz
                       case 'x':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(pos.second[post_frame_ind-1], 0, 0));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(pos.second[pre_frame_ind], 0, 0));
                         } else {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 0, 0));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 0, 0));
                         }
                         break;
                       case 'y':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, pos.second[post_frame_ind-1], 0));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, pos.second[pre_frame_ind], 0));
                         } else {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 0));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 0));
                         }
                         break;
                       case 'z':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, pos.second[post_frame_ind-1]));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, pos.second[pre_frame_ind]));
                         } else {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
+                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post)));
                         }
                         break;
                       default:
@@ -154,25 +173,25 @@ namespace topaz
                       case 'i':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(pos.second[post_frame_ind-1], 1.0f, 1.0f));
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(pos.second[pre_frame_ind], 1.0f, 1.0f));
                         } else {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 1, 1));
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 1, 1));
                         }
                         break;
                       case 'j':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, pos.second[post_frame_ind-1], 1));
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, pos.second[pre_frame_ind], 1));
                         } else {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), 1));
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 1));
                         }
                         break;
                       case 'k':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, pos.second[post_frame_ind-1]));
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, pos.second[pre_frame_ind]));
                         } else {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post)));
+                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post)));
                         }
                         break;
                       default:
@@ -184,25 +203,25 @@ namespace topaz
                       case 'h':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(0, 1, 0));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[pre_frame_ind], glm::vec3(0, 1, 0));
                         } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(0, 1, 0));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), glm::vec3(0, 1, 0));
                         }
                         break;
                       case 'p':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(1, 0, 0));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[pre_frame_ind], glm::vec3(1, 0, 0));
                         } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(1, 0, 0));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), glm::vec3(1, 0, 0));
                         }
                         break;
                       case 'r':
                         if (pre_frame_ind == 0)
                         {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[post_frame_ind-1], glm::vec3(0, 0, 1));
+                            tmp_transform = glm::rotate(tmp_transform, pos.second[pre_frame_ind], glm::vec3(0, 0, 1));
                         } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind-1], pos.second[post_frame_ind-1], percent_to_post), glm::vec3(0, 0, 1));
+                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), glm::vec3(0, 0, 1));
                         }
                         break;
                       default:
@@ -212,30 +231,44 @@ namespace topaz
             }
         }
 
-        vector<string> targets = {"Bone_rf_foot_nub", "Bone_rf_foot", "Bone_rf_leg_lower", "Bone_rf_leg_upper", "Bone_rf_clavicle", "Dummy_shoulders"};
+        //vector<string> targets = {"Bone_rf_foot_nub", "Bone_rf_foot", "Bone_rf_leg_lower", "Bone_rf_leg_upper", "Bone_rf_clavicle", "Dummy_shoulders"};
+        // vector<string> targets = {"Bone_rf_foot"};
+        vector<string> targets = {"Dummy_lf_foot_heel"};
         if (contains(joint_name, targets))
         {
-            std::cout << joint_name << ": ";
-            if (similar(tmp_transform, target_joint->local_binding))
+            if (similar(tmp_transform, target_joint->local_binding, 0.001f))
             {
-                std::cout << "OK\n";
-                topaz::print(tmp_transform);
-                topaz::print(target_joint->local_binding);
+                // std::cout << joint_name << ": " << "OK\n";
+                // for (const pair<char, vector<float> > & pos : an_joint->positions)
+                // {
+                //     std::cout << "  " << pos.first << " " << pos.second.size() << " " << (has_negative(pos.second) ? "-" : "+") << "\n";
+                // }
+                // topaz::print(tmp_transform);
+                // topaz::print(target_joint->local_binding);
             } else {
-                std::cout << "BAD\n";
-                topaz::print(tmp_transform);
-                topaz::print(target_joint->local_binding);
+                // std::cout << joint_name << ": "<< "BAD\n";
+                // for (const pair<char, vector<float> > & pos : an_joint->positions)
+                // {
+                //     std::cout << "  " << pos.first << " " << pos.second.size() << " " << (has_negative(pos.second) ? "-" : "+") << "\n";
+                // }
+                // topaz::print(tmp_transform);
+                // topaz::print(target_joint->local_binding);
             }
         }
 
-        string tree = "Bone_rf_foot_nub";
+        string tree = "";
         if (joint_name == tree)
         {
             for (joint* current = target_joint; current != nullptr && current->name != "_ROOT"; current = current->parent)
             {
                 std::cout << current->name << "\n";
             }
-            exit(0);
         }
+
+        string end = "";
+        if (joint_name == end)
+            exit(0);
+
+        return tmp_transform;
     }
 }

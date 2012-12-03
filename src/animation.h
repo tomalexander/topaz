@@ -51,7 +51,7 @@ namespace topaz
         animation();
         ~animation();
 
-        void apply(const unsigned int & animation_progress, joint* target_joint);
+        glm::mat4 apply(const unsigned int & animation_progress, joint* target_joint, bool progress_is_frame_number = false);
 
         map<string, animation_joint*> joints;
       private:

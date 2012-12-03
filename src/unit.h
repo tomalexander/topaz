@@ -65,6 +65,7 @@ namespace topaz
 
         const glm::vec3 get_location() {return transform->get_t();}
         model* get_model_ptr() {return model_ptr;}
+        void update_binding_matrices();
         bool set_animation(const string & animation_name);
 
         sqt* transform;

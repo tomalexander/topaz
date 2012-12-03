@@ -87,7 +87,7 @@ namespace topaz
             local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
-                current_animation->apply(animation_progress, this);
+                local *= current_animation->apply(animation_progress, this);
                 world = parent->world * local;
             } else {
                 world = binding;
@@ -99,6 +99,27 @@ namespace topaz
         {
             element.second->update(animation_progress, current_animation);
         }
+    }
+
+    void joint::update_binding_matrix(animation* current_animation)
+    {
+        if (name != "_ROOT")
+        {
+            if (current_animation != NULL)
+            {
+                anim_binding = current_animation->apply(0, this);
+                anim_binding = parent->anim_binding * anim_binding;
+            } else {
+                anim_binding = glm::mat4(1.0f);
+            }   
+        }
+
+        //Recursively call update on all children
+        for (pair<string, joint*> element : joints)
+        {
+            element.second->update_binding_matrix(current_animation);
+        }
+        anim_inverse_binding = glm::inverse(anim_binding);
     }
 
     void joint::populate_float_array(float* joint_matricies)
@@ -260,6 +281,7 @@ namespace topaz
         new_joint->name = current->name;
         new_joint->binding = current->binding;
         new_joint->inverse_binding = current->inverse_binding;
+        new_joint->local_binding = current->local_binding;
         new_joint->local = current->local;
         new_joint->world = current->world;
         new_joint->membership = current->membership;
