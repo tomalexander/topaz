@@ -118,7 +118,7 @@ namespace topaz
                 queue.push_back(child);
         
             coordinate_system system = detect_coordinate_system(node);
-            if (system == ZUP && (node->tag == "Vertex" || node->tag == "Normal"))
+            if (false && system == YUP && (node->tag == "Vertex" || node->tag == "Normal"))
             {
                 float x,y,z;
                 stringstream tmp(node->content);
@@ -128,23 +128,8 @@ namespace topaz
                 out << x << " " << z << " " << -y;
             
                 node->content = out.str();
-            } else if (node->tag == "VertexRef") {
-                //Reverse Order
-                // vector<u32> indicies;
-                // u32 tmp;
-                // stringstream content(node->content);
-                // while (content >> tmp)
-                // {
-                //     indicies.push_back(tmp);
-                // }
-                // stringstream out;
-                // while (!indicies.empty())
-                // {
-                //     out << indicies.back() << " ";
-                //     indicies.pop_back();
-                // }
-                // node->content = out.str();
-            } else if (node->tag == "Matrix4") {
+            }
+            else if (node->tag == "Matrix4") {
                 stringstream tmp(node->content);
                 glm::mat4 mat(1.0f);
                 for (int i = 0; i < 16; ++i)
@@ -162,77 +147,36 @@ namespace topaz
                     out << mat[i%4][i/4] << " ";
                 }
                 node->content = out.str();
-            }//  else if (system == ZUP && node->tag == "Char*" && node->name == "order") {
-            //     size_t hpos = node->content.find('h');
-            //     size_t rpos = node->content.find('r');
-            //     if (hpos != string::npos)
-            //     {
-            //         node->content[hpos] = 'r';
-            //     }
-            //     if (rpos != string::npos)
-            //     {
-            //         node->content[rpos] = 'h';
-            //     }
-            // } else if (system == ZUP && node->tag == "S$Anim") {
-            //     if (node->name == "r")
-            //     {
-            //         node->name = "h";
-            //         negate_v(node);
-            //     }
-            //     if (node->name == "h")
-            //         node->name = "r";
-            //     if (node->name == "y")
-            //     {
-            //         node->name = "z";
-            //         negate_v(node);
-            //     }
-            //     if (node->name == "z")
-            //         node->name = "y";
-            // }
-
+            }
             if (node->tag == "Char*" && node->name == "order")
             {
                 std::reverse(node->content.begin(), node->content.end());
-                // std::cout << "Order: " << node->content << "\n";
-                size_t hpos = node->content.find('h');
-                size_t rpos = node->content.find('r');
-                if (hpos != string::npos)
+                if (system == ZUP)
                 {
-                    node->content[hpos] = 'r';
-                }
-                if (rpos != string::npos)
-                {
-                    node->content[rpos] = 'h';
+                    size_t hpos = node->content.find('h');
+                    size_t rpos = node->content.find('r');
+                    if (hpos != string::npos)
+                    {
+                        node->content[hpos] = 'r';
+                    }
+                    if (rpos != string::npos)
+                    {
+                        node->content[rpos] = 'h';
+                    }
                 }
             }
             if (node->tag == "S$Anim")
             {
                 if (node->name == "r")
                 {
-                    node->name = "h";
+                    if (system == ZUP)
+                        node->name = "h";
                     negate_v(node);
                 }
-                else if (node->name == "h")
+                else if (system == ZUP && node->name == "h")
                 {
                     node->name = "r";
                 }
-
-                // if (node->name == "y")
-                // {
-                //     node->name = "z";
-                //     negate_v(node);
-                // }
-                // else if (node->name == "z")
-                //     node->name = "y";
-                // if (node->name == "k")
-                // {
-                //     node->name = "j";
-                // }
-                // else if (node->name == "j")
-                // {
-                //     inverse_v(node);
-                //     node->name = "k";
-                // }
             }
         }
     }

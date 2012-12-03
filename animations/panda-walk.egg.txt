@@ -1,4 +1,4 @@
-<CoordinateSystem> { Y-Up }
+<CoordinateSystem> { Z-Up }
 
 <Comment> {
   "MaxEggPlugin nul.max -o 'C:\Panda\panda-walk4.egg' -a chan"
