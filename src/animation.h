@@ -27,11 +27,13 @@
 #include <map>
 #include <utility>
 #include <string>
+#include <unordered_map>
 
 using std::map;
 using std::make_pair;
 using std::string;
 using std::pair;
+using std::unordered_map;
 
 namespace topaz
 {
@@ -53,7 +55,7 @@ namespace topaz
 
         glm::mat4 apply(const unsigned int & animation_progress, joint* target_joint, bool progress_is_frame_number = false);
 
-        map<string, animation_joint*> joints;
+        unordered_map<string, animation_joint*> joints;
       private:
     };
 }

@@ -60,7 +60,6 @@ namespace topaz
     {
         if (name != "_ROOT")
         {
-            local_binding = binding;
             binding = parent->binding * binding;
         } else {
             binding = glm::mat4(1.0f);
@@ -76,7 +75,6 @@ namespace topaz
     {
         joints.insert(make_pair(child->name, child));
         child->parent = this;
-        child->transform.parent = &transform;
     }
 
     void joint::update(const unsigned int & animation_progress, animation* current_animation)
@@ -84,11 +82,9 @@ namespace topaz
         if (name != "_ROOT")
         {
             //Compute world matrix
-            local = glm::mat4(1.0f);
             if (current_animation != NULL)
             {
-                local *= current_animation->apply(animation_progress, this);
-                world = parent->world * local;
+                world = parent->world * current_animation->apply(animation_progress, this);
             } else {
                 world = binding;
             }   
@@ -99,27 +95,6 @@ namespace topaz
         {
             element.second->update(animation_progress, current_animation);
         }
-    }
-
-    void joint::update_binding_matrix(animation* current_animation)
-    {
-        if (name != "_ROOT")
-        {
-            if (current_animation != NULL)
-            {
-                anim_binding = current_animation->apply(0, this);
-                anim_binding = parent->anim_binding * anim_binding;
-            } else {
-                anim_binding = glm::mat4(1.0f);
-            }   
-        }
-
-        //Recursively call update on all children
-        for (pair<string, joint*> element : joints)
-        {
-            element.second->update_binding_matrix(current_animation);
-        }
-        anim_inverse_binding = glm::inverse(anim_binding);
     }
 
     void joint::populate_float_array(float* joint_matricies)
@@ -189,10 +164,6 @@ namespace topaz
     {
         out << string(indentation*4, ' ') << "Joint " << name << "\n";
         out << string(indentation*4, ' ') << "Index in shader " << index_in_shader << "\n";
-        out << string(indentation*4, ' ') << "Rotation:\n";
-        topaz::print(transform.q, out, indentation+1);
-        out << string(indentation*4, ' ') << "Translation:\n";
-        topaz::print(transform.t, out, indentation+1);
         
         for (pair<const int, float> & entry : membership)
         {
@@ -260,7 +231,6 @@ namespace topaz
                 for (int ref : current->vertex_refs)
                 {
                     int adjusted = vertex_id_to_array_index.find(ref)->second;
-                    //std::cout << "Adding " << ref << " (" << adjusted << ") at membership " << member << "\n";
                     ret->membership.insert(make_pair(adjusted, member));
                 }
             }
@@ -281,8 +251,6 @@ namespace topaz
         new_joint->name = current->name;
         new_joint->binding = current->binding;
         new_joint->inverse_binding = current->inverse_binding;
-        new_joint->local_binding = current->local_binding;
-        new_joint->local = current->local;
         new_joint->world = current->world;
         new_joint->membership = current->membership;
         new_joint->index_in_shader = current->index_in_shader;

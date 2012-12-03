@@ -99,17 +99,17 @@ namespace topaz
     {
         string joint_name = target_joint->name;
         animation_joint* an_joint = NULL;
-        for (pair<string, animation_joint*> cur : joints)
+        glm::mat4 tmp_transform;
+        auto it = joints.find(joint_name);
+        if (it == joints.end())
         {
-            if (cur.first != joint_name)
-                continue;
-
-            an_joint = cur.second;
+            std::cerr << "Attempted to apply animation to joint that does not exist: " << joint_name << "\n";
+            return tmp_transform;
         }
+        an_joint = it->second;
             
         float seconds = ((float) animation_progress)/1000.0f;
         
-        glm::mat4 tmp_transform;
 
         for (const char & order_char : an_joint->order)
         {

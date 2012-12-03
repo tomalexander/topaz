@@ -51,18 +51,10 @@ namespace topaz
         joint* find_joint_name(const string & _name);
         joint* find_root();
         void push_binding_down();
-        void update_binding_matrix(animation* current_animation);
 
-        sqt transform;
-
-        //matrix transform;       /**< From egg file, B-1 */
         glm::mat4 binding;
         glm::mat4 inverse_binding;
-        glm::mat4 local;
         glm::mat4 world;
-        glm::mat4 local_binding;
-        glm::mat4 anim_binding;
-        glm::mat4 anim_inverse_binding;
 
         map<int, float> membership; /**< key is index or vertex, float is percentage of membership */
         map<string, joint*> joints; /**< contains child joints */

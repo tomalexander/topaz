@@ -160,14 +160,6 @@ namespace topaz
         root_joint = duplicate_joint_tree(model_ptr->root_joint);
     }
 
-    void unit::update_binding_matrices()
-    {
-        if (model_ptr->has_joints)
-        {
-            root_joint->update_binding_matrix(current_animation);
-        }
-    }
-
     bool unit::set_animation(const string & animation_name)
     {
         if (model_ptr == NULL)
@@ -179,7 +171,6 @@ namespace topaz
             return false;
         
         current_animation = it->second;
-        update_binding_matrices();
         return true;
     }
 
