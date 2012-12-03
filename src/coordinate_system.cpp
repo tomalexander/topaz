@@ -193,7 +193,7 @@ namespace topaz
             if (node->tag == "Char*" && node->name == "order")
             {
                 std::reverse(node->content.begin(), node->content.end());
-                std::cout << "Order: " << node->content << "\n";
+                // std::cout << "Order: " << node->content << "\n";
                 size_t hpos = node->content.find('h');
                 size_t rpos = node->content.find('r');
                 if (hpos != string::npos)

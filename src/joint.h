@@ -59,6 +59,7 @@ namespace topaz
         glm::mat4 inverse_binding;
         glm::mat4 local;
         glm::mat4 world;
+        glm::mat4 local_binding;
 
         map<int, float> membership; /**< key is index or vertex, float is percentage of membership */
         map<string, joint*> joints; /**< contains child joints */

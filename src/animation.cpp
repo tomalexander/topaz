@@ -25,6 +25,33 @@
 #include <glm/gtx/compatibility.hpp>
 #include "print.h"
 
+namespace
+{
+    bool similar(const glm::mat4 & a, const glm::mat4 & b, float ok_range = 0.1f)
+    {
+        for (u32 i = 0; i < 16; ++i)
+        {
+            float lower = a[i%4][i/4] - ok_range;
+            float upper = a[i%4][i/4] + ok_range;
+            float test = b[i%4][i/4];
+            if (test < lower || test > upper)
+                return false;
+        }
+        return true;
+    }
+
+    template<class T, class V>
+    bool contains(const V & needle, const T & haystack)
+    {
+        for (const V & entry : haystack)
+        {
+            if (entry == needle)
+                return true;
+        }
+        return false;
+    }
+}
+
 namespace topaz
 {
     extern glm::mat4 fix_z_up_matrix;
@@ -185,40 +212,24 @@ namespace topaz
             }
         }
 
-        target_joint->local *= tmp_transform;
-        return ;
-        // if (joint_name == "Dummy_shoulders")
-        // {
-        //     std::cout << joint_name << "\n";
-        //     topaz::print(tmp_transform);
-        // }
-        // if (joint_name == "Bone_rf_clavicle")
-        // {
-        //     std::cout << joint_name << "\n";
-        //     topaz::print(tmp_transform);
-        // }
-        // if (joint_name == "Bone_rf_leg_upper")
-        // {
-        //     std::cout << joint_name << "\n";
-        //     topaz::print(tmp_transform);
-        // }
-        // if (joint_name == "Bone_rf_leg_lower")
-        // {
-        //     std::cout << joint_name << "\n";
-        //     topaz::print(tmp_transform);
-        // }
-        if (joint_name == "Bone_rf_foot")
+        vector<string> targets = {"Bone_rf_foot_nub", "Bone_rf_foot", "Bone_rf_leg_lower", "Bone_rf_leg_upper", "Bone_rf_clavicle", "Dummy_shoulders"};
+        if (contains(joint_name, targets))
         {
-            std::cout << joint_name << "\n";
-            topaz::print(tmp_transform);
+            std::cout << joint_name << ": ";
+            if (similar(tmp_transform, target_joint->local_binding))
+            {
+                std::cout << "OK\n";
+                topaz::print(tmp_transform);
+                topaz::print(target_joint->local_binding);
+            } else {
+                std::cout << "BAD\n";
+                topaz::print(tmp_transform);
+                topaz::print(target_joint->local_binding);
+            }
         }
-        // if (joint_name == "Bone_rf_foot_nub")
-        // {
-        //     std::cout << joint_name << "\n";
-        //     topaz::print(tmp_transform);
-        // }
 
-        if (joint_name == "Bone_rf_foot_nub")
+        string tree = "Bone_rf_foot_nub";
+        if (joint_name == tree)
         {
             for (joint* current = target_joint; current != nullptr && current->name != "_ROOT"; current = current->parent)
             {

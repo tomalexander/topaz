@@ -60,6 +60,7 @@ namespace topaz
     {
         if (name != "_ROOT")
         {
+            local_binding = binding;
             binding = parent->binding * binding;
         } else {
             binding = glm::mat4(1.0f);

@@ -146,6 +146,7 @@ namespace
         vector<vector<float> > all_value_orders = every_possible_order(values);
         vector<vector<u8> > all_axis_orders = every_possible_order(axis);
         vector<vector<bool> > all_negations = every_possible_combination(values.size(), {true, false});
+        vector<vector<bool> > all_inverses = every_possible_combination(values.size(), {true, false});
 
         for (vector<float> values : all_value_orders)
         {
@@ -153,42 +154,51 @@ namespace
             {
                 for (vector<bool> current_negation : all_negations)
                 {
-                    glm::mat4 current(origin);
-                    //Grab first 3 values, match with first 3 axes and first 3 negations
-                    for (u8 i = 0; i < 3; ++i)
+                    for (vector<bool> current_inverses : all_inverses)
                     {
-                        switch (axis_orders[i])
-                        {
-                          case 1:
-                            current = glm::rotate(current, (current_negation[i] ? -values[i] : values[i]), glm::vec3(1, 0, 0)); 
-                            break;
-                          case 2:
-                            current = glm::rotate(current, (current_negation[i] ? -values[i] : values[i]), glm::vec3(0, 1, 0));
-                            break;
-                          case 3:
-                            current = glm::rotate(current, (current_negation[i] ? -values[i] : values[i]), glm::vec3(0, 0, 1));
-                            break;
-                        }
-                    }
-                    if (similar(goal, current, 0.025f))
-                    {
-                        std::cout << "FOUND!\n";
+                        glm::mat4 current(origin);
+                        //Grab first 3 values, match with first 3 axes and first 3 negations
                         for (u8 i = 0; i < 3; ++i)
                         {
+                            float rotation_amount = (current_negation[i] ? -values[i] : values[i]);
+                            if (current_inverses[i])
+                                rotation_amount = 1.0f/rotation_amount;
                             switch (axis_orders[i])
                             {
                               case 1:
-                                std::cout << "  Pitch: " << (current_negation[i] ? -values[i] : values[i]) << "\n";
+                                current = glm::rotate(current, rotation_amount, glm::vec3(1, 0, 0)); 
                                 break;
                               case 2:
-                                std::cout << "  Heading: " << (current_negation[i] ? -values[i] : values[i]) << "\n";
+                                current = glm::rotate(current, rotation_amount, glm::vec3(0, 1, 0));
                                 break;
                               case 3:
-                                std::cout << "  Roll: " << (current_negation[i] ? -values[i] : values[i]) << "\n";
+                                current = glm::rotate(current, rotation_amount, glm::vec3(0, 0, 1));
                                 break;
                             }
                         }
-                        topaz::print(current, std::cout, 2);
+                        if (similar(goal, current, 0.025f))
+                        {
+                            std::cout << "FOUND!\n";
+                            for (u8 i = 0; i < 3; ++i)
+                            {
+                                float rotation_amount = (current_negation[i] ? -values[i] : values[i]);
+                                if (current_inverses[i])
+                                    rotation_amount = 1.0f/rotation_amount;
+                                switch (axis_orders[i])
+                                {
+                                  case 1:
+                                    std::cout << "  Pitch: " << rotation_amount << "\n";
+                                    break;
+                                  case 2:
+                                    std::cout << "  Heading: " << rotation_amount << "\n";
+                                    break;
+                                  case 3:
+                                    std::cout << "  Roll: " << rotation_amount << "\n";
+                                    break;
+                                }
+                            }
+                            topaz::print(current, std::cout, 2);
+                        }
                     }
                 }
             }
@@ -284,10 +294,10 @@ int main(int argc, char** argv)
      * heading 10.7426
      * pitch -20.2138
      */
-    // leg_upper = glm::translate(leg_upper, glm::vec3(180.408, -0.000120127, 0.0f));
-    // leg_upper = glm::rotate(leg_upper, 35.4189f, glm::vec3(0, -1, 0));
-    // leg_upper = glm::rotate(leg_upper, 10.7426f, glm::vec3(0, 0, -1));
-    // leg_upper = glm::rotate(leg_upper, -20.2138f, glm::vec3(1, 0, 0));
+    leg_upper = glm::translate(leg_upper, glm::vec3(180.408, -0.000120127, 0.0f));
+    leg_upper = glm::rotate(leg_upper, 35.4189f, glm::vec3(0, 0, 1));
+    leg_upper = glm::rotate(leg_upper, 10.7426f, glm::vec3(0, 1, 0));
+    leg_upper = glm::rotate(leg_upper, -20.2138f, glm::vec3(1, 0, 0));
     
     // std::cout << "Shoulders:\n";
     // topaz::print(shoulders);
@@ -298,16 +308,7 @@ int main(int argc, char** argv)
     // topaz::print(bone_rf_leg_upper);
     // topaz::print(leg_upper);
     
-    // brute_force(bone_rf_leg_upper, leg_upper, {10.7426f, 35.4189f, -20.2138f});
-    // brute_force(bone_rf_leg_upper, leg_upper, {{10.7426, 8.03755, 5.44799, 2.9877, 0.657159, -1.53634, -3.57758, -5.46565, -7.18709, -8.71322, -10.0303, -11.123, -11.9972, -12.6895, -13.1957, -13.5297, -13.384, -13.1207, -12.7569, -12.3275, -11.8357, -11.3112, -10.7834, -10.2892, -9.87165, -9.59884, -9.46301, -9.39658, -9.40617, -9.46901, -9.584, -12.0343, -13.7137, -14.9422, -15.8509, -16.5072, -16.9512, -17.2089, -17.2986, -17.2343, -17.0191, -16.6807, -16.2379, -15.6903, -15.0599, -14.3459, -12.7126, -11.0475, -9.36302, -7.65946, -5.93785, -4.20003, -2.44875, -0.682107, 1.07695, 2.83841, 4.54787, 6.17309, 7.73626, 9.24625, 10.7426}, {-20.2138, -20.0738, -19.8733, -19.5669, -19.1785, -18.7156, -18.1699, -17.5875, -16.9829, -16.3373, -15.6875, -15.0545, -14.4383, -13.9083, -13.4194, -12.9776, -12.8004, -12.6424, -12.4998, -12.4256, -12.3572, -12.3087, -12.2748, -12.2501, -12.2095, -12.1861, -12.1786, -12.1329, -12.1309, -12.0965, -12.112, -11.5773, -11.1116, -10.7099, -10.3743, -10.1101, -9.92446, -9.8257, -9.82267, -9.9243, -10.1209, -10.4558, -10.9267, -11.4938, -12.1705, -12.9278, -13.692, -14.399, -15.07, -15.7024, -16.2939, -16.8426, -17.3468, -17.7882, -18.2166, -18.5806, -18.9176, -19.25, -19.5613, -19.9011, -20.2138}, {35.4189, 33.8328, 32.3493, 30.9538, 29.663, 28.4902, 27.4441, 26.562, 25.869, 25.3757, 25.1226, 25.1361, 25.3988, 25.919, 26.6524, 27.5807, 28.6751, 29.8943, 31.2151, 32.6337, 34.1022, 35.5986, 37.09, 38.5384, 39.8928, 41.1078, 42.2297, 43.3309, 44.4222, 45.4843, 46.5312, 44.1691, 42.3824, 40.912, 39.6484, 38.5324, 37.5266, 36.6053, 35.7492, 34.9426, 34.1625, 33.4166, 32.7016, 31.9962, 31.3105, 30.6304, 31.1302, 31.5699, 31.9739, 32.3512, 32.7106, 33.0611, 33.4112, 33.761, 34.144, 34.5415, 34.8903, 35.1283, 35.2715, 35.3658, 35.4189}});
-    // std::cout << "Goal:\n";
-    // topaz::print(bone_rf_leg_upper);
-    // return 0;
-    // topaz::print(leg_upper);
-    // std::cout << "Goal:\n";
-    // topaz::print(bone_rf_leg_upper);
-
-    //topaz::print(bone_rf_foot);
+    topaz::print(bone_rf_foot_nub);
 
     game_loop(camera, P);
   
