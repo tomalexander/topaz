@@ -67,8 +67,9 @@ namespace topaz
         model* get_model_ptr() {return model_ptr;}
         bool set_animation(const string & animation_name);
 
-      private:
         sqt* transform;
+
+      private:
         model* model_ptr;
     };
 

@@ -45,6 +45,23 @@ namespace
             }
         }
     }
+    void inverse_v(topaz::panda_node* node)
+    {
+        for (topaz::panda_node* child : node->children)
+        {
+            if (child->tag == "V")
+            {
+                stringstream inp(child->content);
+                stringstream out;
+                float tmp;
+                while (inp >> tmp)
+                {
+                    out << 1.0f/tmp << " ";
+                }
+                child->content = out.str();
+            }
+        }
+    }
 }
 
 namespace topaz
@@ -176,6 +193,7 @@ namespace topaz
             if (node->tag == "Char*" && node->name == "order")
             {
                 std::reverse(node->content.begin(), node->content.end());
+                std::cout << "Order: " << node->content << "\n";
                 size_t hpos = node->content.find('h');
                 size_t rpos = node->content.find('r');
                 if (hpos != string::npos)
@@ -198,13 +216,22 @@ namespace topaz
                 {
                     node->name = "r";
                 }
-                if (node->name == "y")
-                {
-                    node->name = "z";
-                    negate_v(node);
-                }
-                else if (node->name == "z")
-                    node->name = "y";
+                // if (node->name == "y")
+                // {
+                //     node->name = "z";
+                //     negate_v(node);
+                // }
+                // else if (node->name == "z")
+                //     node->name = "y";
+                // if (node->name == "k")
+                // {
+                //     node->name = "j";
+                // }
+                // else if (node->name == "j")
+                // {
+                //     inverse_v(node);
+                //     node->name = "k";
+                // }
             }
         }
     }

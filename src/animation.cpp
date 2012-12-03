@@ -186,5 +186,45 @@ namespace topaz
         }
 
         target_joint->local *= tmp_transform;
+        return ;
+        // if (joint_name == "Dummy_shoulders")
+        // {
+        //     std::cout << joint_name << "\n";
+        //     topaz::print(tmp_transform);
+        // }
+        // if (joint_name == "Bone_rf_clavicle")
+        // {
+        //     std::cout << joint_name << "\n";
+        //     topaz::print(tmp_transform);
+        // }
+        // if (joint_name == "Bone_rf_leg_upper")
+        // {
+        //     std::cout << joint_name << "\n";
+        //     topaz::print(tmp_transform);
+        // }
+        // if (joint_name == "Bone_rf_leg_lower")
+        // {
+        //     std::cout << joint_name << "\n";
+        //     topaz::print(tmp_transform);
+        // }
+        if (joint_name == "Bone_rf_foot")
+        {
+            std::cout << joint_name << "\n";
+            topaz::print(tmp_transform);
+        }
+        // if (joint_name == "Bone_rf_foot_nub")
+        // {
+        //     std::cout << joint_name << "\n";
+        //     topaz::print(tmp_transform);
+        // }
+
+        if (joint_name == "Bone_rf_foot_nub")
+        {
+            for (joint* current = target_joint; current != nullptr && current->name != "_ROOT"; current = current->parent)
+            {
+                std::cout << current->name << "\n";
+            }
+            exit(0);
+        }
     }
 }

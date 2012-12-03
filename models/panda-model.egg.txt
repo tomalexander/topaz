@@ -1,4 +1,4 @@
-<CoordinateSystem> { Z-Up }
+<CoordinateSystem> { Y-Up }
 
 <Comment> {
   "MaxEggPlugin nul.max -o 'C:\Panda\panda-model.egg' -a model"
