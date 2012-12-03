@@ -24,9 +24,13 @@
 #include <iostream>
 #include "topaz.h"
 
-namespace topaz
+namespace
 {
     unsigned long next_unique_id = 0;
+}
+
+namespace topaz
+{
     unsigned long get_next_unique_id()
     {
         return next_unique_id++;
