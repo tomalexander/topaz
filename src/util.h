@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Tom Alexander
+ * Copyright (c) 2012 Tom Alexander, Tate Larsen
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
