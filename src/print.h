@@ -26,12 +26,15 @@
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
 #include <iomanip>
+#include "types.h"
 
 namespace topaz
 {
-void print(const glm::vec3 & data, std::ostream & out = std::cout, int indentation = 0);
-void print(const glm::vec4 & data, std::ostream & out = std::cout, int indentation = 0);
-void print(const glm::mat4 & data, std::ostream & out = std::cout, int indentation = 0);
-void print_matrix(const float* data, std::ostream & out = std::cout, int indentation = 0);
-void print(const glm::quat & data, std::ostream & out = std::cout, int indentation = 0);
+    void print(const glm::vec3 & data, std::ostream & out = std::cout, int indentation = 0);
+    void print(const glm::vec4 & data, std::ostream & out = std::cout, int indentation = 0);
+    void print(const glm::mat4 & data, std::ostream & out = std::cout, int indentation = 0);
+    void print_matrix(const float* data, std::ostream & out = std::cout, int indentation = 0);
+    void print(const glm::quat & data, std::ostream & out = std::cout, int indentation = 0);
+    void print_floats(const float* data, size_t size, std::ostream & out = std::cout, int indentation = 0);
+    void print_ints(const int* data, size_t size, std::ostream & out = std::cout, int indentation = 0);
 }

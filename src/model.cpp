@@ -28,6 +28,7 @@
 #include "vertex.h"
 #include <unordered_map>
 #include <cstring>
+#include "print.h"
 
 namespace
 {
@@ -102,9 +103,10 @@ namespace topaz
         glGenBuffers(2, &vbo);
         CHECK_GL_ERROR("Generating Buffers");
 
-        tuple<unsigned int, char*> formatted_verticies = arrange_vertex_memory();
-        unsigned int size_per_vertex = std::get<0>(formatted_verticies);
-        char* vert_data = std::get<1>(formatted_verticies);
+        // tuple<unsigned int, char*> formatted_verticies = arrange_vertex_memory();
+        unsigned int size_per_vertex;// = std::get<0>(formatted_verticies);
+        char* vert_data;// = std::get<1>(formatted_verticies);
+        std::tie(size_per_vertex, vert_data) = arrange_vertex_memory();
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         CHECK_GL_ERROR("Bind Buffer");
@@ -146,32 +148,38 @@ namespace topaz
             CHECK_GL_ERROR("Texture");
         }
 
+        std::cout << "Size per vertex: " << size_per_vertex << "\n";
         u8 current_index = 4;
         if (has_joints)
         {
-            std::cout << num_joints_per_vertex << "\n";
             for (int x = 0; x < num_joints_per_vertex; x+=4)
             {
                 if (x+4 > num_joints_per_vertex) //less than 4 remaining
                 {
+                    std::cout << "Filling " << (int)current_index << " with " << num_joints_per_vertex - x << " ints at offset " << offset << "\n";
                     glVertexAttribIPointer(current_index, num_joints_per_vertex - x, GL_INT, size_per_vertex, (GLvoid*)(offset));
                     offset += (num_joints_per_vertex - x)*sizeof(int);
                 } else {
+                    std::cout << "Filling " << (int)current_index << " with 4 ints at offset " << offset << "\n";
                     glVertexAttribIPointer(current_index, 4, GL_INT, size_per_vertex, (GLvoid*)(offset));
                     offset += 4*sizeof(int);
                 }
+                std::cout << "Enabling " << (int)current_index << "\n";
                 glEnableVertexAttribArray(current_index++);
             }
             for (int x = 0; x < num_joints_per_vertex; x+=4)
             {
                 if (x+4 > num_joints_per_vertex) //less than 4 remaining
                 {
+                    std::cout << "Filling " << (int)current_index << " with " << num_joints_per_vertex - x << " floats at offset " << offset << "\n";
                     glVertexAttribPointer(current_index, num_joints_per_vertex - x, GL_FLOAT, GL_FALSE, size_per_vertex, (GLvoid*)(offset));
                     offset += (num_joints_per_vertex - x)*sizeof(float);
                 } else {
+                    std::cout << "Filling " << (int)current_index << " with 4 floats at offset " << offset << "\n";
                     glVertexAttribPointer(current_index, 4, GL_FLOAT, GL_FALSE, size_per_vertex, (GLvoid*)(offset));
                     offset += 4*sizeof(float);
                 }
+                
                 glEnableVertexAttribArray(current_index++);
             }
         }
@@ -222,6 +230,7 @@ namespace topaz
         {
             vertex* cur = &(verticies[x]);
             char* dest = data + size_per_vertex*x;
+            char* original_dest = dest;
             //Copy Position
             memcpy(dest, &(cur->position[0]), 3*sizeof(float));
             dest += 3*sizeof(float);
@@ -245,6 +254,9 @@ namespace topaz
             {
                 char* dest_membership = dest + num_joints_per_vertex * sizeof(int);
                 char* dest_indicies = dest;
+                char* original_dest_membership = dest_membership;
+                char* original_dest_indicies = dest_indicies;
+
                 for (int y = 0; y < num_joints_per_vertex; ++y)
                 {
                     if (y < cur->joint_indicies.size())
@@ -261,6 +273,7 @@ namespace topaz
                         memcpy(dest_indicies, &(index), sizeof(int));
                         dest_indicies += sizeof(int);
                     }
+                    dest += sizeof(int) + sizeof(float);
                 }
             }
             if (multitex)
@@ -268,6 +281,8 @@ namespace topaz
                 memcpy(dest, &(cur->multitex[0]), num_textures * sizeof(texture_data));
                 dest += num_textures * sizeof(texture_data);
             }
+            if ((int)(dest - original_dest) != size_per_vertex)
+                std::cout << "Actual size: " << (int)(dest - original_dest) << "\n";
         }
         return tuple<unsigned int, char*>(size_per_vertex, data);
     }
