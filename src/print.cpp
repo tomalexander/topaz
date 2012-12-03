@@ -42,6 +42,21 @@ void print(const glm::mat4 & data, std::ostream & out, int indentation)
     }
 }
 
+void print_matrix(const float* data, std::ostream & out, int indentation)
+{
+    out << std::string(indentation*4, ' ') << "MATRIX:" << std::endl;
+    for (int y = 0; y < 4; ++y)
+    {
+        for (int x = 0; x < 4; ++x)
+        {
+            if (x != 0)
+                out << "\t";
+            out << std::string(indentation*4+2, ' ') << std::setw(8) << data[x*4+y];
+        }
+        out << std::endl;
+    }
+}
+
 void print(const glm::quat & data, std::ostream & out, int indentation)
 {
     out << std::string(indentation*4, ' ') << "Quaternion:\n";

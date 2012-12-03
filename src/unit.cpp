@@ -93,8 +93,8 @@ namespace topaz
         }
 
         model_ptr->draw();
-        if (model_ptr->has_joints)
-            draw_joints(V, P, C);
+        // if (model_ptr->has_joints)
+        //     draw_joints(V, P, C);
     }
 
     void unit::draw_joints(const glm::mat4 & V, const glm::mat4 & P, camera* C)

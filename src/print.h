@@ -32,5 +32,6 @@ namespace topaz
 void print(const glm::vec3 & data, std::ostream & out = std::cout, int indentation = 0);
 void print(const glm::vec4 & data, std::ostream & out = std::cout, int indentation = 0);
 void print(const glm::mat4 & data, std::ostream & out = std::cout, int indentation = 0);
+void print_matrix(const float* data, std::ostream & out = std::cout, int indentation = 0);
 void print(const glm::quat & data, std::ostream & out = std::cout, int indentation = 0);
 }

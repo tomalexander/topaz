@@ -111,6 +111,9 @@ namespace topaz
         glBufferData(GL_ARRAY_BUFFER, size_per_vertex*num_verticies, vert_data, GL_STATIC_DRAW);
         CHECK_GL_ERROR("Buffer Data");
         
+        GLint tmp = 0;
+        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &tmp);
+        std::cout << "GL_MAX_VERTEX_ATTRIBS: " << tmp << "\n";
 
         unsigned int offset = 0;
         //Position
@@ -146,6 +149,7 @@ namespace topaz
         u8 current_index = 4;
         if (has_joints)
         {
+            std::cout << num_joints_per_vertex << "\n";
             for (int x = 0; x < num_joints_per_vertex; x+=4)
             {
                 if (x+4 > num_joints_per_vertex) //less than 4 remaining
