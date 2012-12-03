@@ -117,6 +117,7 @@ namespace topaz
             {
                 if (pos.first != order_char && order_char != 't' && order_char != 's')
                     continue;
+                //Calculate the frame
                 float time_for_frame = 1.0f / ((float) pos.second.size());
                 float frame_number_float = seconds / time_for_frame;
                 int pre_frame_ind = floor(frame_number_float);
@@ -138,34 +139,28 @@ namespace topaz
                         post_frame_ind = 0;
                     percent_to_post = 0.0f;
                 }
-                
+
+                float value_for_frame;
+                if (pos.second.size() == 1)
+                {
+                    value_for_frame = pos.second[pre_frame_ind];
+                } else {
+                    value_for_frame = glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post);
+                }
+
+
                 if (order_char == 't')
                 {
                     switch (pos.first)
                     {
                       case 'x':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(pos.second[pre_frame_ind], 0, 0));
-                        } else {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 0, 0));
-                        }
+                        tmp_transform = glm::translate(tmp_transform, glm::vec3(value_for_frame, 0, 0));
                         break;
                       case 'y':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, pos.second[pre_frame_ind], 0));
-                        } else {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 0));
-                        }
+                        tmp_transform = glm::translate(tmp_transform, glm::vec3(0, value_for_frame, 0));
                         break;
                       case 'z':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, pos.second[pre_frame_ind]));
-                        } else {
-                            tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post)));
-                        }
+                        tmp_transform = glm::translate(tmp_transform, glm::vec3(0, 0, value_for_frame));
                         break;
                       default:
                         break;
@@ -175,28 +170,13 @@ namespace topaz
                     switch (pos.first)
                     {
                       case 'i':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(pos.second[pre_frame_ind], 1.0f, 1.0f));
-                        } else {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 1, 1));
-                        }
+                        tmp_transform = glm::scale(tmp_transform, glm::vec3(value_for_frame, 1.0f, 1.0f));
                         break;
                       case 'j':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, pos.second[pre_frame_ind], 1));
-                        } else {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), 1));
-                        }
+                        tmp_transform = glm::scale(tmp_transform, glm::vec3(1, value_for_frame, 1));
                         break;
                       case 'k':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, pos.second[pre_frame_ind]));
-                        } else {
-                            tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post)));
-                        }
+                        tmp_transform = glm::scale(tmp_transform, glm::vec3(1, 1, value_for_frame));
                         break;
                       default:
                         break;
@@ -205,28 +185,13 @@ namespace topaz
                     switch(pos.first)
                     {
                       case 'h':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[pre_frame_ind], glm::vec3(0, 1, 0));
-                        } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), glm::vec3(0, 1, 0));
-                        }
+                        tmp_transform = glm::rotate(tmp_transform, value_for_frame, glm::vec3(0, 1, 0));
                         break;
                       case 'p':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[pre_frame_ind], glm::vec3(1, 0, 0));
-                        } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), glm::vec3(1, 0, 0));
-                        }
+                        tmp_transform = glm::rotate(tmp_transform, value_for_frame, glm::vec3(1, 0, 0));
                         break;
                       case 'r':
-                        if (pre_frame_ind == 0)
-                        {
-                            tmp_transform = glm::rotate(tmp_transform, pos.second[pre_frame_ind], glm::vec3(0, 0, 1));
-                        } else {
-                            tmp_transform = glm::rotate(tmp_transform, glm::lerp(pos.second[pre_frame_ind], pos.second[post_frame_ind], percent_to_post), glm::vec3(0, 0, 1));
-                        }
+                        tmp_transform = glm::rotate(tmp_transform, value_for_frame, glm::vec3(0, 0, 1));
                         break;
                       default:
                         std::cerr << "Unrecognized degree of freedom " << pos.first << "\n";
@@ -234,7 +199,7 @@ namespace topaz
                 }
             }
         }
-
         return tmp_transform;
     }
 }
+

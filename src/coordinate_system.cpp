@@ -165,6 +165,24 @@ namespace topaz
                 {
                     node->name = "r";
                 }
+                // else if (system == ZUP && node->name == "j")
+                // {
+                //     node->name = "k";
+                // }
+                // else if (system == ZUP && node->name == "k")
+                // {
+                //                         negate_v(node);
+                //     node->name = "j";
+                // }
+                // else if (system == ZUP && node->name == "y")
+                // {
+                //     node->name = "z";
+                // }
+                // else if (system == ZUP && node->name == "z")
+                // {
+                //     negate_v(node);
+                //     node->name = "y";
+                // }
             }
         }
     }
