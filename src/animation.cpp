@@ -115,17 +115,21 @@ namespace topaz
         {
             for (const pair<char, vector<float> > & pos : an_joint->positions)
             {
-                
                 if (pos.first != order_char && order_char != 't' && order_char != 's')
                     continue;
                 float time_for_frame = 1.0f / ((float) pos.second.size());
                 float frame_number_float = seconds / time_for_frame;
                 int pre_frame_ind = floor(frame_number_float);
                 int post_frame_ind = pre_frame_ind + 1;
+                if (pre_frame_ind == pos.second.size())
+                {
+                    pre_frame_ind = 0;
+                    post_frame_ind = 1;
+                }
                 if (pre_frame_ind != 0 && post_frame_ind == pos.second.size())
                     post_frame_ind = 0;
                 float percent_to_post = frame_number_float - ((float)pre_frame_ind);
-
+                
                 if (progress_is_frame_number)
                 {
                     pre_frame_ind = (pos.second.size() == 1 ? 0 : animation_progress);

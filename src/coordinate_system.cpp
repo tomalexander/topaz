@@ -118,18 +118,7 @@ namespace topaz
                 queue.push_back(child);
         
             coordinate_system system = detect_coordinate_system(node);
-            if (false && system == YUP && (node->tag == "Vertex" || node->tag == "Normal"))
-            {
-                float x,y,z;
-                stringstream tmp(node->content);
-                tmp >> x >> y >> z;
-            
-                stringstream out;
-                out << x << " " << z << " " << -y;
-            
-                node->content = out.str();
-            }
-            else if (node->tag == "Matrix4") {
+            if (node->tag == "Matrix4") {
                 stringstream tmp(node->content);
                 glm::mat4 mat(1.0f);
                 for (int i = 0; i < 16; ++i)
@@ -139,8 +128,7 @@ namespace topaz
                     mat[i%4][i/4] = x;
                 }
                 mat = glm::transpose(mat);
-                // if (system == ZUP)
-                //     mat = fix_z_up_matrix * mat;
+                
                 stringstream out;
                 for (int i = 0; i < 16; ++i)
                 {
