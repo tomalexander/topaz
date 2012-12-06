@@ -2,6 +2,11 @@ solution("topaz")
 configurations({"Debug", "Release", "Static", "StaticDebug"})
 flags {"NoRTTI"}
 
+if os.is("bsd") then
+   includedirs {"/usr/local/include"}
+   includedirs {"/usr/src/contrib/libc++/include/"}
+end
+
 configuration("Debug")
 flags({"Symbols"})
 
