@@ -23,6 +23,7 @@
 #include "coordinate_system.h"
 #include "panda_node.h"
 #include <sstream>
+#include <algorithm>
 
 using std::stringstream;
 

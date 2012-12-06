@@ -26,8 +26,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <SFML/OpenGL.hpp>
 #include <glm/glm.hpp>
+#include "topaz.h"
 
 using std::cout;
 using std::string;

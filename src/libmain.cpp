@@ -41,7 +41,8 @@ using std::unordered_multimap;
 
 namespace topaz
 {
-    sf::Window* window = NULL;
+    SDL_Window* window = NULL;
+    SDL_GLContext maincontext;
     int window_width;
     int window_height;
     extern vector<gl_program*> shader_ids;
@@ -49,7 +50,7 @@ namespace topaz
     unordered_map<string, GLuint> textures;
     void init_glew();
 
-    list<pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > > event_handlers;
+    list<pair<u8, unordered_map<u64, function< bool(const SDL_Event&)> > > > event_handlers;
     unordered_multimap<u64, function< void(int)> > begin_update_functions;
     unordered_multimap<u64, function< void(int)> > pre_draw_functions;
     unordered_multimap<u64, function< void(int)> > post_draw_functions;
@@ -74,7 +75,15 @@ namespace topaz
         lua_init();
     }
 
-    void close_window() { if (window != NULL) {window->close(); window = NULL;} }
+    void close_window()
+    {
+        if (window != NULL)
+        {
+            SDL_GL_DeleteContext(maincontext);
+            SDL_DestroyWindow(window);
+            window = NULL;
+        }
+    }
 
     void cleanup()
     {
@@ -94,19 +103,34 @@ namespace topaz
 
         //Clean up SFML's window
         close_window();
+        SDL_Quit();
         exit(EXIT_SUCCESS);
     }
 
-    sf::Window* create_window(int width, int height, const string & title)
+    SDL_Window* create_window(int width, int height, const string & title)
     {
         close_window();
         window_width = width;
         window_height = height;
-        window = new sf::Window(sf::VideoMode(width, height, 32), title);
-        window->setActive();
-        window->display();
+        if (SDL_Init(SDL_INIT_VIDEO) < 0) /* Initialize SDL's Video subsystem */
+            std::cerr << "Unable to initialize SDL\n";
+
+        /* Request opengl 3.2 context.
+         * SDL doesn't have the ability to choose which profile at this time of writing,
+         * but it should default to the core profile */
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+        window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+        if (!window)
+            std::cerr << "Unable to create window\n";
+        maincontext = SDL_GL_CreateContext(window);
+        /* This makes our buffer swap syncronized with the monitor's vertical refresh */
+        SDL_GL_SetSwapInterval(1);
+        // window = new sf::Window(sf::VideoMode(width, height, 32), title);
+        // window->setActive();
+        // window->display();
 #if LIMIT_FRAMES > -1
-        window->setFramerateLimit(LIMIT_FRAMES);
+        //window->setFramerateLimit(LIMIT_FRAMES);
 #endif
         CHECK_GL_ERROR("Init Window");
         init_glew();
@@ -188,13 +212,12 @@ namespace topaz
         if (window == NULL)
             create_window();
 
-        static sf::Clock clock;
         double average_time_elapsed = 0;
         int time_elapsed;
-        int last_tick = clock.getElapsedTime().asMilliseconds();
-        while (window->isOpen())
+        u32 last_tick = SDL_GetTicks();
+        while (window)
         {
-            int new_tick = clock.getElapsedTime().asMilliseconds();
+            u32 new_tick = SDL_GetTicks();
             time_elapsed = new_tick - last_tick;
             average_time_elapsed += time_elapsed / 1000.0f;
             average_time_elapsed /= 2;
@@ -203,10 +226,10 @@ namespace topaz
                 cur.second(time_elapsed);
 
             //Process Events
-            sf::Event event;
-            while (window->pollEvent(event))
-                for (pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > & cur : event_handlers)
-                    for (pair<u64, function< bool(sf::Event&)> > child : cur.second)
+            SDL_Event event;
+            while (SDL_PollEvent(&event))
+                for (pair<u8, unordered_map<u64, function< bool(const SDL_Event&)> > > & cur : event_handlers)
+                    for (pair<u64, function< bool(SDL_Event&)> > child : cur.second)
                     if (child.second(event))
                         break;
 
@@ -227,7 +250,7 @@ namespace topaz
             glBindVertexArray(0);
             glUseProgram(0);
 
-            window->display();
+            SDL_GL_SwapWindow(window);
             last_tick = new_tick;
 
             for (gameobject* cur : grim_reaper_list)
@@ -255,7 +278,7 @@ namespace topaz
      * @param func The function to receive events
      * @param priority The priority, 0 gets first access at events, 255 gets last access
      */
-    void add_event_handler(const function< bool(const sf::Event&)> & func, u8 priority)
+    void add_event_handler(const function< bool(const SDL_Event&)> & func, u8 priority)
     {
         add_event_handler(-1, func, priority);
     }
@@ -267,7 +290,7 @@ namespace topaz
      * @param func The function to receive events
      * @param priority The priority, 0 gets first access at events, 255 gets last access
      */
-    void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func, u8 priority)
+    void add_event_handler(unsigned long owner, const function< bool(const SDL_Event&)> & func, u8 priority)
     {
         for (auto it = event_handlers.begin(); it != event_handlers.end(); ++it)
         {
@@ -278,14 +301,14 @@ namespace topaz
                 return;
             } else if (it->first > priority) {
                 //First of its priority
-                unordered_map<u64, function< bool(const sf::Event&)> > new_map;
+                unordered_map<u64, function< bool(const SDL_Event&)> > new_map;
                 new_map.insert(make_pair(owner, func));
                 event_handlers.insert(it, make_pair(priority, new_map));
                 return;
             }
         }
         //Worst priority or empty list
-        unordered_map<u64, function< bool(const sf::Event&)> > new_map;
+        unordered_map<u64, function< bool(const SDL_Event&)> > new_map;
         new_map.insert(make_pair(owner, func));
         event_handlers.push_back(make_pair(priority, new_map));
     }
@@ -367,7 +390,7 @@ namespace topaz
 
     inline void remove_event_handler(u64 owner)
     {
-        for (pair<u8, unordered_map<u64, function< bool(const sf::Event&)> > > & cur : event_handlers)
+        for (pair<u8, unordered_map<u64, function< bool(const SDL_Event&)> > > & cur : event_handlers)
             cur.second.erase(owner);
     }
 

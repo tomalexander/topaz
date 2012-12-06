@@ -27,8 +27,6 @@
 #include <vector>
 #include <string>
 #include <GL/glew.h>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
 #include <iostream>
 #include "types.h"
 

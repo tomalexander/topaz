@@ -42,8 +42,8 @@
 using std::unordered_map;
 
 void game_loop();
-bool handle_keypress(const sf::Event & event);
-bool handle_resize(const sf::Event & event);
+bool handle_keypress(const SDL_Event & event);
+bool handle_resize(const SDL_Event & event);
 void handle_keyboard(int milliseconds);
 void handle_mouse_move();
 void print_fps(int milliseconds);
@@ -116,13 +116,13 @@ void print_fps(int milliseconds)
     }
 }
 
-bool handle_keypress(const sf::Event & event)
+bool handle_keypress(const SDL_Event & event)
 {
-    if (event.type != sf::Event::KeyPressed)
+    if (event.type != SDL_KEYDOWN)
         return false;
-    switch (event.key.code)
+    switch (event.key.keysym.sym)
     {
-      case sf::Keyboard::Escape:
+      case SDLK_ESCAPE:
         topaz::cleanup();
         return true;
         break;
@@ -135,61 +135,62 @@ bool handle_keypress(const sf::Event & event)
 void handle_keyboard(int time_elapsed)
 {
     float seconds = ((float)time_elapsed) / 1000.0f;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    u8* keys = SDL_GetKeyboardState(NULL);
+    if (keys[SDLK_LEFT])
     {
         camera.slide(glm::vec3(10.0f*seconds, 0.0f, 0.0f));
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    if (keys[SDLK_RIGHT])
     {
         camera.slide(glm::vec3(-10.0f*seconds, 0.0f, 0.0f));
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    if (keys[SDLK_UP])
     {
         camera.slide(glm::vec3(0.0f, 0.0f, 10.0f*seconds));
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    if (keys[SDLK_DOWN])
     {
         camera.slide(glm::vec3(0.0f, 0.0f, -10.0f*seconds));
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+    if (keys[SDLK_q])
     {
         camera.slide(glm::vec3(0.0f, 10.0f*seconds, 0.0f));
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+    if (keys[SDLK_e])
     {
         camera.slide(glm::vec3(0.0f, -10.0f*seconds, 0.0f));
     }
 }
 
-bool handle_resize(const sf::Event & event)
+bool handle_resize(const SDL_Event & event)
 {
-    if (event.type != sf::Event::Resized)
-        return false;
-    topaz::resize_window(event.size.width, event.size.height);
-    glm::perspective(60.0f, ((float)event.size.width)/((float)event.size.height), 0.1f, 100.f);
+    // if (event.type != sf::Event::Resized)
+    //     return false;
+    // topaz::resize_window(event.size.width, event.size.height);
+    // glm::perspective(60.0f, ((float)event.size.width)/((float)event.size.height), 0.1f, 100.f);
     return true;
 }
 
 void handle_mouse_move()
 {
-    sf::Vector2i mouse_position = sf::Mouse::getPosition(*topaz::window);
+    // sf::Vector2i mouse_position = sf::Mouse::getPosition(*topaz::window);
 
-    sf::Vector2u size = topaz::window->getSize();
+    // sf::Vector2u size = topaz::window->getSize();
 
-    int center_window_x = size.x / 2;
-    int center_window_y = size.y / 2;
+    // int center_window_x = size.x / 2;
+    // int center_window_y = size.y / 2;
 
-    int diff_x = mouse_position.x - center_window_x;
-    int diff_y = mouse_position.y - center_window_y;
+    // int diff_x = mouse_position.x - center_window_x;
+    // int diff_y = mouse_position.y - center_window_y;
 
-    float rot_yaw = ((float)diff_x) * 0.001;
-    float rot_pitch = ((float)diff_y) * 0.001;
+    // float rot_yaw = ((float)diff_x) * 0.001;
+    // float rot_pitch = ((float)diff_y) * 0.001;
 
-    //c2.yaw(rot_yaw);
-    //c2.pitch(rot_pitch);
+    // //c2.yaw(rot_yaw);
+    // //c2.pitch(rot_pitch);
 
-    sf::Vector2i window_center(center_window_x, center_window_y);
+    // sf::Vector2i window_center(center_window_x, center_window_y);
 
-    sf::Mouse::setPosition(window_center, *topaz::window);
+    // sf::Mouse::setPosition(window_center, *topaz::window);
 }
 

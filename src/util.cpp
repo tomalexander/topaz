@@ -25,10 +25,9 @@
 #include <stdio.h>
 #include "util.h"
 #include "physfs.h"
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-#include <SFML/Graphics/Image.hpp>
+#include "topaz.h"
 #include <unordered_map>
+#include <SDL2/SDL_image.h>
 
 using std::unordered_map;
 
@@ -175,13 +174,14 @@ namespace topaz
         }
 
         long file_size;
-        sf::Image img;
         char* file_data = read_fully(("textures/"+name).c_str(), file_size);
-        if (!img.loadFromMemory(file_data, file_size))
+        SDL_RWops* rw = SDL_RWFromMem(file_data, file_size);
+        SDL_Surface* img = IMG_Load_RW(rw, 0);
+        if (!img)
         {
             std::cerr << "Failed to load texture: " << name << std::endl;
         }
-        img.flipVertically();
+        // img.flipVertically();
         GLuint ret;
         glGenTextures(1, &ret);
         CHECK_GL_ERROR("Gen Texture");
@@ -192,11 +192,13 @@ namespace topaz
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         CHECK_GL_ERROR("Tex Parameters");
-        glTexImage2D(GL_TEXTURE_2D, 0, pixel_format, img.getSize().x, img.getSize().y, 0, pixel_format, GL_UNSIGNED_BYTE, img.getPixelsPtr());
+        // glTexImage2D(GL_TEXTURE_2D, 0, pixel_format, img.getSize().x, img.getSize().y, 0, pixel_format, GL_UNSIGNED_BYTE, img.getPixelsPtr());
+        glTexImage2D(GL_TEXTURE_2D, 0, img->format->BytesPerPixel, img->w, img->h, 0, pixel_format, GL_UNSIGNED_BYTE, img->pixels);
         CHECK_GL_ERROR("Copying Image Data");
 
         delete[] file_data;
         textures[name] = ret;
+        SDL_FreeSurface(img);
         return ret;
     }
 

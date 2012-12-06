@@ -26,8 +26,7 @@
 #include <GL/glew.h>
 #include "def.h"
 #include "types.h"
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
+#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 #include <cstdarg>
@@ -52,7 +51,7 @@ namespace topaz
     class model;
 
     typedef void(*cleanup_func_ptr)(void);
-    extern sf::Window* window;
+    extern SDL_Window* window;
     extern int window_width;
     extern int window_height;
     #ifndef LIBMAIN_CPP_
@@ -62,7 +61,7 @@ namespace topaz
     void init(char* argv0, int width = 800, int height = 600, const string & title = "Topaz Window");
     void cleanup();
 
-    sf::Window* create_window(int width = 800, int height = 600, const string & title = "Topaz Window");
+    SDL_Window* create_window(int width = 800, int height = 600, const string & title = "Topaz Window");
     void resize_window(int new_width = window_width, int new_height = window_height);
 
     gl_program* create_program(const string & program_name, const string & fragment_shader, const string & vertex_shader);
@@ -75,8 +74,8 @@ namespace topaz
     model* load_from_egg(const string & model_name);
     void lua_init(const string & script_name = "main.lua");
 
-    void add_event_handler(const function< bool(const sf::Event&)> & func, u8 priority = 128);
-    void add_event_handler(unsigned long owner, const function< bool(const sf::Event&)> & func, u8 priority = 128);
+    void add_event_handler(const function< bool(const SDL_Event&)> & func, u8 priority = 128);
+    void add_event_handler(unsigned long owner, const function< bool(const SDL_Event&)> & func, u8 priority = 128);
     void add_begin_update_function(const function< void(int)> & func);
     void add_begin_update_function(unsigned long owner, const function< void(int)> & func);
     void add_pre_draw_function(const function< void(int)> & func);

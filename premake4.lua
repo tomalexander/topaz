@@ -41,11 +41,12 @@ function link_library_deps()
    links {"c"}
    configuration {}
 
-   link_sfml()
+--   link_sfml()
+   link_sdl2()
    link_opengl()
 end
 
-function link_sfml()
+function link_glew()
    configuration "windows"
    links {"glew32"}
    configuration {"linux", "Debug or Release"}
@@ -53,6 +54,10 @@ function link_sfml()
    configuration {"linux", "Static*"}
    linkoptions {"/usr/lib/libGLEW.a"}
    configuration {}
+end
+
+function link_sfml()
+   link_glew()
 
    configuration "Debug or Release"
    links {"sfml-window", "sfml-graphics", "sfml-audio", "sfml-network", "sfml-system"}
@@ -69,6 +74,11 @@ function link_sfml()
    configuration {"linux", "Static*"}
    linkoptions {"/usr/lib/librt.a", "/usr/lib/libjpeg.a"}
    configuration {}
+end
+
+function link_sdl2()
+   link_glew()
+   links {"SDL2", "SDL2_image"}
 end
 
 function link_opengl()
