@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include "util.h"
 #include "egg_parser.h"
-#include "shaders.h"
 #include <unordered_map>
 #include <sstream>
 #include "gl_program.h"
@@ -44,7 +43,6 @@ namespace topaz
     sf::Window* window = NULL;
     int window_width;
     int window_height;
-    extern vector<gl_program*> shader_ids;
 
     unordered_map<string, GLuint> textures;
     void init_glew();
@@ -80,9 +78,6 @@ namespace topaz
     {
         //Clean up shaders
         glUseProgram(0);
-        for (gl_program* cur : shader_ids)
-            delete cur;
-        shader_ids.clear();
 
         std::cout << "Running " << cleanup_functions.size() << " Cleanup Functions\n";
         for (const pair<unsigned long, function< void()> > & func : cleanup_functions)

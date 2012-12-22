@@ -38,6 +38,34 @@ using std::string;
 
 namespace topaz
 {
+    class gl_program_id
+    {
+      public:
+        gl_program_id(u32 num_joints, u32 num_joints_per_vertex, bool uses_color, bool uses_texture, bool uses_joints, bool is_2d, bool multitex) :
+            num_joints(num_joints),
+            num_joints_per_vertex(num_joints_per_vertex),
+            uses_color(uses_color),
+            uses_texture(uses_texture),
+            uses_joints(uses_joints),
+            is_2d(is_2d),
+            multitex(multitex)
+        {}
+        bool operator==(const gl_program_id & other) const
+        {
+            return num_joints == other.num_joints && num_joints_per_vertex == other.num_joints_per_vertex && uses_color == other.uses_color && uses_texture == other.uses_texture && uses_joints == other.uses_joints && is_2d == other.is_2d && multitex == other.multitex;
+        }
+        u32 num_joints;
+        u32 num_joints_per_vertex;
+        struct {
+            bool uses_color : 1;
+            bool uses_texture : 1;
+            bool uses_joints : 1;
+            bool is_2d : 1;
+            bool multitex : 1;
+        };
+      private:
+    };
+
     class gl_program
     {
       public:
@@ -56,8 +84,8 @@ namespace topaz
             bool multitex : 1;
         };
 
-        int num_joints;
-        int num_joints_per_vertex;
+        u32 num_joints;
+        u32 num_joints_per_vertex;
         u8 num_textures;
 
         void set_num_joints(int _num_joints);
@@ -69,6 +97,7 @@ namespace topaz
         string get_joint_membership(int index);
     };
 
+    gl_program* get_program(const gl_program_id & spec);
     void check_shader(GLuint shader);
 }
 #endif

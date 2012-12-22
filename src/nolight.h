@@ -24,7 +24,6 @@
 #define NOLIGHT_H_
 
 #include "light.h"
-#include "shaders.h"
 
 namespace topaz
 {

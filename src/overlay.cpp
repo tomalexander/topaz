@@ -76,13 +76,7 @@ namespace topaz
     void overlay::move_to_gpu()
     {
         std::cout << "Making Overlay Shader\n";
-        gl_program* new_prog = new gl_program();
-        new_prog->uses_color = false;
-        new_prog->uses_texture = true;
-        new_prog->uses_joints = false;
-        new_prog->is_2d = true;
-        new_prog->create_program();
-        program = new_prog;
+        program = get_program(gl_program_id(0, 0, false, true, false, true, false));
 
         glGenVertexArrays(1, &vao);
         CHECK_GL_ERROR("Gen Vertex Array");

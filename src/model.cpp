@@ -98,7 +98,7 @@ namespace topaz
         root_joint = NULL;
         multitex = false;
         if (color_program == NULL)
-            color_program = get_program("color");
+            color_program = get_program(gl_program_id(0, 0, true, false, false, false, false));;
     }
 
     model::~model()
@@ -111,8 +111,6 @@ namespace topaz
         glDeleteBuffers(2, &buffers[1]);
         glDeleteVertexArrays(1, &buffers[0]);
         delete root_joint;
-        if (model_program != NULL)
-            delete model_program;
     }
 
     void model::set_num_verticies(size_t num)
@@ -129,16 +127,7 @@ namespace topaz
 
     void model::move_to_gpu()
     {
-        //has_joints = false;
-        gl_program* new_prog = new gl_program();
-        new_prog->set_num_joints(num_joints);
-        new_prog->num_joints_per_vertex = num_joints_per_vertex;
-        new_prog->uses_color = uses_color;
-        new_prog->uses_texture = has_texture;
-        new_prog->uses_joints = has_joints;
-        new_prog->multitex = multitex;
-        new_prog->create_program();
-        model_program = new_prog;
+        model_program = get_program(gl_program_id(num_joints, num_joints_per_vertex, uses_color, has_texture, has_joints, false, multitex));
 
 
         glGenVertexArrays(1, &vao);

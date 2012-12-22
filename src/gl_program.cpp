@@ -23,12 +23,64 @@
 #include "def.h"
 #include "gl_program.h"
 #include <sstream>
-#include "shaders.h"
+#include <unordered_map>
+#include "topaz.h"
 
 using std::stringstream;
 
+namespace std
+{
+   template <>
+   struct hash<topaz::gl_program_id> : public unary_function<topaz::gl_program_id, size_t>
+   {
+       size_t operator()(const topaz::gl_program_id& v) const
+       {
+           return 0;
+           // hash<string> hash_fn;
+           // size_t ret = hash_fn(get<0>(v));
+           // for (const string & cur : get<1>(v))
+           //     ret ^= hash_fn(cur);
+           // return ret;
+       }
+   };
+}
+
+namespace
+{
+    std::unordered_map<topaz::gl_program_id, topaz::gl_program*> loaded_programs;
+}
+
 namespace topaz
 {
+    /** 
+     * If a program of the given specifications has already been generated, return it. Otherwise, generate one and return it
+     *
+     * @param spec The specifications for the program
+     *
+     * @return A reference to the program for the given specification
+     */
+    gl_program* get_program(const gl_program_id & spec)
+    {
+        auto it = loaded_programs.find(spec);
+        if (it == loaded_programs.end())
+        {
+            gl_program* ret = new gl_program;
+            ret->uses_color = spec.uses_color;
+            ret->uses_texture = spec.uses_texture;
+            ret->uses_joints = spec.uses_joints;
+            ret->is_2d = spec.is_2d;
+            ret->multitex = spec.multitex;
+            ret->set_num_joints(spec.num_joints);
+            ret->num_joints_per_vertex = spec.num_joints_per_vertex;
+            ret->create_program();
+            loaded_programs.insert(std::make_pair(spec, ret));
+            add_cleanup_function([ret]() {delete ret;});
+            return ret;
+        } else {
+            return it->second;
+        }
+    }
+
     gl_program::gl_program()
     {
         uses_color = false;
