@@ -411,6 +411,7 @@ namespace topaz
     model* get_model(const string & model_name, const std::initializer_list<string> & animation_names)
     {
         vector<string> animations(animation_names);
+        std::sort(animations.begin(), animations.end());
         auto it = loaded_models.find(make_tuple(model_name, animations));
         if (it == loaded_models.end())
         {
