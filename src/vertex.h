@@ -38,6 +38,8 @@ namespace topaz
 {
     class point;
 
+    #pragma pack(push)
+    #pragma pack(1)
     struct texture_data
     {
         float u, v;
@@ -77,6 +79,7 @@ namespace topaz
         vector<int> joint_indicies;
         vector<float> joint_membership;
     };
+    #pragma pack(pop)
 
     inline size_t count_num_textures(const vector<vertex> & verticies)
     {
