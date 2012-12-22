@@ -71,8 +71,8 @@ namespace topaz
 
     void check_gl_error(const string & error_message, long line_number, const string & file_name);
     void game_loop(camera& C, glm::mat4& P);
-    model* load_from_egg(const string & model_name, const std::initializer_list<string> & animation_names);
-    model* load_from_egg(const string & model_name);
+    // model* load_from_egg(const string & model_name, const std::initializer_list<string> & animation_names);
+    // model* load_from_egg(const string & model_name);
     void lua_init(const string & script_name = "main.lua");
 
     void add_event_handler(const function< bool(const sf::Event&)> & func, u8 priority = 128);

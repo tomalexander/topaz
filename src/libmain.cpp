@@ -84,6 +84,7 @@ namespace topaz
             delete cur;
         shader_ids.clear();
 
+        std::cout << "Running " << cleanup_functions.size() << " Cleanup Functions\n";
         for (const pair<unsigned long, function< void()> > & func : cleanup_functions)
         {
             func.second();

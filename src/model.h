@@ -104,6 +104,7 @@ namespace topaz
     };
 
     model* get_model(const string & model_name);
+    model* get_model(const string & model_name, const std::initializer_list<std::string> & animation_names);
 }
 
 #endif

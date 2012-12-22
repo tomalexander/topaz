@@ -30,9 +30,56 @@
 #include <cstring>
 #include "print.h"
 
+namespace std
+{
+   template <>
+   struct hash<tuple<string, vector<string> >> : public unary_function<tuple<string, vector<string> >, size_t>
+   {
+       size_t operator()(const tuple<string, vector<string> >& v) const
+       {
+           hash<string> hash_fn;
+           size_t ret = hash_fn(get<0>(v));
+           for (const string & cur : get<1>(v))
+               ret ^= hash_fn(cur);
+           return ret;
+       }
+   };
+}
+
 namespace
 {
-    std::unordered_map<string, topaz::model*> loaded_models;
+    std::unordered_map<std::tuple<string, std::vector<string> >, topaz::model*> loaded_models;
+
+    topaz::model* load_from_egg(const string & model_name)
+    {
+        #if PRINT_SHADERS == 1
+        std::cout << "LOADING: " << model_name << "\n";
+        #endif
+        topaz::panda_node* model_egg = topaz::load_model("models/" + model_name + ".egg.txt");
+        topaz::model* ret = topaz::panda_node::to_model(model_egg);
+        delete model_egg;
+        
+        return ret;
+    }
+
+    topaz::model* load_from_egg(const string & model_name, const std::initializer_list<string> & animation_names)
+    {
+        #if PRINT_SHADERS == 1
+        std::cout << "LOADING: " << model_name << "\n";
+        #endif
+        topaz::panda_node* model_egg = topaz::load_model("models/" + model_name + ".egg.txt");
+        topaz::model* ret = topaz::panda_node::to_model(model_egg);
+        delete model_egg;
+        
+        for (const string & cur : animation_names)
+        {
+            topaz::panda_node* animation_egg = topaz::load_animation("animations/" + cur + ".egg.txt");
+            topaz::animation* ani = topaz::panda_node::to_animation(animation_egg);
+            ret->animations.insert(make_pair(cur, ani));
+        }
+
+        return ret;
+    }
 }
 
 namespace topaz
@@ -52,7 +99,6 @@ namespace topaz
         multitex = false;
         if (color_program == NULL)
             color_program = get_program("color");
-        add_cleanup_function([&](){delete this;});
     }
 
     model::~model()
@@ -352,11 +398,12 @@ namespace topaz
      */
     model* get_model(const string & model_name)
     {
-        auto it = loaded_models.find(model_name);
+        static vector<string> no_animations;
+        auto it = loaded_models.find(make_tuple(model_name, no_animations));
         if (it == loaded_models.end())
         {
             model* ret = load_from_egg(model_name);
-            loaded_models.insert(make_pair(model_name, ret));
+            loaded_models.insert(make_pair(make_tuple(model_name, no_animations), ret));
             add_cleanup_function([ret]() {delete ret;});
             return ret;
         } else {
@@ -364,35 +411,27 @@ namespace topaz
         }
     }
 
-    model* load_from_egg(const string & model_name)
+    /** 
+     * Load a model from the model name and list of animations. If it was already loaded then return that
+     *
+     * @param model_name The model name without the file extension or path
+     * @param animation_names The animation names without file extension or path
+     *
+     * @return The model
+     */
+    model* get_model(const string & model_name, const std::initializer_list<string> & animation_names)
     {
-        #if PRINT_SHADERS == 1
-        std::cout << "LOADING: " << model_name << "\n";
-        #endif
-        panda_node* model_egg = load_model("models/" + model_name + ".egg.txt");
-        model* ret = panda_node::to_model(model_egg);
-        delete model_egg;
-        
-        return ret;
-    }
-
-    model* load_from_egg(const string & model_name, const std::initializer_list<string> & animation_names)
-    {
-        #if PRINT_SHADERS == 1
-        std::cout << "LOADING: " << model_name << "\n";
-        #endif
-        panda_node* model_egg = load_model("models/" + model_name + ".egg.txt");
-        model* ret = panda_node::to_model(model_egg);
-        delete model_egg;
-        
-        for (const string & cur : animation_names)
+        vector<string> animations(animation_names);
+        auto it = loaded_models.find(make_tuple(model_name, animations));
+        if (it == loaded_models.end())
         {
-            panda_node* animation_egg = load_animation("animations/" + cur + ".egg.txt");
-            animation* ani = panda_node::to_animation(animation_egg);
-            ret->animations.insert(make_pair(cur, ani));
+            model* ret = load_from_egg(model_name, animation_names);
+            loaded_models.insert(make_pair(make_tuple(model_name, animations), ret));
+            add_cleanup_function([ret]() {delete ret;});
+            return ret;
+        } else {
+            return it->second;
         }
-
-        return ret;
     }
 
     void model::write_to_gnu_plot(std::ostream & out)

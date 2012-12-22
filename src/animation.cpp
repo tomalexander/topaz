@@ -67,7 +67,7 @@ namespace topaz
     panda_node* load_animation(const string & file_path)
     {
         long file_data_size;
-        char* file_data = read_fully(file_path.c_str(), file_data_size);
+        char* file_data = read_fully_string(file_path.c_str(), file_data_size);
         if (file_data == NULL)
             return NULL;
         

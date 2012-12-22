@@ -35,7 +35,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(sqt* _parent_transform, const glm::vec4 & _color)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt(_parent_transform);
         color = _color;
         add_draw_function(id, std::bind(&topaz::sphere_primitive::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -44,7 +44,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(sqt* _parent_transform, const glm::vec4 & _color, int milliseconds)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt(_parent_transform);
         time_left = milliseconds;
         color = _color;
@@ -55,7 +55,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(const glm::vec3 & position, float scale, const glm::vec4 & _color)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x, position.y, position.z);
         transform->scale(scale);
@@ -66,7 +66,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(const glm::vec3 & position, float scale, const glm::vec4 & _color, int milliseconds)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x, position.y, position.z);
         transform->scale(scale);
@@ -79,7 +79,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(sqt* _parent_transform)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt(_parent_transform);
         color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         add_draw_function(id, std::bind(&topaz::sphere_primitive::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -88,7 +88,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(sqt* _parent_transform, float scale, const glm::vec4 & _color)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt(_parent_transform);
         color = _color;
         add_draw_function(id, std::bind(&topaz::sphere_primitive::draw, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -98,7 +98,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(sqt* _parent_transform, int milliseconds)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt(_parent_transform);
         time_left = milliseconds;
         color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -109,7 +109,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(const glm::vec3 & position, float scale)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x, position.y, position.z);
         transform->scale(scale);
@@ -120,7 +120,7 @@ namespace topaz
     sphere_primitive::sphere_primitive(const glm::vec3 & position, float scale, int milliseconds)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         transform = new sqt();
         transform->translateXYZ(position.x, position.y, position.z);
         transform->scale(scale);
@@ -155,7 +155,7 @@ namespace topaz
     void draw_sphere_single_frame(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P, camera* C, const glm::vec4 & color)
     {
         if (::sphere_model == nullptr)
-            ::sphere_model = load_from_egg("sphere");
+            ::sphere_model = get_model("sphere");
         ::sphere_model->prep_for_draw(M, V, P, C, ::sphere_model->model_program, NULL);
         glUniform4fv(::sphere_model->model_program->uniform_locations["RGBA"], 1, &(color[0]));
         ::sphere_model->draw();
