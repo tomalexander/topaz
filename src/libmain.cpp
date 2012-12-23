@@ -72,7 +72,7 @@ namespace topaz
         lua_init();
     }
 
-    void close_window() { if (window != NULL) {window->close(); window = NULL;} }
+    void close_window() { if (window != NULL) {window->close(); delete window; window = NULL;} }
 
     void cleanup()
     {

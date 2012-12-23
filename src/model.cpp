@@ -76,6 +76,7 @@ namespace
             topaz::panda_node* animation_egg = topaz::load_animation("animations/" + cur + ".egg.txt");
             topaz::animation* ani = topaz::panda_node::to_animation(animation_egg);
             ret->animations.insert(make_pair(cur, ani));
+            delete animation_egg;
         }
 
         return ret;
@@ -424,6 +425,11 @@ namespace topaz
         }
     }
 
+    /** 
+     * Generate the GNU Plot syntax of the model to the output stream
+     *
+     * @param out The output stream to write to
+     */
     void model::write_to_gnu_plot(std::ostream & out)
     {
         for (GLuint i = 0; i < num_indicies; i += 3)
