@@ -82,6 +82,7 @@ namespace topaz
         debug_level(1, "Running %lu Cleanup Functions\n", cleanup_functions.size());
         for (const pair<unsigned long, function< void()> > & func : cleanup_functions)
         {
+            // Storing function in a separate variable so if the function removes itself from the cleanup_functions hashmap it won't cause an issue
             auto tmp = func.second;
             tmp();
         }
