@@ -197,6 +197,7 @@ namespace topaz
 
         delete[] file_data;
         textures[name] = ret;
+        add_cleanup_function([ret]() {glDeleteTextures(1, &ret);});
         return ret;
     }
 

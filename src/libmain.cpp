@@ -82,7 +82,8 @@ namespace topaz
         std::cout << "Running " << cleanup_functions.size() << " Cleanup Functions\n";
         for (const pair<unsigned long, function< void()> > & func : cleanup_functions)
         {
-            func.second();
+            auto tmp = func.second;
+            tmp();
         }
 
         //Clean up virtual filesystem
