@@ -22,7 +22,6 @@
  */
 #ifndef DEF_H_
 #define DEF_H_
-#define PRINT_SHADERS 1
 
 /*
  * PHYSICS_METHOD controls how rigid body dynamics are handled.
@@ -37,9 +36,20 @@
 #define CLIP_BOX 1
 #define CLIP_BOX_SIZE 25
 
-#define PRINT_ID_ALLOCATION 0
 #define DRAW_COLLISION_SOLIDS 1
 // Set LIMIT_FRAMES to -1 for unlimited fps
 #define LIMIT_FRAMES 60
+
+//Debug Flags
+#define PRINT_ID_ALLOCATION (1 << 0)
+#define PRINT_SHADERS (1 << 1)
+
+#define ACTIVE_LEVEL 0
+#define debug_level(PRINT_LEVEL, ...) if (PRINT_LEVEL <= ACTIVE_LEVEL) printf(__VA_ARGS__)
+//#define ACTIVE_FLAGS (PRINT_ID_ALLOCATION | PRINT_SHADERS)
+#define ACTIVE_FLAGS (0)
+#define CHECK_FLAGS(PRINT_FLAGS) ((ACTIVE_FLAGS & PRINT_FLAGS) == PRINT_FLAGS)
+#define CHECK_FLAGS_ANY(PRINT_FLAGS) (ACTIVE_FLAGS & PRINT_FLAGS != 0)
+#define debug_flags(PRINT_FLAGS, ...) if (CHECK_FLAGS(PRINT_FLAGS)) printf(__VA_ARGS__)
 
 #endif

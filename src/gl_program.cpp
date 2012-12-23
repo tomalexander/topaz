@@ -263,10 +263,9 @@ namespace topaz
         
         string vertex_shader = generate_vertex_shader(uniforms);
         string fragment_shader = generate_fragment_shader(uniforms);
-        #if PRINT_SHADERS == 1
-        std::cout << "---------- Vertex Shader ----------\n" << vertex_shader << "\n";
-        std::cout << "---------- Fragment Shader ----------\n" << fragment_shader << "\n";
-        #endif
+        debug_flags(PRINT_SHADERS, "---------- Vertex Shader ----------\n%s\n", vertex_shader.c_str());
+        debug_flags(PRINT_SHADERS, "---------- Fragment Shader ----------\n%s\n", fragment_shader.c_str());
+        
         const char* _vertex_shader = vertex_shader.c_str();
         const char* _fragment_shader = fragment_shader.c_str();
 

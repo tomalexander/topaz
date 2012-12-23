@@ -26,12 +26,12 @@
 
 namespace
 {
-    unsigned long next_unique_id = 0;
+    u64 next_unique_id = 0;
 }
 
 namespace topaz
 {
-    unsigned long get_next_unique_id()
+    u64 get_next_unique_id()
     {
         return next_unique_id++;
     }
@@ -43,17 +43,13 @@ namespace topaz
 
     gameobject::~gameobject()
     {
-        #if PRINT_ID_ALLOCATION == 1
-        std::cout << "Deleted ID " << id << "\n";
-        #endif
+        debug_flags(PRINT_ID_ALLOCATION, "Deleted ID %" PRIu64 "\n", id);
         remove_handles(id);
     }
 
     void gameobject::get_id()
     {
         id = get_next_unique_id();
-        #if PRINT_ID_ALLOCATION == 1
-        std::cout << "Allocated ID " << id << "\n";
-        #endif
+        debug_flags(PRINT_ID_ALLOCATION, "Deleted ID %" PRIu64 "\n", id);
     }
 }

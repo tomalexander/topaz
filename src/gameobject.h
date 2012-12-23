@@ -28,7 +28,7 @@
 
 namespace topaz
 {
-    unsigned long get_next_unique_id();
+    u64 get_next_unique_id();
     class gameobject
     {
       public:

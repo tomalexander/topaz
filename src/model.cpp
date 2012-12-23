@@ -52,9 +52,7 @@ namespace
 
     topaz::model* load_from_egg(const string & model_name)
     {
-        #if PRINT_SHADERS == 1
-        std::cout << "LOADING: " << model_name << "\n";
-        #endif
+        debug_flags(PRINT_SHADERS, "LOADING: %s\n", model_name.c_str());
         topaz::panda_node* model_egg = topaz::load_model("models/" + model_name + ".egg.txt");
         topaz::model* ret = topaz::panda_node::to_model(model_egg);
         delete model_egg;
@@ -64,9 +62,7 @@ namespace
 
     topaz::model* load_from_egg(const string & model_name, const std::initializer_list<string> & animation_names)
     {
-        #if PRINT_SHADERS == 1
-        std::cout << "LOADING: " << model_name << "\n";
-        #endif
+        debug_flags(PRINT_SHADERS, "LOADING: %s\n", model_name.c_str());
         topaz::panda_node* model_egg = topaz::load_model("models/" + model_name + ".egg.txt");
         topaz::model* ret = topaz::panda_node::to_model(model_egg);
         delete model_egg;

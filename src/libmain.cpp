@@ -79,7 +79,7 @@ namespace topaz
         //Clean up shaders
         glUseProgram(0);
 
-        std::cout << "Running " << cleanup_functions.size() << " Cleanup Functions\n";
+        debug_level(1, "Running %lu Cleanup Functions\n", cleanup_functions.size());
         for (const pair<unsigned long, function< void()> > & func : cleanup_functions)
         {
             auto tmp = func.second;
